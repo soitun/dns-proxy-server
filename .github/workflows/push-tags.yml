@@ -26,9 +26,9 @@ jobs:
         run: ./builder.bash deploy-ci
       - name: Re tag images
         run: |
-          docker tag addshore/dns-proxy-server:latest addshore/dns-proxy-server:${{ github.ref_name }}
-          docker tag addshore/dns-proxy-server:latest-arm7x86 addshore/dns-proxy-server:${{ github.ref_name }}-arm7x86
-          docker tag addshore/dns-proxy-server:latest-arm8x64 addshore/dns-proxy-server:${{ github.ref_name }}-arm8x64
+          docker tag defreitas/dns-proxy-server:latest defreitas/dns-proxy-server:${{ github.ref_name }}
+          docker tag defreitas/dns-proxy-server:latest-arm7x86 defreitas/dns-proxy-server:${{ github.ref_name }}-arm7x86
+          docker tag defreitas/dns-proxy-server:latest-arm8x64 defreitas/dns-proxy-server:${{ github.ref_name }}-arm8x64
       - name: List images
         run: docker images
       - name: List build files
@@ -48,9 +48,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push Images
         run: |
-          docker push addshore/dns-proxy-server:${{ github.ref_name }}
-          docker push addshore/dns-proxy-server:${{ github.ref_name }}-arm7x86
-          docker push addshore/dns-proxy-server:${{ github.ref_name }}-arm8x64
+          docker push defreitas/dns-proxy-server:${{ github.ref_name }}
+          docker push defreitas/dns-proxy-server:${{ github.ref_name }}-arm7x86
+          docker push defreitas/dns-proxy-server:${{ github.ref_name }}-arm8x64
 
       - name: Extract changelog entry
         uses: kemayo/actions-recent-changelog@v1

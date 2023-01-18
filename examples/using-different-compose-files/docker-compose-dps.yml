@@ -1,7 +1,7 @@
 version: '3'
 services:
     dps:
-      image: addshore/dns-proxy-server
+      image: defreitas/dns-proxy-server
       environment:
         - MG_REGISTER_CONTAINER_NAMES=1
       networks:

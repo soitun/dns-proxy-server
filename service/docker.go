@@ -15,7 +15,7 @@ func NewDockerScript() *Script {
 		`-v /opt/dns-proxy-server/conf:/app/conf ` +
 		`-v /var/run/docker.sock:/var/run/docker.sock ` +
 		`-v /etc/resolv.conf:/etc/resolv.conf ` +
-		`addshore/dns-proxy-server:%s'`
+		`defreitas/dns-proxy-server:%s'`
 	script = fmt.Sprintf(
 		script, fmt.Sprintf("dns.mageddo,%s", conf.FormatDpsDomain("dns")),
 		getExposedPort(), flags.GetRawCurrentVersion(),
