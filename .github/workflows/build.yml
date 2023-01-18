@@ -1,0 +1,27 @@
+name: Build
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain
+        run: |
+          echo "This workflow will build the code and images for pull requests, making sure it correctly builds."
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build images
+        run: ./builder.bash deploy-ci
+      - name: List images
+        run: docker images
+      - name: List build files
+        run: ls ./build
+      
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.91.2'
+      - name: Build docs
+        run: ./builder.bash docs

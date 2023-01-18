@@ -10,7 +10,7 @@ Running it
 $ docker run --rm --hostname dns.mageddo \
 -v /var/run/docker.sock:/var/run/docker.sock \
 -v /etc/resolv.conf:/etc/resolv.conf \
-defreitas/dns-proxy-server
+addshore/dns-proxy-server
 ```
 
 Try it out

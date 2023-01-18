@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/mageddo/dns-proxy-server/conf"
 	"github.com/mageddo/dns-proxy-server/flags"
 )
@@ -14,7 +15,7 @@ func NewDockerScript() *Script {
 		`-v /opt/dns-proxy-server/conf:/app/conf ` +
 		`-v /var/run/docker.sock:/var/run/docker.sock ` +
 		`-v /etc/resolv.conf:/etc/resolv.conf ` +
-		`defreitas/dns-proxy-server:%s'`
+		`addshore/dns-proxy-server:%s'`
 	script = fmt.Sprintf(
 		script, fmt.Sprintf("dns.mageddo,%s", conf.FormatDpsDomain("dns")),
 		getExposedPort(), flags.GetRawCurrentVersion(),
@@ -23,7 +24,7 @@ func NewDockerScript() *Script {
 }
 
 func getExposedPort() string {
-	if flags.PublishServicePort()  {
+	if flags.PublishServicePort() {
 		return fmt.Sprintf("-p %d:%d", conf.WebServerPort(), conf.WebServerPort())
 	} else {
 		return ""

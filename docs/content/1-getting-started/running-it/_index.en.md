@@ -12,7 +12,7 @@ $ docker run --rm --hostname dns.mageddo --name dns-proxy-server -p 5380:5380 \
   -v /opt/dns-proxy-server/conf:/app/conf \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /etc/resolv.conf:/etc/resolv.conf \
-  defreitas/dns-proxy-server
+  addshore/dns-proxy-server
 ```
 
 If your system is periodically recreating `/etc/resolv.conf` (like `dhclient` does) and DPS stops working
@@ -25,7 +25,7 @@ $ docker run --rm --hostname dns.mageddo --name dns-proxy-server -p 5380:5380 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /etc:/host/etc \
   -e MG_RESOLVCONF=/host/etc/resolv.conf \
-  defreitas/dns-proxy-server
+  addshore/dns-proxy-server
 ```
 
 #### Standalone run
@@ -46,7 +46,7 @@ would be helpful to archieve this please contribute creating a pull request or i
 ```bash
 docker run --name dns-proxy-server -p 5380:5380 -p 53:53/udp \
   -v /var/run/docker.sock:/var/run/docker.sock \ 
-  defreitas/dns-proxy-server
+  addshore/dns-proxy-server
 ```
 
 2. Change your default internet adapter DNS to `127.0.0.1`

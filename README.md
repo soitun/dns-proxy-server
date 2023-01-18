@@ -1,7 +1,22 @@
-<a href="https://travis-ci.org/mageddo/dns-proxy-server"><img src="https://travis-ci.org/mageddo/dns-proxy-server.svg?branch=master" alt="Build Status" /></a>&nbsp;&nbsp;
-[![help me to keep DPS up to date](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PYFAZCXL442B6&source=url)
+# A fork of dns-proxy-server
 
-### Main features
+**Note from addshore**
+
+It looks like the upstream mageddo/dns-proxy-server repository hasn't seen much activity in the past years.
+
+I personally use this project and want to make some tweaks to it.
+
+I will aim to maintain this fork to the best of my ability moving forward and hope that others can find the updates and possible fixes useful.
+
+Also currently more than happy to fold any changes back into upstream if it becomes active.
+
+You can find this fork on Docker Hub @ https://hub.docker.com/r/addshore/dns-proxy-server
+
+`upstream-2.19.0*` tags are the same code as the last upstream release, just going via the new build and push path.
+
+Any tag beyond `2.19.0` on this repository or docker images has come from this code base.
+
+## Main features
 
 DPS is a end user(developers, Server Administrators) DNS server tool to develop systems with docker solving
 docker containers hostnames:
@@ -17,13 +32,13 @@ docker containers hostnames:
 
 ![](https://i.imgur.com/aR9dl0O.png)
 
-### Basic running it
+## Basic running it
 
 ```bash
 $ docker run --rm --hostname dns.mageddo \
 -v /var/run/docker.sock:/var/run/docker.sock \
 -v /etc/resolv.conf:/etc/resolv.conf \
-defreitas/dns-proxy-server
+addshore/dns-proxy-server
 ```
 
 then try it out
@@ -36,21 +51,8 @@ PING dns.mageddo (172.17.0.4) 56(84) bytes of data.
 64 bytes from 172.17.0.4: icmp_seq=3 ttl=64 time=0.064 ms
 ```
 
-### Documents
-* [Full documentation](http://mageddo.github.io/dns-proxy-server/)
-* [Running it documentation](http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/)
-* [Examples](https://github.com/mageddo/dns-proxy-server/tree/master/examples)
-* [Coding at the DPS](http://mageddo.github.io/dns-proxy-server/latest/en/5-developing/)
-
-### Donation
-Help me to keep DPS up to date
-
-Via PayPal
-
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PYFAZCXL442B6&source=url)
-
-Or via QR code
-
-![](https://i.imgur.com/LmN7g2j.png)
-
-
+## Documentation
+* [Full documentation](http://mageddo.github.io/dns-proxy-server/) (from upstream)
+* [Running it documentation](http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/) (from upstream)
+* [Examples](https://github.com/addshore/dns-proxy-server/tree/master/examples)
+* [Coding at the DPS](http://mageddo.github.io/dns-proxy-server/latest/en/5-developing/) (from upstream)
