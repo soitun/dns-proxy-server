@@ -4,13 +4,20 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
+import com.mageddo.dnsproxyserver.docker.DockerRepository;
+import com.mageddo.dnsproxyserver.docker.DockerRepositoryDefault;
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
 import java.time.Duration;
 
 @Module
-public interface DockerClientModule {
+public interface DockerModule {
+
+
+  @Binds
+  DockerRepository bind(DockerRepositoryDefault m);
 
   @Provides
   static DockerClient dockerClient() {

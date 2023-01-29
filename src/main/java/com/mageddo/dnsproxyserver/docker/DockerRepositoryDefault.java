@@ -18,7 +18,7 @@ import static com.mageddo.dnsproxyserver.docker.Docker.findHostnameFromEnv;
 @Slf4j
 @Singleton
 @AllArgsConstructor(onConstructor = @__({@Inject}))
-public class DockerRepositoryClient implements DockerRepository {
+public class DockerRepositoryDefault implements DockerRepository {
 
   private final DockerClient dockerClient;
 

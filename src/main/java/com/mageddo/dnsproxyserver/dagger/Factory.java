@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import java.util.Set;
 
 @Singleton
-@Component(modules = {MainModule.class})
+@Component(modules = {MainModule.class, DockerModule.class})
 public interface Factory {
 
   ServerStarter dnsServerStarter();
