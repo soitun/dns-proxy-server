@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.dns.server;
 
+import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
 import org.xbill.DNS.Message;
 
 import java.io.IOException;
@@ -12,14 +13,14 @@ import java.util.List;
 
 public class UDPServer {
   public static final short BUFFER_SIZE = 512;
-  private final List<Handler> handlers;
+  private final List<Solver> solvers;
 
   public UDPServer() {
-    this.handlers = new ArrayList<>();
+    this.solvers = new ArrayList<>();
   }
 
-  public UDPServer bind(Handler handler) {
-    this.handlers.add(handler);
+  public UDPServer bind(Solver solver) {
+    this.solvers.add(solver);
     return this;
   }
 
@@ -48,9 +49,9 @@ public class UDPServer {
   }
 
   private Message handle(DatagramPacket packet) {
-    for (Handler handler : this.handlers) {
+    for (Solver solver : this.solvers) {
       try {
-        return handler.handle(new Message(packet.getData()));
+        return solver.handle(new Message(packet.getData()));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
