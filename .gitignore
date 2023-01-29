@@ -4,7 +4,6 @@ build
 .idea/
 *.iml
 /files
-docs
 
 .gradle/
 *.orig
