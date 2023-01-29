@@ -23,12 +23,12 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Deploy
-        run: ./builder.bash deploy-ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#      - name: Deploy
+#        run: ./builder.bash deploy-ci
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docs Generate
         id: docs_generate
@@ -37,7 +37,7 @@ jobs:
           hugo-version: '0.91.2'
       - name: Build docs
         run: |
-          ./builder.bash docs &&\
+          ./builder.bash docs /tmp/build &&\
           echo "VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}')" >> "${GITHUB_OUTPUT}"
 
       - name: Docs Deploy - Latest

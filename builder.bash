@@ -42,14 +42,17 @@ case $1 in
 
 	docs )
 
-	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	rm -r ${PWD}/build/docs || echo "> build dir already clear"
+	P=${2:${PWD}/build}
+	echo "> Docs ${P}"
 
-	TARGET=${PWD}/build/docs/${VERSION}
+	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
+	rm -r "$2/docs" || echo "> build dir already clear"
+
+	TARGET="$2/docs/${VERSION}"
 	generateDocs ${VERSION} ${TARGET}
 
 	VERSION=latest
-	TARGET=${PWD}/build/docs/${VERSION}
+	TARGET="$2/docs/${VERSION}"
 	generateDocs ${VERSION} ${TARGET}
 
 	;;
@@ -102,7 +105,7 @@ case $1 in
 	;;
 
 	validate-release )
-		echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION)"
+		echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION 2>/dev/null)"
 		if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
 			echo "> Tag already exists $APP_VERSION"
 			exit 3
