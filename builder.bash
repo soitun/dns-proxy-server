@@ -122,10 +122,10 @@ case $1 in
 
 	# From the binaries, build the docker images then push them to docker hub
 	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
-	docker tag "defreitas/dns-proxy-server:${VERSION}" latest &&\
+	docker tag "defreitas/dns-proxy-server:${VERSION}" defreitas/dns-proxy-server:latest &&\
 	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
 	docker-compose push prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&
-	docker push latest
+	docker push defreitas/dns-proxy-server:latest
 
 	;;
 
