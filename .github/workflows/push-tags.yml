@@ -1,7 +1,7 @@
 name: Push tagged
 on:
   push:
-    tags:
+    branches-ignore:
       - '*'
 
 permissions:

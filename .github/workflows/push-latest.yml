@@ -1,8 +1,8 @@
 name: Push latest
 on:
   push:
-    branches:
-      - master
+    branches-ignore:
+      - '*'
 
 permissions:
   contents: write
