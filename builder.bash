@@ -32,7 +32,7 @@ case $1 in
 	setup-repository )
 		git remote remove origin  && git remote add origin https://${REPO_TOKEN}@github.com/$REPO_URL.git
 		git checkout -b build_branch ${CURRENT_BRANCH}
-		echo "> Repository added, travisBranch=${CURRENT_BRANCH}"
+		echo "> Repository added, previousBranch=${CURRENT_BRANCH}"
 
 	;;
 
@@ -130,9 +130,6 @@ case $1 in
 	;;
 
 	release )
-
-		git status;
-		git remote -v;
 
 		echo "> build started, current branch=$CURRENT_BRANCH"
 		if [ "$CURRENT_BRANCH" = "master" ]; then
