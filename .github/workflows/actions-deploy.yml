@@ -19,8 +19,8 @@ jobs:
           echo "Bump version, build, generate github release, push docker images and the docs"
 
       - name: Checkout code
-        fetch-depth: '0'
         uses: actions/checkout@v3
+        fetch-depth: '0'
 
       - name: Deploy
         run: bash -c "cat VERSION && ./builder.bash validate-release && ./builder.bash deploy-ci || exit 0"
