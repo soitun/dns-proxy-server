@@ -1,9 +1,12 @@
 name: Deploy
 on:
-  branches-ignore:
-    - '*'
-#  branches:
-#    - 'addshore-github-actions-for-upstream'
+  push:
+    branches:
+      - addshore-github-actions-for-upstream
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
