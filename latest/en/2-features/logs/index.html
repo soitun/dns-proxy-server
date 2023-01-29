@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.91.2" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Configuring logs :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1578485435" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1674963006" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1578485435" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1674963006" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1674963006"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1578485435"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1674963006"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1674963006"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1674963006"></script>
 
     
   </div>
@@ -323,13 +323,13 @@
  
   
     
-    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by it&#39;s container name / service name" class="dd-item 
+    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by its container name / service name" class="dd-item 
         
         
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/">
-          Access container by it&#39;s container name / service name
+          Access container by its container name / service name
           
             <i class="fas fa-check read-icon"></i>
           
@@ -748,13 +748,10 @@
                     <div class="progress">
     <div class="wrapper">
 <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#configuring-log-output">Configuring log output</a></li>
-<li><a href="#configuring-log-level">Configuring log level</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#configuring-log-output">Configuring log output</a></li>
+    <li><a href="#configuring-log-level">Configuring log level</a></li>
+  </ul>
 </nav>
     </div>
 </div>
@@ -780,68 +777,46 @@
 
 
 
-	
-
-<h2 id="configuring-log-output">Configuring log output</h2>
-
+	<h2 id="configuring-log-output">Configuring log output</h2>
 <p>You can disable, log to console, log to default log file path or specify a log path at config file, environment or command line argument. Available options:</p>
-
 <ul>
 <li>console (default) - log to console</li>
 <li>false - Logs are disabled</li>
 <li>true - stop log to console and log to <code>/var/log/dns-proxy-server.log</code> file</li>
-<li><path> eg. /tmp/log.log - log to specified path</li>
+<li><!-- raw HTML omitted --> eg. /tmp/log.log - log to specified path</li>
 </ul>
-
 <p><strong>Config File</strong></p>
-
-<pre><code class="language-json">{
-	...
-	&quot;logFile&quot;: &quot;console&quot;
-	...
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#960050;background-color:#1e0010">...</span>
+	<span style="color:#f92672">&#34;logFile&#34;</span>: <span style="color:#e6db74">&#34;console&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">...</span>
 }
-</code></pre>
-
-<p><strong>Environment</strong></p>
-
+</code></pre></div><p><strong>Environment</strong></p>
 <pre><code>export MG_LOG_FILE=console
 </code></pre>
-
 <p><strong>Command line argument</strong></p>
-
 <pre><code>go run dns.go  -log-file=console
 </code></pre>
-
 <h2 id="configuring-log-level">Configuring log level</h2>
-
 <p>You can change system log level using environment variable, config file, or command line argument,
 DPS will consider the parameters in that order, first is more important.</p>
-
 <p>Available levels:</p>
-
 <ul>
 <li>ERROR</li>
 <li>WARNING</li>
 <li>INFO</li>
 <li>DEBUG (Default)</li>
 </ul>
-
 <p><strong>Environment</strong></p>
-
 <pre><code>export MG_LOG_LEVEL=DEBUG
 </code></pre>
-
 <p><strong>Config file</strong></p>
-
-<pre><code class="language-json">{
-	...
-	&quot;logLevel&quot;: &quot;DEBUG&quot;
-	...
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#960050;background-color:#1e0010">...</span>
+	<span style="color:#f92672">&#34;logLevel&#34;</span>: <span style="color:#e6db74">&#34;DEBUG&#34;</span>
+	<span style="color:#960050;background-color:#1e0010">...</span>
 }
-</code></pre>
-
-<p><strong>Command line argument</strong></p>
-
+</code></pre></div><p><strong>Command line argument</strong></p>
 <pre><code>go run dns.go  -log-level=DEBUG
 </code></pre>
 
@@ -1236,20 +1211,20 @@ DPS will consider the parameters in that order, first is more important.</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1674963006"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1674963006"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1578485435" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1578485435"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1674963006" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1674963006"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

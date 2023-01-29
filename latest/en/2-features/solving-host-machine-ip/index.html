@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.91.2" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Solve host machine IP from anywhere :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1578485435" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1674963006" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1578485435" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1674963006" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1674963006"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1578485435"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1674963006"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1674963006"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1674963006"></script>
 
     
   </div>
@@ -323,13 +323,13 @@
  
   
     
-    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by it&#39;s container name / service name" class="dd-item 
+    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by its container name / service name" class="dd-item 
         
         
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/">
-          Access container by it&#39;s container name / service name
+          Access container by its container name / service name
           
             <i class="fas fa-check read-icon"></i>
           
@@ -747,7 +747,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-
+<nav id="TableOfContents"></nav>
     </div>
 </div>
 
@@ -773,37 +773,23 @@
 
 
 	<p>Just use <code>host.docker</code></p>
-
-<pre><code class="language-bash">$ ping host.docker
-PING host.docker (172.21.0.1) 56(84) bytes of data.
-64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=1 ttl=64 time=0.086 ms
-64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=2 ttl=64 time=0.076 ms
-64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=3 ttl=64 time=0.081 ms
-</code></pre>
-
-<p>You can customize this hostname by setting</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ping host.docker
+PING host.docker <span style="color:#f92672">(</span>172.21.0.1<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
+<span style="color:#ae81ff">64</span> bytes from 172.21.0.1 <span style="color:#f92672">(</span>172.21.0.1<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.086 ms
+<span style="color:#ae81ff">64</span> bytes from 172.21.0.1 <span style="color:#f92672">(</span>172.21.0.1<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.076 ms
+<span style="color:#ae81ff">64</span> bytes from 172.21.0.1 <span style="color:#f92672">(</span>172.21.0.1<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.081 ms
+</code></pre></div><p>You can customize this hostname by setting</p>
 <p>Environment variable</p>
-
-<pre><code class="language-bash">$ docker run dns-proxy-server -e MG_HOST_MACHINE_HOSTNAME=$(cat /etc/hostname)
-</code></pre>
-
-<p>Command line option</p>
-
-<pre><code class="language-bash">$ ./dns-proxy-server --host-machine-hostname $(cat /etc/hostname)
-</code></pre>
-
-<p>Json configuration</p>
-
-<pre><code class="language-json">{
-	&quot;hostMachineHostname&quot;: &quot;host.docker&quot; 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run dns-proxy-server -e MG_HOST_MACHINE_HOSTNAME<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat /etc/hostname<span style="color:#66d9ef">)</span>
+</code></pre></div><p>Command line option</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ./dns-proxy-server --host-machine-hostname <span style="color:#66d9ef">$(</span>cat /etc/hostname<span style="color:#66d9ef">)</span>
+</code></pre></div><p>Json configuration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#f92672">&#34;hostMachineHostname&#34;</span>: <span style="color:#e6db74">&#34;host.docker&#34;</span> 
 }
-</code></pre>
-
-<p><strong>Notes</strong>:</p>
-
+</code></pre></div><p><strong>Notes</strong>:</p>
 <p>Be aware if you set the host machine hostname as the machine name then you will have to remove
-it&rsquo;s name from <code>/etc/hosts</code> since OS try to resolve names from hosts file first
+its name from <code>/etc/hosts</code> since OS try to resolve names from hosts file first
 then from DNS server</p>
 
 
@@ -1187,7 +1173,7 @@ then from DNS server</p>
 			<a class="nav nav-prev" href="/dns-proxy-server/latest/en/2-features/logs/" title="Configuring logs"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by it&#39;s container name / service name" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by its container name / service name" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -1197,20 +1183,20 @@ then from DNS server</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1674963006"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1674963006"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1578485435" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1578485435"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1674963006" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1674963006"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

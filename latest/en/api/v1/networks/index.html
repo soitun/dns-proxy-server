@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.91.2" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>V1 Network API :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1578485435" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1674963006" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1578485435" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1674963006" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1674963006"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1578485435"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1674963006"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1674963006"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1674963006"></script>
 
     
   </div>
@@ -323,13 +323,13 @@
  
   
     
-    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by it&#39;s container name / service name" class="dd-item 
+    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by its container name / service name" class="dd-item 
         
         
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/">
-          Access container by it&#39;s container name / service name
+          Access container by its container name / service name
           
             <i class="fas fa-check read-icon"></i>
           
@@ -748,18 +748,13 @@
                     <div class="progress">
     <div class="wrapper">
 <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#disconnect-containers-from-network">Disconnect containers from network</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
     </div>
 </div>
@@ -784,15 +779,9 @@
 
 
 
-
-
 <h4 id="disconnect-containers-from-network">Disconnect containers from network</h4>
-
-<pre><code>DELETE /network/disconnect-containers HTTP/1.1
-</code></pre>
-
-<p><strong>Parameters</strong></p>
-
+<pre tabindex="0"><code>DELETE /network/disconnect-containers HTTP/1.1
+</code></pre><p><strong>Parameters</strong></p>
 <table>
 <thead>
 <tr>
@@ -801,7 +790,6 @@
 <th>Decription</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>netoworkId</td>
@@ -810,21 +798,15 @@
 </tr>
 </tbody>
 </table>
-
 <p><strong>Reponse</strong></p>
-
-<pre><code class="language-javascript">HTTP/1.1 200
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">HTTP</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span>
 [
-    &quot;success for 551adbb704bf95ae73f3f8e497560609d2016d1566196298f1787f087af4b5cd&quot;,
-    &quot;success for 5f5ce51404b15069795006e7319f270db4f6d822a067e61808eeb0b2922087db&quot;
+    <span style="color:#e6db74">&#34;success for 551adbb704bf95ae73f3f8e497560609d2016d1566196298f1787f087af4b5cd&#34;</span>,
+    <span style="color:#e6db74">&#34;success for 5f5ce51404b15069795006e7319f270db4f6d822a067e61808eeb0b2922087db&#34;</span>
 ]
-</code></pre>
-
-<p><strong>Example</strong></p>
-
-<pre><code class="language-bash">$ curl -X DELETE dns.mageddo:5380/network/disconnect-containers/?networkId=85e7564c6b71
-</code></pre>
-
+</code></pre></div><p><strong>Example</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl -X DELETE dns.mageddo:5380/network/disconnect-containers/?networkId<span style="color:#f92672">=</span>85e7564c6b71
+</code></pre></div>
 
 <footer class=" footline" >
 	
@@ -1211,20 +1193,20 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1674963006"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1674963006"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1578485435" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1578485435"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1674963006" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1674963006"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

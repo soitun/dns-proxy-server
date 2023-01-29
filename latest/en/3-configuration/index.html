@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.91.2" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Configuration :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1578485435" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1578485435" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1674963006" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1674963006" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1578485435" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1674963006" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1674963006"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1578485435"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1674963006"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1674963006"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1578485435"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1674963006"></script>
 
     
   </div>
@@ -323,13 +323,13 @@
  
   
     
-    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by it&#39;s container name / service name" class="dd-item 
+    <li data-nav-id="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/" title="Access container by its container name / service name" class="dd-item 
         
         
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/accessing-container-by-name/">
-          Access container by it&#39;s container name / service name
+          Access container by its container name / service name
           
             <i class="fas fa-check read-icon"></i>
           
@@ -742,17 +742,15 @@
                     <div class="progress">
     <div class="wrapper">
 <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#json-configuration">JSON configuration</a></li>
-<li><a href="#environment-variable-configuration">Environment variable configuration</a></li>
-<li><a href="#terminal-configuration">Terminal configuration</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#json-configuration">JSON configuration</a></li>
+        <li><a href="#environment-variable-configuration">Environment variable configuration</a></li>
+        <li><a href="#terminal-configuration">Terminal configuration</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
     </div>
 </div>
@@ -778,75 +776,65 @@
 
 
 
-	
-
-<h3 id="json-configuration">JSON configuration</h3>
-
+	<h3 id="json-configuration">JSON configuration</h3>
 <p><strong>Version 2</strong></p>
-
-<pre><code class="language-json">{
-  &quot;version&quot;: 2,
-  // Remote DNS servers to be asked when can not solve from docker or local storage
-  // If no one server was specified then the 8.8.8.8 will be used
-  &quot;remoteDnsServers&quot;: [ &quot;8.8.8.8&quot;, &quot;4.4.4.4:54&quot; ],
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#ae81ff">2</span>,
+  <span style="color:#75715e">// Remote DNS servers to be asked when can not solve from docker or local storage
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// If no one server was specified then the 8.8.8.8 will be used
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;remoteDnsServers&#34;</span>: [ <span style="color:#e6db74">&#34;8.8.8.8&#34;</span>, <span style="color:#e6db74">&#34;4.4.4.4:54&#34;</span> ],
   
-  // all existent environments  
-  &quot;envs&quot;: [  
+  <span style="color:#75715e">// all existent environments  
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;envs&#34;</span>: [  
     {
-      &quot;name&quot;: &quot;&quot;, // empty string is the default enviroment
-      &quot;hostnames&quot;: [ // all local hostnames entries
-        {
-          // (optional) used to control it will be automatically generated if not passed
-          &quot;id&quot;: 1, 
-          &quot;hostname&quot;: &quot;github.com&quot;,
-          &quot;ip&quot;: &quot;192.168.0.1&quot;,
-          &quot;ttl&quot;: 255 // how many seconds cache this entry
+      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">// empty string is the default enviroment
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;hostnames&#34;</span>: [ <span style="color:#75715e">// all local hostnames entries
+</span><span style="color:#75715e"></span>        {
+          <span style="color:#75715e">// (optional) used to control it will be automatically generated if not passed
+</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">1</span>, 
+          <span style="color:#f92672">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;github.com&#34;</span>,
+          <span style="color:#f92672">&#34;ip&#34;</span>: <span style="color:#e6db74">&#34;192.168.0.1&#34;</span>,
+          <span style="color:#f92672">&#34;ttl&#34;</span>: <span style="color:#ae81ff">255</span> <span style="color:#75715e">// how many seconds cache this entry
+</span><span style="color:#75715e"></span>        }
+      ]
+    }
+  ],
+  <span style="color:#f92672">&#34;activeEnv&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">// the current environment keyname 
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;webServerPort&#34;</span>: <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// web admin port, when 0 the default value is used, see --help option
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;dnsServerPort&#34;</span>: <span style="color:#ae81ff">8980</span>, <span style="color:#75715e">// dns server port, when 0 the default value is used
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;logLevel&#34;</span>: <span style="color:#e6db74">&#34;DEBUG&#34;</span>,
+  <span style="color:#f92672">&#34;logFile&#34;</span>: <span style="color:#e6db74">&#34;console&#34;</span> <span style="color:#75715e">// where the log will be written,
+</span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;registerContainerNames&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#75715e">// if should register container name / service name as a hostname
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;domain&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">// The container names domain
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;dpsNetwork&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#75715e">// if should create a bridge network for dps container
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;dpsNetworkAutoConnect&#34;</span>: <span style="color:#66d9ef">false</span> <span style="color:#75715e">// if should connect all containers to dps container
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p><strong>Version 1</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;remoteDnsServers&#34;</span>: [ [<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">8</span>], [<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">4</span>] ], <span style="color:#75715e">// Remote DNS servers to be asked when can not solve from docker or local storage 
+</span><span style="color:#75715e"></span>                                                <span style="color:#75715e">// If no one server was specified then the 8.8.8.8 will be used
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;envs&#34;</span>: [ <span style="color:#75715e">// all existent environments 
+</span><span style="color:#75715e"></span>    {
+      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">// empty string is the default
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;hostnames&#34;</span>: [ <span style="color:#75715e">// all local hostnames entries
+</span><span style="color:#75715e"></span>        {
+          <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">1</span>,
+          <span style="color:#f92672">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;github.com&#34;</span>,
+          <span style="color:#f92672">&#34;ip&#34;</span>: [<span style="color:#ae81ff">192</span>, <span style="color:#ae81ff">168</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>],
+          <span style="color:#f92672">&#34;ttl&#34;</span>: <span style="color:#ae81ff">255</span>
         }
       ]
     }
   ],
-  &quot;activeEnv&quot;: &quot;&quot;, // the current environment keyname 
-  &quot;webServerPort&quot;: 0, // web admin port, when 0 the default value is used, see --help option
-  &quot;dnsServerPort&quot;: 8980, // dns server port, when 0 the default value is used
-  &quot;logLevel&quot;: &quot;DEBUG&quot;,
-  &quot;logFile&quot;: &quot;console&quot; // where the log will be written,
-  &quot;registerContainerNames&quot;: false, // if should register container name / service name as a hostname
-  &quot;domain&quot;: &quot;&quot;, // The container names domain
-  &quot;dpsNetwork&quot;: false, // if should create a bridge network for dps container
-  &quot;dpsNetworkAutoConnect&quot;: false // if should connect all containers to dps container
-}
-</code></pre>
-
-<p><strong>Version 1</strong></p>
-
-<pre><code class="language-json">{
-  &quot;remoteDnsServers&quot;: [ [8,8,8,8], [4,4,4,4] ], // Remote DNS servers to be asked when can not solve from docker or local storage 
-                                                // If no one server was specified then the 8.8.8.8 will be used
-  &quot;envs&quot;: [ // all existent environments 
-    {
-      &quot;name&quot;: &quot;&quot;, // empty string is the default
-      &quot;hostnames&quot;: [ // all local hostnames entries
-        {
-          &quot;id&quot;: 1,
-          &quot;hostname&quot;: &quot;github.com&quot;,
-          &quot;ip&quot;: [192, 168, 0, 1],
-          &quot;ttl&quot;: 255
-        }
-      ]
-    }
-  ],
-  &quot;activeEnv&quot;: &quot;&quot;, // the default env keyname 
-  &quot;lastId&quot;: 1, // hostnames sequence, don't touch here
-  &quot;webServerPort&quot;: 0, // web admin port, when 0 the default value is used, see --help option
-  &quot;dnsServerPort&quot;: 8980, // dns server port, when 0 the default value is used
-  &quot;logLevel&quot;: &quot;DEBUG&quot;,
-  &quot;logFile&quot;: &quot;console&quot; // where the log will be written,
-  &quot;registerContainerNames&quot;: false // if should register container name / service name as a hostname
-}
-</code></pre>
-
-<h3 id="environment-variable-configuration">Environment variable configuration</h3>
-
+  <span style="color:#f92672">&#34;activeEnv&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">// the default env keyname 
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;lastId&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// hostnames sequence, don&#39;t touch here
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;webServerPort&#34;</span>: <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// web admin port, when 0 the default value is used, see --help option
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;dnsServerPort&#34;</span>: <span style="color:#ae81ff">8980</span>, <span style="color:#75715e">// dns server port, when 0 the default value is used
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;logLevel&#34;</span>: <span style="color:#e6db74">&#34;DEBUG&#34;</span>,
+  <span style="color:#f92672">&#34;logFile&#34;</span>: <span style="color:#e6db74">&#34;console&#34;</span> <span style="color:#75715e">// where the log will be written,
+</span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;registerContainerNames&#34;</span>: <span style="color:#66d9ef">false</span> <span style="color:#75715e">// if should register container name / service name as a hostname
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h3 id="environment-variable-configuration">Environment variable configuration</h3>
 <table>
 <thead>
 <tr>
@@ -855,38 +843,32 @@
 <th>DEFAULT VALUE</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>MG_RESOLVCONF</td>
 <td>Linux resolvconf path to set DPS as default DNS</td>
 <td>/etc/resolv.conf</td>
 </tr>
-
 <tr>
 <td>MG_LOG_LEVEL</td>
 <td></td>
 <td>INFO</td>
 </tr>
-
 <tr>
 <td>MG_LOG_FILE</td>
 <td>Path where to logs will be stored</td>
 <td>console</td>
 </tr>
-
 <tr>
 <td>MG_REGISTER_CONTAINER_NAMES</td>
 <td>if should register container name / service name as a hostname</td>
 <td>false</td>
 </tr>
-
 <tr>
 <td>MG_HOST_MACHINE_HOSTNAME</td>
 <td>hostname to solve host machine IP</td>
 <td>host.docker</td>
 </tr>
-
 <tr>
 <td>MG_DOMAIN</td>
 <td>The container names domain (requires MG_REGISTER_CONTINER_NAMES=TRUE)</td>
@@ -894,10 +876,8 @@
 </tr>
 </tbody>
 </table>
-
 <h3 id="terminal-configuration">Terminal configuration</h3>
-
-<pre><code>  -compress
+<pre tabindex="0"><code>  -compress
     	compress replies
   -conf-path string
     	The config file path  (default &quot;conf/config.json&quot;)
@@ -937,7 +917,6 @@
   -web-server-port int
     	The web server port (default 5380)
 </code></pre>
-
 
 
 
@@ -1325,20 +1304,20 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1674963006"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1578485435"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1578485435"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1674963006"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1674963006"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1578485435" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1578485435"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1674963006" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1674963006"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
