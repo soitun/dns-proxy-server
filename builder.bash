@@ -4,7 +4,6 @@ set -e
 
 CUR_DIR=`pwd`
 APP_VERSION=$(cat VERSION)
-REPO_URL=mageddo/dns-proxy-server
 
 echo "> builder.bash version=${APP_VERSION}"
 
@@ -34,15 +33,8 @@ generateDocs(){
 
 case $1 in
 
-	setup-repository )
-		git remote remove origin  && git remote add origin https://${REPO_TOKEN}@github.com/$REPO_URL.git
-		git checkout -b build_branch ${CURRENT_BRANCH}
-		echo "> Repository added, previousBranch=${CURRENT_BRANCH}"
-
-	;;
-
 	upload-release )
-
+		echo "> upload-release "
 		DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
 		github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" $PWD/build/*.tgz
 
@@ -63,17 +55,20 @@ case $1 in
 	;;
 
 	apply-version )
-
+		echo "> Apply version"
 		# updating files version
 		sed -i -E "s/(dns-proxy-server.*)[0-9]+\.[0-9]+\.[0-9]+/\1$APP_VERSION/" docker-compose.yml
 
 	;;
 
 	assemble )
+		echo "> assemble"
 		assemble
 	;;
 
 	build )
+
+		echo "> build"
 
 		assemble
 
