@@ -6,6 +6,6 @@ public interface Solver {
   Message handle(Message reqMsg);
 
   default byte priority(){
-    return Byte.MIN_VALUE;
+    return Byte.MAX_VALUE;
   }
 }

@@ -95,4 +95,9 @@ public class DockerSolver implements Solver {
 //    return m
 //  }
 
+
+  @Override
+  public byte priority() {
+    return Priority.ZERO;
+  }
 }

@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.net.InetAddress;
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class SimpleServer {
 
   public SimpleServer start(
-      int port, Protocol protocol, Set<Solver> solvers, InetAddress bindAddress
+      int port, Protocol protocol, List<Solver> solvers, InetAddress bindAddress
   ) {
 
     // fixme create tcp server
