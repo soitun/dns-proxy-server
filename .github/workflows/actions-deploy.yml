@@ -1,8 +1,8 @@
-name: Deploy
+name: Complete Deploy
 on:
   push:
     branches:
-      - addshore-github-actions-for-upstream
+      - master
 
 permissions:
   contents: write
@@ -21,12 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-#      - name: Deploy
-#        run: ./builder.bash deploy-ci
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Deploy
+        run: ./builder.bash deploy-ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docs Generate
         id: docs_generate
