@@ -131,6 +131,9 @@ case $1 in
 
 	release )
 
+		git status;
+		git remote -v;
+
 		echo "> build started, current branch=$CURRENT_BRANCH"
 		if [ "$CURRENT_BRANCH" = "master" ]; then
 			echo "> deploying new version"
