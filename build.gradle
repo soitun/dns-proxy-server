@@ -18,7 +18,7 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-def className = "com.mageddo.Application"
+def className = "com.mageddo.dnsproxyserver.App"
 
 graal {
   mainClass className
