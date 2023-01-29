@@ -42,7 +42,7 @@ case $1 in
 
 	docs )
 
-	P=${2:${PWD}/build}
+	P=${2:-${PWD}/build}
 	echo "> Docs ${P}"
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
