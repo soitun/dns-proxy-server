@@ -46,11 +46,13 @@ case $1 in
 	docs )
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	TARGET=$PWD/../dns-proxy-server-docs/${VERSION}
+	mkdir -p docs
+
+	TARGET=./docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	VERSION=latest
-	TARGET=$PWD/../dns-proxy-server-docs/${VERSION}
+	TARGET=./docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	;;
