@@ -30,7 +30,7 @@ public class Docker {
     }
     for (String env : envs) {
       if (env.startsWith(HOSTNAME_ENV)) {
-        final var hosts = env.substring(env.indexOf(HOSTNAME_ENV)).split("\s,\s");
+        final var hosts = env.substring(HOSTNAME_ENV.length()).split("\s,\s");
         return Arrays
           .stream(hosts)
           .collect(Collectors.toSet());

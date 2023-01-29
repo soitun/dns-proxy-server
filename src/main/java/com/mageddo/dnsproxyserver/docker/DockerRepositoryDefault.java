@@ -20,6 +20,7 @@ import static com.mageddo.dnsproxyserver.docker.Docker.findHostnameFromEnv;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class DockerRepositoryDefault implements DockerRepository {
 
+  public static final String RUNNING_STATUS = "running";
   private final DockerClient dockerClient;
 
   @Override
@@ -27,7 +28,7 @@ public class DockerRepositoryDefault implements DockerRepository {
     final var stopWatch = StopWatch.createStarted();
     final var activeContainers = this.dockerClient
       .listContainersCmd()
-      .withStatusFilter(Set.of("running"))
+      .withStatusFilter(Set.of(RUNNING_STATUS))
       .withLimit(1024)
 //      .withNetworkFilter()
       .exec();
