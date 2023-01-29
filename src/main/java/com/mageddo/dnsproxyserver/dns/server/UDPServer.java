@@ -64,7 +64,7 @@ public class UDPServer {
         log.debug("status=trySolve, solver={}, req={}", solverName, reqStr);
         final var res = solver.handle(reqMsg);
         if(res == null){
-          log.debug("status=notSolved, req={}", reqStr);
+          log.debug("status=notSolved, solver={}, req={}", solverName, reqStr);
           continue;
         }
         log.debug("status=solved, solver={}, req={}, res={}", solverName, reqStr, simplePrint(res));

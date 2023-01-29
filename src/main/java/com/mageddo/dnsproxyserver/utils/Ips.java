@@ -12,7 +12,7 @@ public class Ips {
     Validate.isTrue(tokens.length == 4, "Wrong number of tokens: %d", tokens.length);
     final var bytes = new byte[4];
     for (int i = 0; i < tokens.length; i++) {
-      bytes[i] = Byte.parseByte(tokens[i]);
+      bytes[i] = (byte)Integer.parseInt(tokens[i]);
     }
     return bytes;
   }
