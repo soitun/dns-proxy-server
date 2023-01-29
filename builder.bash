@@ -46,7 +46,7 @@ case $1 in
 	docs )
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	mkdir -p docs
+	mkdir -p ./build/docs
 
 	TARGET=./build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
