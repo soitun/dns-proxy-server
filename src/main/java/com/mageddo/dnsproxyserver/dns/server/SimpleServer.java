@@ -1,26 +1,24 @@
 package com.mageddo.dnsproxyserver.dns.server;
 
-import com.mageddo.dnsproxyserver.dns.server.solver.RemoteSolver;
+import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
 import java.net.InetAddress;
+import java.util.Set;
 
 @Slf4j
+@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class SimpleServer {
 
-  public static SimpleServer start(int port, Protocol protocol, InetAddress bindAddress) {
+  public SimpleServer start(
+      int port, Protocol protocol, Set<Solver> solvers, InetAddress bindAddress
+  ) {
 
     // fixme create tcp server
     final var udpServer = new UDPServer();
-//    udpServer.bind(message -> {
-//      log.info("status=new-msg, msg={}", message.toString());
-//      final var reply = new Message();
-//      final var header = message.getHeader();
-//      reply.setHeader(header);
-//      header.setRcode(Rcode.NOTAUTH);
-//      return reply;
-//    });
-    udpServer.bind(new RemoteSolver());
+    solvers.forEach(udpServer::bind);
     udpServer.start(port, bindAddress);
 
     return new SimpleServer();

@@ -1,25 +1,19 @@
 package com.mageddo.dnsproxyserver.dns.server.solver;
 
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Resolver;
-import org.xbill.DNS.SimpleResolver;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 @Slf4j
+@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class RemoteSolver implements Solver {
 
   private final Resolver delegate;
-
-  @SneakyThrows
-  public RemoteSolver() {
-    this.delegate = new SimpleResolver(new InetSocketAddress(InetAddress.getByAddress(new byte[]{8,8,8,8}), 53));
-  }
 
   @Override
   public Message handle(Message req) {
