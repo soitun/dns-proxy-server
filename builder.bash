@@ -25,6 +25,9 @@ generateDocs(){
 	hugo --baseURL=http://mageddo.github.io/dns-proxy-server/$1 \
 	--destination $2 \
 	--ignoreCache --source docs/
+
+	echo "> Generated files for $1"
+	ls -lha $2
 }
 
 case $1 in
