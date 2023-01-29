@@ -17,8 +17,11 @@ jobs:
       - name: Explain
         run: |
           echo "Bump version, build, generate github release, push docker images and the docs"
+
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Deploy
         run: ./builder.bash deploy-ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
