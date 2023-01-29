@@ -107,12 +107,11 @@ case $1 in
 	;;
 
 	validate-release )
-
+		echo "oi ${APP_VERSION}"
 		if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
-			echo "> Version already exists $APP_VERSION"
+			echo "> Tag already exists $APP_VERSION"
 			exit 3
 		fi
-
 	;;
 
 	deploy-ci )
