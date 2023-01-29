@@ -50,13 +50,13 @@ case $1 in
 	docs )
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	rm -r ./build/docs || echo "> build dir already clear"
+	rm -r ${PWD}/build/docs || echo "> build dir already clear"
 
-	TARGET=./build/docs/${VERSION}
+	TARGET=${PWD}/build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	VERSION=latest
-	TARGET=./build/docs/${VERSION}
+	TARGET=${PWD}/build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	;;
