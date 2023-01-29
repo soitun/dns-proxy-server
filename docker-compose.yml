@@ -81,7 +81,7 @@ services:
     command: bash -c "builder.bash release"
     environment:
       - CURRENT_BRANCH=${CURRENT_BRANCH} # current branch name
-      - REPO_TOKEN=$REPO_TOKEN # github token to deploy the binary
+      - REPO_TOKEN=${GITHUB_TOKEN} # github token to deploy the binary
 
 networks:
   dps:
