@@ -45,14 +45,14 @@ case $1 in
 
 	docs )
 
-	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
+	export MINOR_VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
 	mkdir -p docs
 
-	TARGET=./docs/${VERSION}
-	generateDocs ${VERSION} ${TARGET}
+	TARGET=./build/docs/${MINOR_VERSION}
+	generateDocs ${MINOR_VERSION} ${TARGET}
 
 	VERSION=latest
-	TARGET=./docs/${VERSION}
+	TARGET=./build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	;;
