@@ -143,8 +143,7 @@ case $1 in
 			builder.bash validate-release && builder.bash apply-version && builder.bash build && builder.bash upload-release
 
 		else
-			echo "> building candidate"
-			builder.bash validate-release && builder.bash apply-version && builder.bash build && builder.bash upload-release
+			echo "> refusing to keep going outside the master branch"
 		fi
 
 	;;
