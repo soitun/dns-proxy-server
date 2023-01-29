@@ -51,6 +51,7 @@ dependencies {
   implementation group: 'com.mageddo.tinyserver', name: 'tinyserver', version: '1.0.+'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.+'
   implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.+"
+  implementation group: 'dnsjava', name: 'dnsjava', version: '3.5.2'
 
   testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
