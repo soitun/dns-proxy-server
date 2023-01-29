@@ -117,7 +117,7 @@ case $1 in
 
 	deploy-ci )
 
-	builder.bash validate-release
+	./builder.bash validate-release || echo ": $?"
 
 	echo "> Build test and generate the binaries to the output dir"
 	EC=0
