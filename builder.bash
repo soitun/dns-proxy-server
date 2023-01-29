@@ -65,7 +65,6 @@ case $1 in
 
 		# updating files version
 		sed -i -E "s/(dns-proxy-server.*)[0-9]+\.[0-9]+\.[0-9]+/\1$APP_VERSION/" docker-compose.yml
-		sed -i -E "s/[0-9]+\.[0-9]+\.[0-9]+/$APP_VERSION/g" Dockerfile*.hub
 
 	;;
 
@@ -107,17 +106,16 @@ case $1 in
 	;;
 
 	validate-release )
-
+		echo "oi ${APP_VERSION}"
 		if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
-			echo "> Version already exists $APP_VERSION"
+			echo "> Tag already exists $APP_VERSION"
 			exit 3
 		fi
-
 	;;
 
 	deploy-ci )
 
-	builder.bash validate-release
+	./builder.bash validate-release || exit 0
 
 	echo "> Build test and generate the binaries to the output dir"
 	EC=0
