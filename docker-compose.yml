@@ -82,8 +82,6 @@ services:
     environment:
       - CURRENT_BRANCH=${CURRENT_BRANCH} # current branch name
       - REPO_TOKEN=$REPO_TOKEN # github token to deploy the binary
-    volumes:
-      - $HOME/.gitconfig:/root/.gitconfig
 
 networks:
   dps:
