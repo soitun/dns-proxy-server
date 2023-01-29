@@ -42,7 +42,7 @@ services:
 
       # Run from docker image
   prod-dps:
-    image: defreitas/dns-proxy-server:2.19.0
+    image: defreitas/dns-proxy-server:2.19.4
     hostname: dns.mageddo
     volumes:
       - /opt/dns-proxy-server/conf:/app/conf
@@ -60,19 +60,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: defreitas/dns-proxy-server:2.19.0
+    image: defreitas/dns-proxy-server:2.19.4
 
   prod-build-image-dps-arm7x86:
     build:
       context: .
       dockerfile: Dockerfile.arm7x86
-    image: defreitas/dns-proxy-server:2.19.0-arm7x86
+    image: defreitas/dns-proxy-server:2.19.4-arm7x86
 
   prod-build-image-dps-arm8x64:
     build:
       context: .
       dockerfile: Dockerfile.arm8x64
-    image: defreitas/dns-proxy-server:2.19.0-arm8x64
+    image: defreitas/dns-proxy-server:2.19.4-arm8x64
 
   # build the project and make the github release
   prod-ci-deploy:
@@ -80,10 +80,8 @@ services:
     extends: compiler-dps
     command: bash -c "builder.bash release"
     environment:
-      - CURRENT_BRANCH=$TRAVIS_BRANCH # current branch name
-      - REPO_TOKEN=$REPO_TOKEN # github token to deploy the binary
-    volumes:
-      - $HOME/.gitconfig:/root/.gitconfig
+      - CURRENT_BRANCH=${CURRENT_BRANCH} # current branch name
+      - REPO_TOKEN=${GITHUB_TOKEN} # github token to deploy the binary
 
 networks:
   dps:

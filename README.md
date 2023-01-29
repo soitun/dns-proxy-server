@@ -52,5 +52,3 @@ Via PayPal
 Or via QR code
 
 ![](https://i.imgur.com/LmN7g2j.png)
-
-

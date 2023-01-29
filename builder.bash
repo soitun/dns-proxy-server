@@ -21,10 +21,14 @@ assemble(){
 }
 
 generateDocs(){
-	rm -r ${TARGET} || echo "not exists ${TARGET}"
+	echo "> Generating docs version=${1}, target=${2}"
+	mkdir -p "${2}"
 	hugo --baseURL=http://mageddo.github.io/dns-proxy-server/$1 \
 	--destination $2 \
 	--ignoreCache --source docs/
+
+	echo "> Generated docs version=$1, out files:"
+	ls -lha $2
 }
 
 case $1 in
@@ -32,7 +36,7 @@ case $1 in
 	setup-repository )
 		git remote remove origin  && git remote add origin https://${REPO_TOKEN}@github.com/$REPO_URL.git
 		git checkout -b build_branch ${CURRENT_BRANCH}
-		echo "> Repository added, travisBranch=${CURRENT_BRANCH}"
+		echo "> Repository added, previousBranch=${CURRENT_BRANCH}"
 
 	;;
 
@@ -46,11 +50,13 @@ case $1 in
 	docs )
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	TARGET=$PWD/../dns-proxy-server-docs/${VERSION}
+	rm -r ${PWD}/build/docs || echo "> build dir already clear"
+
+	TARGET=${PWD}/build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	VERSION=latest
-	TARGET=$PWD/../dns-proxy-server-docs/${VERSION}
+	TARGET=${PWD}/build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
 
 	;;
@@ -111,6 +117,7 @@ case $1 in
 
 	deploy-ci )
 
+	echo "> Build test and generate the binaries to the output dir"
 	EC=0
 	docker-compose up --force-recreate --abort-on-container-exit prod-ci-deploy || EC=$?
 	if [ "$EC" = "3" ]; then
@@ -118,9 +125,13 @@ case $1 in
 	elif [ "$EC" -ne "0" ]; then
 		exit $EC
 	fi
-	docker-compose build prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
+
+	echo "> From the binaries, build the docker images then push them to docker hub"
+	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
+	docker tag defreitas/dns-proxy-server:${APP_VERSION} defreitas/dns-proxy-server:latest &&\
 	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
-	docker-compose push prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64
+	docker-compose push prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&
+	docker push defreitas/dns-proxy-server:latest
 
 	;;
 
@@ -132,9 +143,7 @@ case $1 in
 			builder.bash validate-release && builder.bash apply-version && builder.bash build && builder.bash upload-release
 
 		else
-			echo "> building candidate"
-			builder.bash validate-release
-			builder.bash build
+			echo "> refusing to keep going outside the master branch"
 		fi
 
 	;;
