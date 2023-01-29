@@ -106,7 +106,7 @@ case $1 in
 	;;
 
 	validate-release )
-		echo "oi ${APP_VERSION}"
+		echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION)"
 		if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
 			echo "> Tag already exists $APP_VERSION"
 			exit 3
