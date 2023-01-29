@@ -1,12 +1,10 @@
 package com.mageddo.dnsproxyserver.dns.server.solver;
 
+import com.mageddo.dnsproxyserver.utils.Ips;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.UncheckedIOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
 @Data
 @Accessors(chain = true)
@@ -15,10 +13,6 @@ public class RemoteSolverConfig {
   private short port;
 
   public InetSocketAddress toSocketAddress() {
-    try {
-      return new InetSocketAddress(InetAddress.getByAddress(this.ip), this.port);
-    } catch (UnknownHostException e) {
-      throw new UncheckedIOException(e);
-    }
+    return new InetSocketAddress(Ips.toAddress(this.ip), this.port);
   }
 }
