@@ -24,7 +24,7 @@ jobs:
           fetch-depth: '0'
 
       - name: Deploy
-        run: bash -c "cat VERSION && ./builder.bash validate-release && ./builder.bash deploy-ci || exit 0"
+        run: ./builder.bash deploy-ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

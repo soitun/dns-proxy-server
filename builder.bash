@@ -6,6 +6,7 @@ CUR_DIR=`pwd`
 APP_VERSION=$(cat VERSION)
 REPO_URL=mageddo/dns-proxy-server
 
+echo "> builder.bash version=${APP_VERSION}"
 
 assemble(){
 	echo "> Testing ..."
@@ -115,6 +116,7 @@ case $1 in
 
 	deploy-ci )
 
+	echo "> Deploy CI"
 	./builder.bash validate-release || exit 0
 
 	echo "> Build test and generate the binaries to the output dir"
