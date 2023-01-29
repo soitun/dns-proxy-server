@@ -30,7 +30,7 @@ public class DockerSolver implements Solver {
 //      }
 //    }
     for (final var host : Wildcards.buildHostAndWildcards(questionName)) {
-      final var ip = this.dockerRepository.findHost(host);
+      final var ip = this.dockerRepository.findHostIp(host);
       if (ip == null) {
         return null;
       }

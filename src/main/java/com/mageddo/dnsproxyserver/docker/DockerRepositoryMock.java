@@ -10,7 +10,7 @@ import java.util.Objects;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class DockerRepositoryMock implements DockerRepository {
   @Override
-  public String findHost(String host) {
+  public String findHostIp(String host) {
     if (Objects.equals("acme.com", host)) {
       return "192.168.0.1";
     }

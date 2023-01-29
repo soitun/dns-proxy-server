@@ -36,11 +36,15 @@ public class DockerRepositoryDefault implements DockerRepository {
       .stream()
       .map(it -> this.dockerClient.inspectContainerCmd(it.getId()).exec())
       .filter(matchingHostName(host))
-      .map(DockerNetworks::findBestIpMatching)
+      .map(c -> DockerNetworks.findBestIpMatching(c, buildNetworks(c)))
       .findFirst()
       .orElse(null);
     log.debug("status=findDone, host={}, found={}, time={}", host, foundIp, stopWatch.getTime());
     return foundIp;
+  }
+
+  String[] buildNetworks(InspectContainerResponse c) {
+    return new String[]{"bridge"};
   }
 
   static Predicate<InspectContainerResponse> matchingHostName(String host) {
