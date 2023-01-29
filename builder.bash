@@ -21,12 +21,13 @@ assemble(){
 }
 
 generateDocs(){
-	rm -r ${TARGET} || echo "not exists ${TARGET}"
+	echo "> Generating docs version=${1}, target=${2}"
+	mkdir -p "${2}"
 	hugo --baseURL=http://mageddo.github.io/dns-proxy-server/$1 \
 	--destination $2 \
 	--ignoreCache --source docs/
 
-	echo "> Generated files for $1"
+	echo "> Generated docs version=$1, out files:"
 	ls -lha $2
 }
 
@@ -49,7 +50,7 @@ case $1 in
 	docs )
 
 	VERSION=$(cat VERSION | awk -F '.' '{ print $1"."$2}');
-	mkdir -p ./build/docs
+	rm -r ./build/docs || echo "> build dir already clear"
 
 	TARGET=./build/docs/${VERSION}
 	generateDocs ${VERSION} ${TARGET}
