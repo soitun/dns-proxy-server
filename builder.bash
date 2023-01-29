@@ -111,6 +111,7 @@ case $1 in
 
 	deploy-ci )
 
+	# Build test and generate the binaries to the output dir
 	EC=0
 	docker-compose up --force-recreate --abort-on-container-exit prod-ci-deploy || EC=$?
 	if [ "$EC" = "3" ]; then
@@ -118,6 +119,8 @@ case $1 in
 	elif [ "$EC" -ne "0" ]; then
 		exit $EC
 	fi
+
+	# From the binaries, build the docker images then push them to docker hub
 	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
 	docker tag "defreitas/dns-proxy-server:${VERSION}" latest &&\
 	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
