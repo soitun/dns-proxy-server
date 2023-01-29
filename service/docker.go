@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-
 	"github.com/mageddo/dns-proxy-server/conf"
 	"github.com/mageddo/dns-proxy-server/flags"
 )
@@ -24,7 +23,7 @@ func NewDockerScript() *Script {
 }
 
 func getExposedPort() string {
-	if flags.PublishServicePort() {
+	if flags.PublishServicePort()  {
 		return fmt.Sprintf("-p %d:%d", conf.WebServerPort(), conf.WebServerPort())
 	} else {
 		return ""
