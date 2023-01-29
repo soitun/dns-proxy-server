@@ -117,6 +117,8 @@ case $1 in
 
 	deploy-ci )
 
+	builder.bash validate-release
+
 	echo "> Build test and generate the binaries to the output dir"
 	EC=0
 	docker-compose up --force-recreate --abort-on-container-exit prod-ci-deploy || EC=$?

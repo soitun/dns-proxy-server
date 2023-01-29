@@ -1,4 +1,4 @@
-<a href="https://travis-ci.org/mageddo/dns-proxy-server"><img src="https://travis-ci.org/mageddo/dns-proxy-server.svg?branch=master" alt="Build Status" /></a>&nbsp;&nbsp;
+[![CI](https://github.com/mageddo/dns-proxy-server/actions/workflows/ci.yml/badge.svg)](https://github.com/mageddo/dns-proxy-server/actions/workflows/ci.yml)
 [![help me to keep DPS up to date](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PYFAZCXL442B6&source=url)
 
 ### Main features

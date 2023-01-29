@@ -1,4 +1,4 @@
-name: Complete Deploy
+name: CD
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ env:
   CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
 
 jobs:
-  build:
+  cd:
     runs-on: ubuntu-latest
     steps:
       - name: Explain
