@@ -16,5 +16,6 @@
 
     </root>
     <logger name="com.mageddo" level="DEBUG"/>
+    <logger name="nativeimage" level="DEBUG"/>
 </configuration>
 
