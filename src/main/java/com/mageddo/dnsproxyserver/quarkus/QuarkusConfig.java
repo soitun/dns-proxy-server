@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.server.http.quarkus;
+package com.mageddo.dnsproxyserver.quarkus;
 
 import com.mageddo.dnsproxyserver.config.Configs;
 import org.xbill.DNS.Resolver;
