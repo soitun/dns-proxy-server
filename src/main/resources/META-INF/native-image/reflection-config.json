@@ -1,7 +1,0 @@
-[
-  {
-    "name": "ch.qos.logback.core.ConsoleAppender",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true
-  }
-]

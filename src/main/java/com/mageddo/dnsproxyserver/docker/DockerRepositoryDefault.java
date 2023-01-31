@@ -2,6 +2,7 @@ package com.mageddo.dnsproxyserver.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import io.quarkus.arc.DefaultBean;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
@@ -17,6 +18,7 @@ import static com.mageddo.dnsproxyserver.docker.Docker.findHostnameFromEnv;
 
 @Slf4j
 @Singleton
+@DefaultBean
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class DockerRepositoryDefault implements DockerRepository {
 

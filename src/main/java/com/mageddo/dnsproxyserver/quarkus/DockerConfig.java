@@ -1,26 +1,17 @@
-package com.mageddo.dnsproxyserver.dagger;
+package com.mageddo.dnsproxyserver.quarkus;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
-import com.mageddo.dnsproxyserver.docker.DockerRepository;
-import com.mageddo.dnsproxyserver.docker.DockerRepositoryDefault;
-import dagger.Binds;
-import dagger.Module;
-import dagger.Provides;
 
+import javax.enterprise.inject.Produces;
 import java.time.Duration;
 
-@Module
-public interface DockerModule {
+public class DockerConfig {
 
-
-  @Binds
-  DockerRepository bind(DockerRepositoryDefault m);
-
-  @Provides
-  static DockerClient dockerClient() {
+  @Produces
+  public DockerClient dockerClient() {
     final var config = DefaultDockerClientConfig.createDefaultConfigBuilder()
       .withDockerHost("unix:///var/run/docker.sock")
       .withDockerTlsVerify(false)

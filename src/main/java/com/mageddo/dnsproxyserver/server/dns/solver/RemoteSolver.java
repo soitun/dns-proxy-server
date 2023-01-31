@@ -6,10 +6,12 @@ import org.xbill.DNS.Message;
 import org.xbill.DNS.Resolver;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
 @Slf4j
+@Singleton
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class RemoteSolver implements Solver {
 
