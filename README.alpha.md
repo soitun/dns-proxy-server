@@ -2,10 +2,11 @@
 
 Binary using Native Image
 ```bash
-$ ./gradlew build nativeCompile &&\
- build/native/nativeCompile/dns-proxy-server
+$ ./gradlew build -Dquarkus.package.type=native &&\
+
 ```
 
+# Drafts
 
 ## Run a container  for testing
 
@@ -26,5 +27,7 @@ $ ./gradlew shadowJar
 
 $ mkdir reflect &&\
   $JAVA_HOME/bin/java -agentlib:native-image-agent=config-output-dir=./reflect -jar build/libs/dns-proxy-server*all.jar
-```
 
+ /home/typer/Downloads/dns-proxy-server-linux-amd64-2.19.5/dns-proxy-server -default-dns=false -server-port=5481
+
+```
