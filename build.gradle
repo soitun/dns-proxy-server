@@ -19,51 +19,20 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-//// https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html
-//graalvmNative {
-//  binaries {
-//    main {
-//      javaLauncher = javaToolchains.launcherFor {
-//        languageVersion = JavaLanguageVersion.of(17)
-//        requiredVersion = '22.3'
-//        vendor = JvmVendorSpec.matching("GraalVM Community")
-//      }
-//      imageName = project.name
-//      mainClass = className
-//      verbose = false
-//      fallback = false
-//      buildArgs.add('-J-Xmx5G')
-//    }
-//  }
-//}
-
 dependencies {
   compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
 
   implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
 
-//  implementation 'io.quarkus:quarkus-resteasy-jsonb'
   implementation 'io.quarkus:quarkus-arc'
   implementation 'io.quarkus:quarkus-resteasy'
   implementation 'io.quarkus:quarkus-resteasy-jsonb'
-
-//  implementation 'com.google.dagger:dagger:2.44.+'
-//  annotationProcessor 'com.google.dagger:dagger-compiler:2.44.+'
-
-//  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.+'
-//  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.+'
-//  implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.+"
-//  implementation group: 'com.mageddo.tinyserver', name: 'tinyserver', version: '1.0.+'
-
 
   implementation group: 'dnsjava', name: 'dnsjava', version: '3.5.2'
 
   implementation group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.14'
   implementation group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.14'
-
-//  compileOnly(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.4.+")
-//  annotationProcessor(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.4.+")
 
   testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
@@ -71,7 +40,6 @@ dependencies {
   testImplementation 'io.rest-assured:rest-assured'
   testImplementation(group: "org.mockito", name: "mockito-junit-jupiter", version: "4.2.+")
 
-//  testImplementation(group: "org.junit.jupiter", name: "junit-jupiter", version: "5.8.+")
 }
 
 test {
