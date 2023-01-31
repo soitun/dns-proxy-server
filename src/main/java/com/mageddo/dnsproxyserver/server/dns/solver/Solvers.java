@@ -1,6 +1,4 @@
-package com.mageddo.dnsproxyserver.dns.server.solver;
-
-import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
+package com.mageddo.dnsproxyserver.server.dns.solver;
 
 import java.util.ArrayList;
 import java.util.Comparator;

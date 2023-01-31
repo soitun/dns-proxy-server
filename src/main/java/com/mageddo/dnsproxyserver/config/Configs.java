@@ -1,7 +1,7 @@
 package com.mageddo.dnsproxyserver.config;
 
-import com.mageddo.dnsproxyserver.dns.server.solver.RemoteSolverConfig;
-import com.mageddo.dnsproxyserver.dns.server.SimpleServer;
+import com.mageddo.dnsproxyserver.server.dns.solver.RemoteSolverConfig;
+import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
 
 public class Configs {
   public static int findDnsServerPort() {

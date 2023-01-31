@@ -1,8 +1,8 @@
-package com.mageddo.dnsproxyserver.dns.server;
+package com.mageddo.dnsproxyserver.server.dns;
 
 import com.mageddo.dnsproxyserver.config.Configs;
-import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
-import com.mageddo.dnsproxyserver.dns.server.solver.Solvers;
+import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
+import com.mageddo.dnsproxyserver.server.dns.solver.Solvers;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 

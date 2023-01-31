@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.dns;
+package com.mageddo.dnsproxyserver.server.dns;
 
 import org.xbill.DNS.Message;
 

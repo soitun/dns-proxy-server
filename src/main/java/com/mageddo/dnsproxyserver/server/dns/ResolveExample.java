@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.dns.server;
+package com.mageddo.dnsproxyserver.server.dns;
 
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.Flags;

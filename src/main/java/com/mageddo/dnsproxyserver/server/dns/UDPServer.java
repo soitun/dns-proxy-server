@@ -1,6 +1,6 @@
-package com.mageddo.dnsproxyserver.dns.server;
+package com.mageddo.dnsproxyserver.server.dns;
 
-import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
+import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
 import com.mageddo.dnsproxyserver.threads.ThreadPool;
 import com.mageddo.dnsproxyserver.utils.Classes;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static com.mageddo.dnsproxyserver.dns.Messages.simplePrint;
+import static com.mageddo.dnsproxyserver.server.dns.Messages.simplePrint;
 
 @Slf4j
 public class UDPServer {

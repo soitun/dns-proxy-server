@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.dns.server;
+package com.mageddo.dnsproxyserver.server.dns;
 
 import com.mageddo.dnsproxyserver.dagger.Factory;
 import lombok.SneakyThrows;

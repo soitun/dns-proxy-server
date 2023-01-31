@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.dns.server.solver;
+package com.mageddo.dnsproxyserver.server.dns.solver;
 
 public class Priority {
   public static final byte ZERO = 1;

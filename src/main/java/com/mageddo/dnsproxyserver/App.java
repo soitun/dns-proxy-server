@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver;
 
-import com.mageddo.dnsproxyserver.dns.server.Main;
+import com.mageddo.dnsproxyserver.server.dns.Main;
 
 public class App {
   public static void main(String[] args) {

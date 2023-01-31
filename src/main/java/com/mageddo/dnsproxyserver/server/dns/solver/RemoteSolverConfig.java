@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.dns.server.solver;
+package com.mageddo.dnsproxyserver.server.dns.solver;
 
 import com.mageddo.dnsproxyserver.utils.Ips;
 import lombok.Data;

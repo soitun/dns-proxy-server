@@ -1,9 +1,9 @@
 package com.mageddo.dnsproxyserver.dagger;
 
 import com.mageddo.dnsproxyserver.config.Configs;
-import com.mageddo.dnsproxyserver.dns.server.solver.DockerSolver;
-import com.mageddo.dnsproxyserver.dns.server.solver.RemoteSolver;
-import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
+import com.mageddo.dnsproxyserver.server.dns.solver.DockerSolver;
+import com.mageddo.dnsproxyserver.server.dns.solver.RemoteSolver;
+import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;

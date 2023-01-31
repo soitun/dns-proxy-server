@@ -1,6 +1,6 @@
-package com.mageddo.dnsproxyserver.dns.server;
+package com.mageddo.dnsproxyserver.server.dns;
 
-import com.mageddo.dnsproxyserver.dns.server.solver.Solver;
+import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
