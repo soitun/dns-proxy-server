@@ -3,8 +3,7 @@
 Binary using Native Image
 ```bash
 $ ./gradlew build -Dquarkus.package.type=native &&\
-  ./build/dns-proxy-server-*-runner
-
+   ./build/dns-proxy-server-*-runner
 ```
 
 # Drafts
