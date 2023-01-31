@@ -10,8 +10,10 @@ import org.xbill.DNS.Message;
 import org.xbill.DNS.Section;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Slf4j
+@Singleton
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class DockerSolver implements Solver {
 

@@ -4,6 +4,7 @@ import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
 import com.mageddo.dnsproxyserver.threads.ThreadPool;
 import com.mageddo.dnsproxyserver.utils.Classes;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Validate;
 import org.xbill.DNS.Message;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class UDPServer {
   }
 
   public void start(int port, InetAddress bindAddress) {
+    Validate.isTrue(!this.solvers.isEmpty(), "At least one solver is required");
     this.pool.submit(() -> this.start0(port, bindAddress));
     log.info("status=starting.., port={}, bindAddress={}", port, bindAddress);
   }
