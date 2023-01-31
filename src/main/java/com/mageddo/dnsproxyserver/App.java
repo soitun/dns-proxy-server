@@ -1,13 +1,17 @@
 package com.mageddo.dnsproxyserver;
 
-import com.mageddo.dnsproxyserver.dagger.Factory;
+import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.annotations.QuarkusMain;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.event.Observes;
+
+@Slf4j
+@QuarkusMain
 public class App {
-  public static void main(String[] args) throws InterruptedException {
-    final var factory = Factory.factory();
-
-    // start dns server
-    factory.dnsServerStarter().start();
+  public static void main(String[] args) {
 
     // start webserver
 
@@ -17,7 +21,11 @@ public class App {
 
     //  install as service
 
-    Thread.currentThread().join();
+    Quarkus.run(args);
 
+  }
+
+  void onStart(@Observes StartupEvent ev, ServerStarter dnsServer) {
+    dnsServer.start();
   }
 }
