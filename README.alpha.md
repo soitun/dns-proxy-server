@@ -19,3 +19,12 @@ docker-compose -f docker-compose-alpha.yml build &&\
 docker-compose -f docker-compose-alpha.yml run -T --rm arm7x86
 ```
 
+Generate json reflect for all project 
+
+```
+$ ./gradlew shadowJar
+
+$ mkdir reflect &&\
+  $JAVA_HOME/bin/java -agentlib:native-image-agent=config-output-dir=./reflect -jar build/libs/dns-proxy-server*all.jar
+```
+
