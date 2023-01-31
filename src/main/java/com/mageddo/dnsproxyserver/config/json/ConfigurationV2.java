@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.config.vo;
+package com.mageddo.dnsproxyserver.config.json;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
