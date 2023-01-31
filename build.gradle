@@ -8,6 +8,7 @@ buildscript {
 plugins {
   id "java"
   id 'org.graalvm.buildtools.native' version '0.9.19'
+  id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 repositories {
@@ -44,8 +45,6 @@ dependencies {
   compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
 
-  compileOnly(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.3.+")
-  annotationProcessor(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.3.+")
 
   implementation 'com.google.dagger:dagger:2.44.+'
   annotationProcessor 'com.google.dagger:dagger-compiler:2.44.+'
@@ -61,7 +60,8 @@ dependencies {
   implementation group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.14'
   implementation group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.14'
 
-//  implementation group: 'com.github.docker-java', name: 'docker-java-transport-zerodep', version: '3.2.14'
+  compileOnly(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.4.+")
+  annotationProcessor(group: "com.mageddo.nativeimage", name: "reflection-config-generator", version: "2.4.+")
 
   testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
@@ -73,5 +73,23 @@ test {
   useJUnitPlatform()
   testLogging {
     events "passed", "skipped", "failed"
+  }
+}
+
+
+def mainClassName = "com.mageddo.dnsproxyserver.App"
+
+jar {
+  manifest {
+    attributes(
+      "Main-Class": mainClassName
+    )
+  }
+}
+
+shadowJar {
+  mergeServiceFiles()
+  transform(com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer) {
+    mergeStrategy = "append"
   }
 }

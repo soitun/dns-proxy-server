@@ -1,14 +1,7 @@
 package com.mageddo.dnsproxyserver;
 
 import com.mageddo.dnsproxyserver.dns.server.Main;
-import nativeimage.Reflection;
 
-@Reflection(
-  scanPackage = "com.github.dockerjava.api.model",
-  constructors = true,
-  publicMethods = true,
-  declaredFields = true
-)
 public class App {
   public static void main(String[] args) {
     System.out.println("Hello World");
