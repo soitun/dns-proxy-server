@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver;
 
-import com.mageddo.dnsproxyserver.config.flags.Flags;
+import com.mageddo.dnsproxyserver.config.entrypoint.Flags;
 import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.StartupEvent;

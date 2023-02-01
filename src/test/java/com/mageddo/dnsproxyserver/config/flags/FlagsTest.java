@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.config.flags;
 
+import com.mageddo.dnsproxyserver.config.entrypoint.Flags;
 import com.mageddo.json.JsonUtils;
 import org.junit.jupiter.api.Test;
 

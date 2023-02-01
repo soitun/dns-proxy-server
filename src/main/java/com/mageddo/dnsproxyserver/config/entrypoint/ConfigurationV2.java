@@ -1,5 +1,6 @@
-package com.mageddo.dnsproxyserver.config.json;
+package com.mageddo.dnsproxyserver.config.entrypoint;
 
+import com.mageddo.dnsproxyserver.config.EntryType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -51,8 +52,4 @@ public class ConfigurationV2 {
     private EntryType type;
   }
 
-  public enum EntryType {
-    A,
-    CNAME
-  }
 }

@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.config.flags;
+package com.mageddo.dnsproxyserver.config.entrypoint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mageddo.dnsproxyserver.utils.ConfigProps;
