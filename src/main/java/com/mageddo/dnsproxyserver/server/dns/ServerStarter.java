@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver.server.dns;
 
-import com.mageddo.dnsproxyserver.config.Configs;
+import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.quarkus.Instances;
 import com.mageddo.dnsproxyserver.server.dns.solver.Solver;
 import com.mageddo.dnsproxyserver.server.dns.solver.Solvers;
@@ -29,8 +29,8 @@ public class ServerStarter {
 
   public ServerStarter start(){
     this.server.start(
-        Configs.findDnsServerPort(),
-        Configs.findDnsServerProtocol(),
+        Config.findDnsServerPort(),
+        Config.findDnsServerProtocol(),
         this.solvers,
         null
     );

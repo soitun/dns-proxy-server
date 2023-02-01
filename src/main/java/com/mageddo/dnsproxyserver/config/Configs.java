@@ -1,119 +1,28 @@
 package com.mageddo.dnsproxyserver.config;
 
-import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
-import com.mageddo.dnsproxyserver.server.dns.solver.RemoteSolverConfig;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
-import org.eclipse.microprofile.config.ConfigProvider;
+import com.mageddo.dnsproxyserver.config.entrypoint.ConfigurationV2;
+import com.mageddo.dnsproxyserver.config.entrypoint.EnvConfig;
+import com.mageddo.dnsproxyserver.config.entrypoint.FlagConfig;
+import com.mageddo.dnsproxyserver.config.entrypoint.JsonConfigs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Builder
-@Value
 public class Configs {
 
-  @NonNull
-  private Integer version;
+  private static Config instance;
 
-  @NonNull
-  private List<DNSServer> remoteDnsServers = new ArrayList<>();
-
-  @NonNull
-  private List<Env> envs = new ArrayList<>();
-
-  @NonNull
-  private String activeEnv;
-
-  @NonNull
-  private Integer webServerPort;
-
-  @NonNull
-  private Integer dnsServerPort;
-
-  @NonNull
-  private Boolean defaultDns;
-
-  @NonNull
-  private String logLevel;
-
-  @NonNull
-  private String logFile;
-
-  @NonNull
-  private Boolean registerContainerNames;
-
-  @NonNull
-  private String hostMachineHostname;
-
-  @NonNull
-  private String domain;
-
-  @NonNull
-  private Boolean dpsNetwork;
-
-  @NonNull
-  private Boolean dpsNetworkAutoConnect;
-
-  public static int findDnsServerPort() {
-    return 8053;
+  public static Config build(FlagConfig flagConfig) {
+    final var jsonConfig = JsonConfigs.loadConfigV2(flagConfig.getConfigPath());
+    return build(flagConfig, EnvConfig.fromEnv(), jsonConfig);
   }
 
-  public static SimpleServer.Protocol findDnsServerProtocol() {
-    return SimpleServer.Protocol.BOTH;
+  public static Config build(FlagConfig flagConfig, EnvConfig envConfig, ConfigurationV2 jsonConfig) {
+    throw new UnsupportedOperationException();
   }
 
-  public static RemoteSolverConfig findRemoverSolverConfig() {
-    return new RemoteSolverConfig()
-      .setIp(new byte[]{8, 8, 8, 8})
-      .setPort((short) 53);
+  public static Config buildAndRegister(FlagConfig flag) {
+    return instance = build(flag);
   }
 
-  public static String findVersion() {
-    return ConfigProvider
-      .getConfig()
-      .getValue("version", String.class)
-      ;
-  }
-
-  @Value
-  @AllArgsConstructor
-  public static class DNSServer {
-    @NonNull
-    private String ip;
-
-    @NonNull
-    private Integer port;
-
-    public static DNSServer of(String ip, int port) {
-      return new DNSServer(ip, port);
-    }
-  }
-
-  @Value
-  public static class Env {
-    private String name;
-    private List<Hostname> hostnames;
-  }
-
-  @Value
-  @Builder
-  public static class Hostname {
-    @NonNull
-    private Long id;
-
-    @NonNull
-    private String hostname;
-
-    private String ip; // hostname ip when type=A
-    private String target; // target hostname when type=CNAME
-
-    @NonNull
-    private Integer ttl;
-
-    @NonNull
-    private EntryType type;
+  public static Config getInstance() {
+    return instance;
   }
 }

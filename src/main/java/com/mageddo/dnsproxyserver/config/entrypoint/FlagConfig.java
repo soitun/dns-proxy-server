@@ -9,12 +9,13 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 
 @Getter
 @NoArgsConstructor
-public class Flags implements Callable<Boolean> {
+public class FlagConfig implements Callable<Boolean> {
 
   @Option(
     names = {"-version", "--version"}, description = "Shows the current version (default false)"
@@ -47,7 +48,8 @@ public class Flags implements Callable<Boolean> {
     description = "The config file path (default conf/config.json)",
     defaultValue = "conf/config.json"
   )
-  private String configPath;
+  private Path configPath;
+
   @Option(
     names = {"-service", "--service"},
     description = """
@@ -135,19 +137,19 @@ public class Flags implements Callable<Boolean> {
   @JsonIgnore
   private CommandLine commandLine;
 
-  public static Flags parse(String[] args) {
+  public static FlagConfig parse(String[] args) {
     return parse(args, null);
   }
 
-  public static Flags parse(String[] args, PrintWriter writer) {
-    final var commandLine = new CommandLine(new Flags());
+  public static FlagConfig parse(String[] args, PrintWriter writer) {
+    final var commandLine = new CommandLine(new FlagConfig());
 
     if (writer != null) {
       commandLine.setOut(writer);
     }
     commandLine.setUsageHelpWidth(120);
 
-    final var flags = (Flags) commandLine.getCommand();
+    final var flags = (FlagConfig) commandLine.getCommand();
     flags.commandLine = commandLine;
     Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
     return flags;

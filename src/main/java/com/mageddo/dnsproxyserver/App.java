@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver;
 
-import com.mageddo.dnsproxyserver.config.entrypoint.Flags;
+import com.mageddo.dnsproxyserver.config.Configs;
+import com.mageddo.dnsproxyserver.config.entrypoint.FlagConfig;
 import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.StartupEvent;
@@ -15,13 +16,7 @@ public class App {
   public static void main(String[] args) {
 
     // configurations
-    final var flags = Flags.parse(args);
-    final var shouldExit = (Boolean) flags.getCommandLine().getExecutionResult();
-    if (shouldExit == null || shouldExit) {
-      flags.getCommandLine().getOut().flush();
-      System.err.printf("%nexiting...%n");
-      System.exit(0);
-    }
+    Configs.buildAndRegister(validateAndReturnProgramFlags(args));
 
     //  setup as default dns
 
@@ -31,6 +26,17 @@ public class App {
     // start dns server
     Quarkus.run(args);
 
+  }
+
+  static FlagConfig validateAndReturnProgramFlags(String[] args) {
+    final var flags = FlagConfig.parse(args);
+    final var shouldExit = (Boolean) flags.getCommandLine().getExecutionResult();
+    if (shouldExit == null || shouldExit) {
+      flags.getCommandLine().getOut().flush();
+      System.err.printf("%nexiting...%n");
+      System.exit(0);
+    }
+    return flags;
   }
 
   void onStart(@Observes StartupEvent ev, ServerStarter dnsServer) {

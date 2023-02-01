@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver.config.flags;
 
-import com.mageddo.dnsproxyserver.config.entrypoint.Flags;
+import com.mageddo.dnsproxyserver.config.entrypoint.FlagConfig;
 import com.mageddo.json.JsonUtils;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import static com.mageddo.utils.TestUtils.readAndSortJson;
 import static com.mageddo.utils.TestUtils.readAsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FlagsTest {
+class FlagConfigTest {
 
   @Test
   void mustParseDefaultConfigs() throws Exception {
@@ -20,7 +20,7 @@ class FlagsTest {
     final var args = new String[]{};
 
     // act
-    final var config = Flags.parse(args);
+    final var config = FlagConfig.parse(args);
 
     // assert
     assertEquals(
@@ -37,7 +37,7 @@ class FlagsTest {
     final var args = new String[]{"--help"};
 
     // act
-    final var config = Flags.parse(args, new PrintWriter(sw));
+    final var config = FlagConfig.parse(args, new PrintWriter(sw));
 
     // assert
     assertEquals(
@@ -55,7 +55,7 @@ class FlagsTest {
     final var args = new String[]{"-version"};
 
     // act
-    final var config = Flags.parse(args, new PrintWriter(sw));
+    final var config = FlagConfig.parse(args, new PrintWriter(sw));
 
     // assert
     assertEquals(
