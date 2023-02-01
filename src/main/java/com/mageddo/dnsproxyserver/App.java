@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver;
 
+import com.mageddo.dnsproxyserver.config.flags.Flags;
 import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.StartupEvent;
@@ -13,14 +14,21 @@ import javax.enterprise.event.Observes;
 public class App {
   public static void main(String[] args) {
 
-    // start webserver
-
     // configurations
+    final var flags = Flags.parse(args);
+    final var shouldExit = (boolean) flags.getCommandLine().getExecutionResult();
+    if (shouldExit) {
+      flags.getCommandLine().getOut().flush();
+      System.err.printf("%nexiting...%n");
+      System.exit(0);
+    }
 
     //  setup as default dns
 
     //  install as service
 
+    // start webserver
+    // start dns server
     Quarkus.run(args);
 
   }
