@@ -1,0 +1,50 @@
+Usage: <main class> [-default-dns] [-dps-network] [-dps-network-auto-connect]
+                    [-help] [-register-container-names]
+                    [-service-publish-web-port] [-version]
+                    [-conf-path=<configPath>] [-domain=<domain>]
+                    [-host-machine-hostname=<hostMachineHostname>]
+                    [-log-file=<logToFile>] [-log-level=<logLevel>]
+                    [-server-port=<serverPort>] [-service=<service>]
+                    [-web-server-port=<webServerPort>]
+      -conf-path, --conf-path=<configPath>
+                            The config file path
+      -default-dns, --default-dns
+                            This DNS server will be the default server for this
+                              machine
+      -domain, --domain=<domain>
+                            Domain utilized to solver containers and services
+                              hostnames
+      -dps-network, --dps-network
+                            Create a bridge network for DPS increasing
+                              compatibility
+      -dps-network-auto-connect, --dps-network-auto-connect
+                            Connect all running and new containers to the DPS
+                              network, this way you will probably not have
+                              resolution issues by acl (implies
+                              dps-network=true)
+      -help, --help         This message
+      -host-machine-hostname, --host-machine-hostname=<hostMachineHostname>
+                            The hostname to get host machine IP
+      -log-file, --log-file=<logToFile>
+                            Log to file instead of console, (true=log to
+                              default log file, /tmp/log.log=log to custom log
+                              location)
+      -log-level, --log-level=<logLevel>
+                            Log Level ERROR, WARNING, INFO, DEBUG
+      -register-container-names, --register-container-names
+                            If must register container name / service name as
+                              host in DNS server
+      -server-port, --server-port=<serverPort>
+                            The DNS server to start into
+      -service, --service=<service>
+                            Setup as service, starting with machine at boot
+                               docker = start as docker service,
+                               normal = start as normal service,
+                               uninstall = uninstall the service from machine
+
+      -service-publish-web-port, --service-publish-web-port
+                            Publish web port when running as service in docker
+                              mode
+      -version, --version   Shows the current version
+      -web-server-port, --web-server-port=<webServerPort>
+                            The web server port

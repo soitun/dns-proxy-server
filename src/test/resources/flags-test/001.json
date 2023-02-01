@@ -1,5 +1,5 @@
 {
-  "version" : null,
+  "version" : false,
   "webServerPort" : 5380,
   "serverPort" : 53,
   "defaultDns" : true,
