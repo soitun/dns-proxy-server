@@ -1,10 +1,12 @@
 package com.mageddo.dnsproxyserver.config.flags;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mageddo.dnsproxyserver.utils.ConfigProps;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import java.io.PrintWriter;
 import java.util.concurrent.Callable;
@@ -14,122 +16,139 @@ import java.util.concurrent.Callable;
 @NoArgsConstructor
 public class Flags implements Callable<Boolean> {
 
-  @CommandLine.Option(names = {"-version", "--version"}, description = "Shows the current version")
+  @Option(
+      names = {"-version", "--version"}, description = "Shows the current version (default false)"
+  )
   private boolean version;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-web-server-port", "--web-server-port"},
-      description = "The web server port",
+      description = "The web server port (default 5380)",
       defaultValue = "5380"
   )
   private Integer webServerPort;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-server-port", "--server-port"},
-      description = "The DNS server to start into",
+      description = "The DNS server to start into (default 53)",
       defaultValue = "53"
   )
   private Integer serverPort;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-default-dns", "--default-dns"},
-      description = "This DNS server will be the default server for this machine",
+      description = "This DNS server will be the default server for this machine (default true)",
       defaultValue = "true"
   )
   private Boolean defaultDns;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-conf-path", "--conf-path"},
-      description = "The config file path",
+      description = "The config file path (default conf/config.json)",
       defaultValue = "conf/config.json"
   )
   private String configPath;
-  @CommandLine.Option(
+  @Option(
       names = {"-service", "--service"},
       description = """
           Setup as service, starting with machine at boot
              docker = start as docker service,
              normal = start as normal service,
              uninstall = uninstall the service from machine
+          (default <empty>)
           """
   )
   private String service;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-service-publish-web-port", "--service-publish-web-port"},
-      description = "Publish web port when running as service in docker mode",
+      description = "Publish web port when running as service in docker mode (default true)",
       defaultValue = "true"
   )
   private Boolean publishServicePort;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-log-file", "--log-file"},
-      description = "Log to file instead of console, (true=log to default log file, /tmp/log.log=log to custom log location)",
+      description = """
+          Log to file instead of console,
+          (true=log to default log file, /tmp/log.log=log to custom log location)
+          (default console)
+          """,
       defaultValue = "console"
   )
   private String logToFile;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-log-level", "--log-level"},
-      description = "Log Level ERROR, WARNING, INFO, DEBUG",
+      description = "Log Level ERROR, WARNING, INFO, DEBUG (default INFO)",
       defaultValue = "INFO"
   )
   private String logLevel;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-register-container-names", "--register-container-names"},
-      description = "If must register container name / service name as host in DNS server",
+      description = "If must register container name / service name as host in DNS server (default false)",
       defaultValue = "false"
   )
   private Boolean registerContainerNames;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-host-machine-hostname", "--host-machine-hostname"},
-      description = "The hostname to get host machine IP",
+      description = "The hostname to get host machine IP (default host.docker)",
       defaultValue = "host.docker"
   )
   private String hostMachineHostname;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-domain", "--domain"},
-      description = "Domain utilized to solver containers and services hostnames",
+      description = "Domain utilized to solver containers and services hostnames (default docker)",
       defaultValue = "docker"
   )
   private String domain;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-dps-network", "--dps-network"},
-      description = "Create a bridge network for DPS increasing compatibility",
+      description = "Create a bridge network for DPS increasing compatibility (default false)",
       defaultValue = "false"
   )
   private Boolean dpsNetwork;
 
 
-  @CommandLine.Option(
+  @Option(
       names = {"-dps-network-auto-connect", "--dps-network-auto-connect"},
-      description = "Connect all running and new containers to the DPS network, this way you will probably not have resolution issues by acl (implies dps-network=true)",
+      description = """
+          Connect all running and new containers to the DPS network,
+          this way you will probably not have resolution issues by acl (implies dps-network=true)
+          (default false)
+           """,
       defaultValue = "false"
   )
   private Boolean dpsNetworkAutoConnect;
 
-  @CommandLine.Option(
+  @Option(
       names = {"-help", "--help"},
-      description = "This message",
+      description = "This message (default false)",
       defaultValue = "false",
       usageHelp = true
   )
   private Boolean help;
 
+  @JsonIgnore
+  private CommandLine commandLine;
+
   public static Flags parse(String[] args) {
     return parse(args, null);
   }
+
   public static Flags parse(String[] args, PrintWriter writer) {
     final var commandLine = new CommandLine(new Flags());
     if (writer != null) {
       commandLine.setOut(writer);
     }
-    Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
+    commandLine.setUsageHelpWidth(120);
     final var flags = (Flags) commandLine.getCommand();
+    Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
+    flags.commandLine = commandLine;
     return flags;
   }
 
@@ -139,7 +158,7 @@ public class Flags implements Callable<Boolean> {
   @Override
   public Boolean call() {
     if (this.version) {
-      System.out.println(ConfigProps.getVersion());
+      this.commandLine.getOut().write(ConfigProps.getVersion());
       return true;
     }
     return false;
