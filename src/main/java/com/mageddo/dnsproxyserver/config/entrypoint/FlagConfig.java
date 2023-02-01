@@ -152,6 +152,14 @@ public class FlagConfig implements Callable<Boolean> {
     final var flags = (FlagConfig) commandLine.getCommand();
     flags.commandLine = commandLine;
     Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
+
+    final var shouldExit = (Boolean) flags.getCommandLine().getExecutionResult();
+    if (shouldExit == null || shouldExit) {
+      flags.getCommandLine().getOut().flush();
+      commandLine.getErr().write(String.format("%nexiting...%n"));
+      System.exit(0);
+    }
+
     return flags;
   }
 

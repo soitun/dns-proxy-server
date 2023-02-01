@@ -16,7 +16,7 @@ public class App {
   public static void main(String[] args) {
 
     // configurations
-    Configs.buildAndRegister(validateAndReturnProgramFlags(args));
+    Configs.buildAndRegister(FlagConfig.parse(args));
 
     //  setup as default dns
 
@@ -26,17 +26,6 @@ public class App {
     // start dns server
     Quarkus.run(args);
 
-  }
-
-  static FlagConfig validateAndReturnProgramFlags(String[] args) {
-    final var flags = FlagConfig.parse(args);
-    final var shouldExit = (Boolean) flags.getCommandLine().getExecutionResult();
-    if (shouldExit == null || shouldExit) {
-      flags.getCommandLine().getOut().flush();
-      System.err.printf("%nexiting...%n");
-      System.exit(0);
-    }
-    return flags;
   }
 
   void onStart(@Observes StartupEvent ev, ServerStarter dnsServer) {
