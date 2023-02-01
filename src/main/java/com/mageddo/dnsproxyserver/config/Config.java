@@ -11,8 +11,15 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
+/**
+ * Domain object which owns the configs.
+ *
+ * @see com.mageddo.dnsproxyserver.config.entrypoint.ConfigJson
+ * @see com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag
+ * @see com.mageddo.dnsproxyserver.config.entrypoint.ConfigEnv
+ */
 @Value
+@Builder
 public class Config {
 
   @NonNull
