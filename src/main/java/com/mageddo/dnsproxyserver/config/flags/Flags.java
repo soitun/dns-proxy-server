@@ -8,7 +8,7 @@ import picocli.CommandLine;
 
 @Getter
 @NoArgsConstructor
-public class Flags {
+public class Flags implements Runnable {
 
   @CommandLine.Option(names = {"-version", "--version"}, description = "Shows the current version")
   private Integer version;
@@ -121,4 +121,8 @@ public class Flags {
     return commandLine.getCommand();
   }
 
+  @Override
+  public void run() {
+    // nop
+  }
 }

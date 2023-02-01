@@ -1,0 +1,17 @@
+{
+  "version" : null,
+  "webServerPort" : 5380,
+  "serverPort" : 53,
+  "defaultDns" : true,
+  "configPath" : "conf/config.json",
+  "service" : null,
+  "publishServicePort" : true,
+  "logToFile" : "console",
+  "logLevel" : "INFO",
+  "registerContainerNames" : false,
+  "hostMachineHostname" : "host.docker",
+  "domain" : "docker",
+  "dpsNetwork" : false,
+  "dpsNetworkAutoConnect" : false,
+  "help" : false
+}
