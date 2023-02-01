@@ -1,7 +1,6 @@
 package com.mageddo.dnsproxyserver;
 
 import com.mageddo.dnsproxyserver.config.Configs;
-import com.mageddo.dnsproxyserver.config.entrypoint.FlagConfig;
 import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.StartupEvent;
@@ -16,11 +15,12 @@ public class App {
   public static void main(String[] args) {
 
     // configurations
-    Configs.buildAndRegister(FlagConfig.parse(args));
+    // fixme fazer um teste baseado em args validando cada propriedade depois de mergear os 3 tipos de config
+    Configs.buildAndRegister(args);
 
-    //  setup as default dns
+    // setup as default dns
 
-    //  install as service
+    // install as service
 
     // start webserver
     // start dns server

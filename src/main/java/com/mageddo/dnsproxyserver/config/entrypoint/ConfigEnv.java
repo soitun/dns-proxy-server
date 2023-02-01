@@ -1,7 +1,7 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
-public class EnvConfig {
-  public static EnvConfig fromEnv(){
+public class ConfigEnv {
+  public static ConfigEnv fromEnv(){
     throw new UnsupportedOperationException();
   }
 }

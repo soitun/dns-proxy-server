@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 
 @Getter
 @NoArgsConstructor
-public class FlagConfig implements Callable<Boolean> {
+public class ConfigFlag implements Callable<Boolean> {
 
   @Option(
     names = {"-version", "--version"}, description = "Shows the current version (default false)"
@@ -137,19 +137,19 @@ public class FlagConfig implements Callable<Boolean> {
   @JsonIgnore
   private CommandLine commandLine;
 
-  public static FlagConfig parse(String[] args) {
+  public static ConfigFlag parse(String[] args) {
     return parse(args, null);
   }
 
-  public static FlagConfig parse(String[] args, PrintWriter writer) {
-    final var commandLine = new CommandLine(new FlagConfig());
+  public static ConfigFlag parse(String[] args, PrintWriter writer) {
+    final var commandLine = new CommandLine(new ConfigFlag());
 
     if (writer != null) {
       commandLine.setOut(writer);
     }
     commandLine.setUsageHelpWidth(120);
 
-    final var flags = (FlagConfig) commandLine.getCommand();
+    final var flags = (ConfigFlag) commandLine.getCommand();
     flags.commandLine = commandLine;
     Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
 

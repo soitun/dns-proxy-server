@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
-public class ConfigurationV2 {
+public class ConfigJsonV2 {
   private int version = 2;
   private List<String> remoteDnsServers; // dns servers formatted like 192.168.0.1:53
 
