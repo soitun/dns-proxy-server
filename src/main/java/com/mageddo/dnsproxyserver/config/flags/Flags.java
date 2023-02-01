@@ -142,13 +142,15 @@ public class Flags implements Callable<Boolean> {
 
   public static Flags parse(String[] args, PrintWriter writer) {
     final var commandLine = new CommandLine(new Flags());
+
     if (writer != null) {
       commandLine.setOut(writer);
     }
     commandLine.setUsageHelpWidth(120);
+
     final var flags = (Flags) commandLine.getCommand();
-    Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
     flags.commandLine = commandLine;
+    Validate.isTrue(commandLine.execute(args) == 0, "Execution Failed");
     return flags;
   }
 

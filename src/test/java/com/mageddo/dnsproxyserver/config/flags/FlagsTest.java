@@ -45,4 +45,22 @@ class FlagsTest {
     );
 
   }
+
+  @Test
+  void mustPrintVersion() throws Exception {
+
+    // arrange
+    final var sw = new StringWriter();
+    final var args = new String[]{"-version"};
+
+    // act
+    final var config = Flags.parse(args, new PrintWriter(sw));
+
+    // assert
+    assertEquals(
+       "${version}",
+        sw.toString()
+    );
+
+  }
 }

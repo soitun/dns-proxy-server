@@ -55,3 +55,11 @@ compileJava {
 compileTestJava {
   options.encoding = 'UTF-8'
 }
+
+processResources {
+  filesMatching("**/application.properties") {
+    expand version: java.util.Optional
+      .ofNullable(System.getenv("BUILD_NUMBER"))
+      .orElse(String.valueOf(project.version))
+  }
+}
