@@ -16,8 +16,8 @@ public class App {
 
     // configurations
     final var flags = Flags.parse(args);
-    final var shouldExit = (boolean) flags.getCommandLine().getExecutionResult();
-    if (shouldExit) {
+    final var shouldExit = (Boolean) flags.getCommandLine().getExecutionResult();
+    if (shouldExit == null || shouldExit) {
       flags.getCommandLine().getOut().flush();
       System.err.printf("%nexiting...%n");
       System.exit(0);
