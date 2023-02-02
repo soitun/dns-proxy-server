@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static com.mageddo.utils.TestUtils.readAndSortJson;
-import static com.mageddo.utils.TestUtils.readAsString;
+import static com.mageddo.utils.TestUtils.readString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConfigFlagTest {
@@ -41,7 +41,7 @@ class ConfigFlagTest {
 
     // assert
     assertEquals(
-        readAsString("/flags-test/002.txt"),
+        readString("/flags-test/002.txt"),
         sw.toString()
     );
 

@@ -12,6 +12,7 @@ import org.mockito.internal.util.MockUtil;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,14 +25,14 @@ public class TestUtils {
       .enable(SerializationFeature.INDENT_OUTPUT);
 
   @SneakyThrows
-  public static String readAsString(String path) {
+  public static String readString(String path) {
     final InputStream resource = TestUtils.class.getResourceAsStream(path);
     assertNotNull(resource, "file not found: " + path);
     return IOUtils.toString(resource, "UTF-8");
   }
   @SneakyThrows
   public static String readAndSortJson(String path) {
-    return sortJson(readAsString(path));
+    return sortJson(readString(path));
   }
 
   @SneakyThrows
@@ -74,4 +75,8 @@ public class TestUtils {
     }
   }
 
+  @SneakyThrows
+  public static String readString(Path path) {
+    return Files.readString(path);
+  }
 }

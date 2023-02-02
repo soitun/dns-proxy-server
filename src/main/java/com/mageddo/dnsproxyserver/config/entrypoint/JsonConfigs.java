@@ -42,7 +42,7 @@ public class JsonConfigs {
       .add(new ConfigJsonV2.Env().setName(Config.Env.DEFAULT_ENV));
 
     JsonUtils
-      .instance()
+      .prettyInstance()
       .writeValue(configPath.toFile(), config);
   }
 }
