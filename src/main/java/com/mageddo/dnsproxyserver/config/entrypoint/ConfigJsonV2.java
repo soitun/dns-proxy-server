@@ -1,9 +1,11 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
+import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.EntryType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -11,10 +13,12 @@ import java.util.List;
 public class ConfigJsonV2 implements ConfigJson {
 
   private int version = 2;
-  private List<String> remoteDnsServers; // dns servers formatted like 192.168.0.1:53
 
-  private String activeEnv;
-  private List<Env> envs;
+  private String activeEnv = Config.Env.DEFAULT_ENV;
+
+  private List<String> remoteDnsServers = new ArrayList<>(); // dns servers formatted like 192.168.0.1:53
+
+  private List<Env> envs = new ArrayList<>();
 
   private Integer webServerPort;
 

@@ -104,6 +104,9 @@ public class Config {
 
   @Value
   public static class Env {
+
+    public static final String DEFAULT_ENV = "";
+
     private String name;
     private List<Hostname> hostnames;
   }
