@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.utils;
+package com.mageddo.dnsproxyserver.config.entrypoint;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

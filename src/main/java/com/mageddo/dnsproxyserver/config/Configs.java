@@ -3,7 +3,10 @@ package com.mageddo.dnsproxyserver.config;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigEnv;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigJson;
+import com.mageddo.dnsproxyserver.config.entrypoint.ConfigProps;
 import com.mageddo.dnsproxyserver.config.entrypoint.JsonConfigs;
+
+import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring;
 
 public class Configs {
 
@@ -14,8 +17,31 @@ public class Configs {
     return build(configFlag, ConfigEnv.fromEnv(), jsonConfig);
   }
 
-  public static Config build(ConfigFlag configFlag, ConfigEnv configEnv, ConfigJson jsonConfig) {
-    throw new UnsupportedOperationException();
+  public static Config build(ConfigFlag flag, ConfigEnv env, ConfigJson json) {
+    return Config.builder()
+      .version(ConfigProps.getVersion())
+      .activeEnv(json.getActiveEnv())
+      .webServerPort(firstNonNullRequiring(json.getWebServerPort(), flag.getWebServerPort()))
+      .dnsServerPort(firstNonNullRequiring(json.getDnsServerPort(), flag.getDnsServerPort()))
+      .defaultDns(firstNonNullRequiring(json.getDefaultDns(), flag.getDefaultDns()))
+      .logLevel(firstNonNullRequiring(env.getLogLevel(), json.getLogLevel(), flag.getLogLevel()))
+      .logFile(firstNonNullRequiring(env.getLogFile(), json.getLogFile(), flag.getLogToFile()))
+      .registerContainerNames(firstNonNullRequiring(
+        env.getRegisterContainerNames(), json.getRegisterContainerNames(), flag.getRegisterContainerNames()
+      ))
+      .hostMachineHostname(firstNonNullRequiring(
+        env.getHostMachineHostname(), json.getHostMachineHostname(), flag.getHostMachineHostname()
+      ))
+      .domain(firstNonNullRequiring(
+        env.getDomain(), json.getDomain(), flag.getDomain()
+      ))
+      .dpsNetwork(firstNonNullRequiring(
+        env.getDpsNetwork(), json.getDpsNetwork(), flag.getDpsNetwork()
+      ))
+      .dpsNetwork(firstNonNullRequiring(
+        env.getDpsNetworkAutoConnect(), json.getDpsNetworkAutoConnect(), flag.getDpsNetworkAutoConnect()
+      ))
+      .build();
   }
 
   public static Config buildAndRegister(String[] args) {
@@ -25,6 +51,7 @@ public class Configs {
   public static Config buildAndRegister(ConfigFlag flag) {
     return instance = build(flag);
   }
+
   public static Config getInstance() {
     return instance;
   }

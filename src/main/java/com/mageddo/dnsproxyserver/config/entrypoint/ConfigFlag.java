@@ -1,7 +1,6 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mageddo.dnsproxyserver.utils.ConfigProps;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
@@ -34,7 +33,7 @@ public class ConfigFlag implements Callable<Boolean> {
     description = "The DNS server to start into (default 53)",
     defaultValue = "53"
   )
-  private Integer serverPort;
+  private Integer dnsServerPort;
 
   @Option(
     names = {"-default-dns", "--default-dns"},
@@ -78,7 +77,7 @@ public class ConfigFlag implements Callable<Boolean> {
       """,
     defaultValue = "console"
   )
-  private String logToFile;
+  private Path logToFile;
 
   @Option(
     names = {"-log-level", "--log-level"},

@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.Value;
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -23,13 +23,17 @@ import java.util.List;
 public class Config {
 
   @NonNull
-  private Integer version;
+  private String version;
 
-  @NonNull
-  private List<DNSServer> remoteDnsServers = new ArrayList<>();
-
-  @NonNull
-  private List<Env> envs = new ArrayList<>();
+  // fixme isso nao precisa estar aqui,
+  //  soh precisa ficar no json para ser respondido quando o solver da base local perguntar
+//  @NonNull
+//  @Builder.Default
+//  private List<DNSServer> remoteDnsServers = new ArrayList<>();
+//
+//  @NonNull
+//  @Builder.Default
+//  private List<Env> envs = new ArrayList<>();
 
   @NonNull
   private String activeEnv;
@@ -47,7 +51,7 @@ public class Config {
   private String logLevel;
 
   @NonNull
-  private String logFile;
+  private Path logFile;
 
   @NonNull
   private Boolean registerContainerNames;
