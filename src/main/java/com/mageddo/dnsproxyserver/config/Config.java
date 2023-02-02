@@ -8,7 +8,6 @@ import lombok.NonNull;
 import lombok.Value;
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -51,7 +50,7 @@ public class Config {
   private String logLevel;
 
   @NonNull
-  private Path logFile;
+  private String logFile;
 
   @NonNull
   private Boolean registerContainerNames;

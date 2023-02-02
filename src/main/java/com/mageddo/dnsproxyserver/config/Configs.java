@@ -5,7 +5,10 @@ import com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigJson;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigProps;
 import com.mageddo.dnsproxyserver.config.entrypoint.JsonConfigs;
+import com.mageddo.dnsproxyserver.utils.Numbers;
+import org.apache.commons.lang3.StringUtils;
 
+import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonBlankRequiring;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring;
 
 public class Configs {
@@ -21,11 +24,11 @@ public class Configs {
     return Config.builder()
       .version(ConfigProps.getVersion())
       .activeEnv(json.getActiveEnv())
-      .webServerPort(firstNonNullRequiring(json.getWebServerPort(), flag.getWebServerPort()))
-      .dnsServerPort(firstNonNullRequiring(json.getDnsServerPort(), flag.getDnsServerPort()))
+      .webServerPort(Numbers.positiveOrDefault(json.getWebServerPort(), flag.getWebServerPort()))
+      .dnsServerPort(Numbers.positiveOrDefault(json.getDnsServerPort(), flag.getDnsServerPort()))
       .defaultDns(firstNonNullRequiring(json.getDefaultDns(), flag.getDefaultDns()))
       .logLevel(firstNonNullRequiring(env.getLogLevel(), json.getLogLevel(), flag.getLogLevel()))
-      .logFile(firstNonNullRequiring(env.getLogFile(), json.getLogFile(), flag.getLogToFile()))
+      .logFile(parseLogFile(firstNonBlankRequiring(env.getLogFile(), json.getLogFile(), flag.getLogToFile())))
       .registerContainerNames(firstNonNullRequiring(
         env.getRegisterContainerNames(), json.getRegisterContainerNames(), flag.getRegisterContainerNames()
       ))
@@ -38,11 +41,20 @@ public class Configs {
       .dpsNetwork(firstNonNullRequiring(
         env.getDpsNetwork(), json.getDpsNetwork(), flag.getDpsNetwork()
       ))
-      .dpsNetwork(firstNonNullRequiring(
+      .dpsNetworkAutoConnect(firstNonNullRequiring(
         env.getDpsNetworkAutoConnect(), json.getDpsNetworkAutoConnect(), flag.getDpsNetworkAutoConnect()
       ))
       .build();
   }
+
+  static String parseLogFile(String v) {
+      return switch (StringUtils.lowerCase(v)) {
+        case "true" -> "/var/log/dns-proxy-server.log";
+        case "false" -> null;
+//        case "console":1
+        default -> v;
+      };
+ }
 
   public static Config buildAndRegister(String[] args) {
     return buildAndRegister(ConfigFlag.parse(args));

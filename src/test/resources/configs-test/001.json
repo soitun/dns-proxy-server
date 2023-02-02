@@ -1,0 +1,14 @@
+{
+  "activeEnv" : "",
+  "defaultDns" : true,
+  "dnsServerPort" : 53,
+  "domain" : "",
+  "dpsNetwork" : false,
+  "dpsNetworkAutoConnect" : false,
+  "hostMachineHostname" : "",
+  "logFile" : "console",
+  "logLevel" : "",
+  "registerContainerNames" : false,
+  "version" : "${version}",
+  "webServerPort" : 5380
+}

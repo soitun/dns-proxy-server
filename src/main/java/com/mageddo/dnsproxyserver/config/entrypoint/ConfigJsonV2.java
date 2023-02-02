@@ -16,12 +16,14 @@ public class ConfigJsonV2 implements ConfigJson {
   private String activeEnv;
   private List<Env> envs;
 
-  private int webServerPort;
-  private int dnsServerPort;
+  private Integer webServerPort;
+
+  private Integer dnsServerPort;
 
   private Boolean defaultDns;
 
   private String logLevel;
+
   private String logFile;
 
   private Boolean registerContainerNames;
@@ -30,9 +32,9 @@ public class ConfigJsonV2 implements ConfigJson {
 
   private String domain;
 
-  private boolean dpsNetwork;
+  private Boolean dpsNetwork;
 
-  private boolean dpsNetworkAutoConnect;
+  private Boolean dpsNetworkAutoConnect;
 
   @Data
   @Accessors(chain = true)

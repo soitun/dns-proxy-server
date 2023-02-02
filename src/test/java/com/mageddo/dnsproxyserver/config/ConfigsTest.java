@@ -2,6 +2,10 @@ package com.mageddo.dnsproxyserver.config;
 
 import org.junit.jupiter.api.Test;
 
+import static com.mageddo.utils.TestUtils.readAndSortJson;
+import static com.mageddo.utils.TestUtils.sortJson;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ConfigsTest {
 
   @Test
@@ -11,9 +15,10 @@ class ConfigsTest {
     final var args = new String[]{};
 
     // act
-    Configs.buildAndRegister(args);
+    final var config = Configs.buildAndRegister(args);
 
     // assert
+    assertEquals(readAndSortJson("/configs-test/001.json"), sortJson(config));
   }
 
 }

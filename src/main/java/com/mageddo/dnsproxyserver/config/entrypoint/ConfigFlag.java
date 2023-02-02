@@ -77,7 +77,7 @@ public class ConfigFlag implements Callable<Boolean> {
       """,
     defaultValue = "console"
   )
-  private Path logToFile;
+  private String logToFile;
 
   @Option(
     names = {"-log-level", "--log-level"},

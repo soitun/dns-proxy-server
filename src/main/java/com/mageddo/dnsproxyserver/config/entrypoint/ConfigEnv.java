@@ -31,7 +31,7 @@ public class ConfigEnv {
 
   private Path currentPath;
   private Path resolvConfPath;
-  private Path logFile;
+  private String logFile;
   private String logLevel;
   private Boolean registerContainerNames;
   private String hostMachineHostname;
@@ -54,15 +54,11 @@ public class ConfigEnv {
       .build();
   }
 
-  static Path findLogFilePath() {
-    final var logFile = StringUtils.lowerCase(System.getenv(MG_LOG_FILE));
+  static String findLogFilePath() {
+    final var logFile = System.getenv(MG_LOG_FILE);
     if (StringUtils.isBlank(logFile)) {
       return null;
     }
-    return switch (logFile) {
-      case "true" -> Paths.get("/var/log/dns-proxy-server.log");
-      case "false" -> null;
-      default -> Paths.get(logFile);
-    };
+    return logFile;
   }
 }

@@ -1,7 +1,5 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
-import java.nio.file.Path;
-
 public interface ConfigJson {
 
   String getActiveEnv();
@@ -14,7 +12,7 @@ public interface ConfigJson {
 
   String getLogLevel();
 
-  Path getLogFile();
+  String getLogFile();
 
   Boolean getRegisterContainerNames();
 
