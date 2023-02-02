@@ -3,6 +3,9 @@ package com.mageddo.utils;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mageddo.json.JsonUtils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
@@ -20,9 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @UtilityClass
 public class TestUtils {
-  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().enable(
-          MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-      .enable(SerializationFeature.INDENT_OUTPUT);
+
+  public static final ObjectMapper objectMapper = JsonMapper.builder()
+    .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+    .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+    .enable(SerializationFeature.INDENT_OUTPUT)
+    .build();
 
   @SneakyThrows
   public static String readString(String path) {
@@ -30,19 +36,43 @@ public class TestUtils {
     assertNotNull(resource, "file not found: " + path);
     return IOUtils.toString(resource, "UTF-8");
   }
+
   @SneakyThrows
   public static String readAndSortJson(String path) {
     return sortJson(readString(path));
   }
 
+  public static String readAndSortJsonExcluding(Object o, String... excludingFields) {
+    return sortJsonExcluding(JsonUtils.writeValueAsString(o), excludingFields);
+  }
+
   @SneakyThrows
-  public static String sortJson(String json) {
-    return OBJECT_MAPPER.writeValueAsString(OBJECT_MAPPER.readTree(json));
+  public static String readAndSortJsonExcluding(String path, String... excludingFields) {
+    return sortJsonExcluding(readString(path), excludingFields);
   }
 
   @SneakyThrows
   public static String sortJson(Object o) {
-    return sortJson(OBJECT_MAPPER.writeValueAsString(o));
+    return sortJson(objectMapper.writeValueAsString(o));
+  }
+
+  @SneakyThrows
+  public static String sortJson(String json) {
+    return objectMapper.writeValueAsString(objectMapper.treeToValue(objectMapper.readTree(json), Object.class));
+  }
+
+  @SneakyThrows
+  public static String sortJsonExcluding(Object o, String ... excludingFields) {
+    return sortJsonExcluding(JsonUtils.writeValueAsString(o), excludingFields);
+  }
+
+  @SneakyThrows
+  public static String sortJsonExcluding(String json, String ... excludingFields) {
+    final var tree = (ObjectNode) JsonUtils.readTree(json);
+    for (String field : excludingFields) {
+      tree.remove(field);
+    }
+    return objectMapper.writeValueAsString(objectMapper.treeToValue(tree, Object.class));
   }
 
   @SneakyThrows
@@ -53,8 +83,8 @@ public class TestUtils {
   @SneakyThrows
   public static Path readResource(String path) {
     final var f = TestUtils.class
-        .getResource(path)
-        .getFile();
+      .getResource(path)
+      .getFile();
     return Paths.get(f);
   }
 

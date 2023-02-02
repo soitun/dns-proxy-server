@@ -3,7 +3,7 @@
 Binary using Native Image
 ```bash
 $ ./gradlew build -Dquarkus.package.type=native &&\
-   ./build/dns-proxy-server-*-runner
+   ./build/dns-proxy-server-*-runner --server-port 8053
 ```
 
 # Drafts
@@ -30,4 +30,10 @@ $ mkdir reflect &&\
 
  /home/typer/Downloads/dns-proxy-server-linux-amd64-2.19.5/dns-proxy-server -default-dns=false -server-port=5481 --conf-path /tmp/xpto.json
 
+```
+
+
+```
+nslookup -po=8053 google.com 127.0.0.1
+-Djava.net.preferIPv4Stack=true
 ```
