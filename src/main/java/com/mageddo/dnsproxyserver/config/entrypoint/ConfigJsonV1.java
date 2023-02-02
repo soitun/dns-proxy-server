@@ -1,38 +1,25 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
+import lombok.Data;
+
+@Data
 public class ConfigJsonV1 implements ConfigJson {
-  @Override
-  public String getActiveEnv() {
-    return null;
-  }
 
-  @Override
-  public Integer getWebServerPort() {
-    return null;
-  }
+  private String activeEnv;
 
-  @Override
-  public Integer getDnsServerPort() {
-    return null;
-  }
+  private Integer webServerPort;
+
+  private Integer dnsServerPort;
+
+  private String logLevel;
+
+  private String logFile;
+
+  private Boolean registerContainerNames;
+
 
   @Override
   public Boolean getDefaultDns() {
-    return null;
-  }
-
-  @Override
-  public String getLogLevel() {
-    return null;
-  }
-
-  @Override
-  public String getLogFile() {
-    return null;
-  }
-
-  @Override
-  public Boolean getRegisterContainerNames() {
     return null;
   }
 

@@ -1,0 +1,13 @@
+{
+  "activeEnv" : "",
+  "defaultDns" : null,
+  "dnsServerPort" : 8980,
+  "domain" : null,
+  "dpsNetwork" : null,
+  "dpsNetworkAutoConnect" : null,
+  "hostMachineHostname" : null,
+  "logFile" : "console",
+  "logLevel" : "DEBUG",
+  "registerContainerNames" : false,
+  "webServerPort" : 0
+}
