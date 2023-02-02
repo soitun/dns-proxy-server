@@ -1,0 +1,41 @@
+{
+  "remoteDnsServers": [
+    [
+      8,
+      8,
+      8,
+      8
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ]
+  ],
+  "envs": [
+    {
+      "name": "",
+      "hostnames": [
+        {
+          "id": 1,
+          "hostname": "github.com",
+          "ip": [
+            192,
+            168,
+            0,
+            1
+          ],
+          "ttl": 255
+        }
+      ]
+    }
+  ],
+  "activeEnv": "",
+  "lastId": 1,
+  "webServerPort": 0,
+  "dnsServerPort": 8980,
+  "logLevel": "DEBUG",
+  "logFile": "console",
+  "registerContainerNames": false
+}

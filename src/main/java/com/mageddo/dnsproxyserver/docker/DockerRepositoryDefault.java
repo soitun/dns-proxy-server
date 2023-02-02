@@ -56,6 +56,16 @@ public class DockerRepositoryDefault implements DockerRepository {
         return true;
       }
       return findHostnameFromEnv(it.getConfig().getEnv()).contains(host);
+
+      // todo find hostname by container name or service name Config.registerContainerNames
+      //      usar o Config.domain como dominio para o nome do service ou do container.
+
+      // 	if conf.ShouldRegisterContainerNames() {
+      //		hostnames = append(hostnames, getHostnameFromContainerName(inspect))
+      //		if hostnameFromServiceName, err := getHostnameFromServiceName(inspect); err == nil {
+      //			hostnames = append(hostnames, hostnameFromServiceName)
+      //		}
+      //	}
     };
   }
 }
