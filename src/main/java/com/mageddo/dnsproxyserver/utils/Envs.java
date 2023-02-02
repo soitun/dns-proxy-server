@@ -33,6 +33,9 @@ public class Envs {
 
   public static Boolean getBooleanOrNull(String env) {
     final var v = StringUtils.trimToEmpty(System.getenv(env));
+    if(StringUtils.isBlank(v)){
+      return null;
+    }
     return Objects.equals(v, "1");
   }
 }

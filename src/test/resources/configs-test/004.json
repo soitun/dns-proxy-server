@@ -1,0 +1,14 @@
+{
+  "activeEnv" : "MARROI",
+  "defaultDns" : false,
+  "dnsServerPort" : 5391,
+  "domain" : "acme",
+  "dpsNetwork" : true,
+  "dpsNetworkAutoConnect" : true,
+  "hostMachineHostname" : "batata.com",
+  "logFile" : "/var/log/dns-proxy-server.log",
+  "logLevel" : "DEBUG",
+  "registerContainerNames" : true,
+  "version" : "${version}",
+  "webServerPort" : 9393
+}

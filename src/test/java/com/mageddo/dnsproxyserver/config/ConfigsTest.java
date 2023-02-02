@@ -1,5 +1,7 @@
 package com.mageddo.dnsproxyserver.config;
 
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -7,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.mageddo.utils.TestUtils.readAndSortJson;
+import static com.mageddo.utils.TestUtils.readAsStream;
 import static com.mageddo.utils.TestUtils.readString;
 import static com.mageddo.utils.TestUtils.sortJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +36,30 @@ class ConfigsTest {
 
     assertEquals(expectedJsonConfig, sortJson(config));
     assertEquals(readString("/configs-test/002.json"), readString(tmpConfigFile));
+  }
+
+
+  @Test
+  @SneakyThrows
+  void mustRespectStoredConfig(@TempDir Path tmpDir) {
+
+    // arrange
+    final var jsonConfigFile = "/configs-test/003.json";
+    final var tmpConfigFile = tmpDir.resolve("tmpfile.json");
+
+    try (var out = Files.newOutputStream(tmpConfigFile)) {
+      IOUtils.copy(readAsStream(jsonConfigFile), out);
+    }
+    assertTrue(Files.exists(tmpConfigFile));
+
+    final var args = new String[]{"--conf-path", tmpConfigFile.toString()};
+
+    // act
+    final var config = Configs.buildAndRegister(args);
+
+    // assert
+    final var expectedJsonConfig = readAndSortJson("/configs-test/004.json");
+    assertEquals(expectedJsonConfig, sortJson(config));
   }
 
 }
