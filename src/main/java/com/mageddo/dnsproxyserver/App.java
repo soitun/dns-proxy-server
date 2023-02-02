@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.event.Observes;
 
+import static com.mageddo.dnsproxyserver.quarkus.Quarkus.isTest;
+
 @Slf4j
 @QuarkusMain
 public class App {
@@ -38,6 +40,11 @@ public class App {
   }
 
   void onStart(@Observes StartupEvent ev, ServerStarter dnsServer) {
-    dnsServer.start();
+    if(isTest()){
+      log.warn("status=won't-start-dns-server-when-testing");
+      return;
+    } else {
+      dnsServer.start();
+    }
   }
 }
