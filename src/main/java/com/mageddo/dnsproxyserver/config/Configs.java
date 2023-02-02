@@ -60,11 +60,10 @@ public class Configs {
     return logLevel;
   }
 
-  static String parseLogFile(String v) {
+  public static String parseLogFile(String v) {
     return switch (StringUtils.lowerCase(v)) {
       case "true" -> "/var/log/dns-proxy-server.log";
       case "false" -> null;
-//        case "console":1
       default -> v;
     };
   }

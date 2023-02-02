@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver;
 
 import com.mageddo.dnsproxyserver.config.Configs;
+import com.mageddo.dnsproxyserver.quarkus.QuarkusConfig;
 import com.mageddo.dnsproxyserver.server.dns.ServerStarter;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.StartupEvent;
@@ -16,8 +17,9 @@ public class App {
 
     // configurations
     final var config = Configs.buildAndRegister(args);
-    System.setProperty("quarkus.http.port", String.valueOf(config.getWebServerPort()));
-    System.setProperty("quarkus.log.level", config.getLogLevel().name());
+
+    // setup quarkus configs
+    QuarkusConfig.setup(config);
 
     // todo setup as default dns
 

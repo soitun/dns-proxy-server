@@ -56,6 +56,11 @@ public class DockerRepositoryDefault implements DockerRepository {
         return true;
       }
       return findHostnameFromEnv(it.getConfig().getEnv()).contains(host);
+      //		hostnames = append(hostnames, getHostnameFromContainerName(inspect))
+      //		if hostnameFromServiceName, err := getHostnameFromServiceName(inspect); err == nil {
+      //			hostnames = append(hostnames, hostnameFromServiceName)
+      //		}
+      //	}
     };
   }
 }
