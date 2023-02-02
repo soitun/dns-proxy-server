@@ -1,7 +1,7 @@
 {
   "version" : false,
   "webServerPort" : 5380,
-  "serverPort" : 53,
+  "dnsServerPort" : 53,
   "defaultDns" : true,
   "configPath" : "conf/config.json",
   "service" : null,
@@ -13,5 +13,5 @@
   "domain" : "docker",
   "dpsNetwork" : false,
   "dpsNetworkAutoConnect" : false,
-  "help" : false
+  "help" : null
 }

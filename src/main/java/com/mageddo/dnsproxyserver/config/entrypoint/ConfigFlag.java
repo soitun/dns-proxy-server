@@ -8,7 +8,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 
@@ -47,7 +46,7 @@ public class ConfigFlag implements Callable<Boolean> {
     description = "The config file path (default conf/config.json)",
     defaultValue = "conf/config.json"
   )
-  private Path configPath;
+  private String configPath;
 
   @Option(
     names = {"-service", "--service"},

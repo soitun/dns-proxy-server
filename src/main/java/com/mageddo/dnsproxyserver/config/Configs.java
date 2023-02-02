@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonBlankRequiring;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring;
 
@@ -20,7 +23,7 @@ public class Configs {
   private static Config instance;
 
   public static Config build(ConfigFlag configFlag) {
-    final var jsonConfig = JsonConfigs.loadConfig(configFlag.getConfigPath());
+    final var jsonConfig = JsonConfigs.loadConfig(toAbsolutePath(configFlag));
     return build(configFlag, ConfigEnv.fromEnv(), jsonConfig);
   }
 
@@ -78,6 +81,10 @@ public class Configs {
 
   public static Config getInstance() {
     return instance;
+  }
+
+  private static Path toAbsolutePath(ConfigFlag configFlag) {
+    return Paths.get(configFlag.getConfigPath()); // todo precisa converter para absolute path?!
   }
 
 }
