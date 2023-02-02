@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.util.List;
 
@@ -67,10 +66,6 @@ public class Config {
   @NonNull
   private Boolean dpsNetworkAutoConnect;
 
-  public static int findDnsServerPort() {
-    return 8053;
-  }
-
   public static SimpleServer.Protocol findDnsServerProtocol() {
     return SimpleServer.Protocol.BOTH;
   }
@@ -79,13 +74,6 @@ public class Config {
     return new RemoteSolverConfig()
       .setIp(new byte[]{8, 8, 8, 8})
       .setPort((short) 53);
-  }
-
-  public static String findVersion() {
-    return ConfigProvider
-      .getConfig()
-      .getValue("version", String.class)
-      ;
   }
 
   @Value

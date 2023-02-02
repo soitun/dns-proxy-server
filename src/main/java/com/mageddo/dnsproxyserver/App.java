@@ -16,7 +16,8 @@ public class App {
 
     // configurations
     // fixme fazer um teste baseado em args validando cada propriedade depois de mergear os 3 tipos de config
-    Configs.buildAndRegister(args);
+    final var config = Configs.buildAndRegister(args);
+    System.setProperty("quarkus.http.port", String.valueOf(config.getWebServerPort()));
 
     // setup as default dns
 
