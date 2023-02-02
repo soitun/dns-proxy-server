@@ -5,12 +5,16 @@ import com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigJson;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigProps;
 import com.mageddo.dnsproxyserver.config.entrypoint.JsonConfigs;
+import com.mageddo.dnsproxyserver.config.entrypoint.LogLevel;
 import com.mageddo.dnsproxyserver.utils.Numbers;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonBlankRequiring;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring;
 
+@Slf4j
 public class Configs {
 
   private static Config instance;
@@ -27,7 +31,7 @@ public class Configs {
       .webServerPort(Numbers.positiveOrDefault(json.getWebServerPort(), flag.getWebServerPort()))
       .dnsServerPort(Numbers.positiveOrDefault(json.getDnsServerPort(), flag.getDnsServerPort()))
       .defaultDns(firstNonNullRequiring(json.getDefaultDns(), flag.getDefaultDns()))
-      .logLevel(firstNonNullRequiring(env.getLogLevel(), json.getLogLevel(), flag.getLogLevel()))
+      .logLevel(buildLogLevel(firstNonNullRequiring(env.getLogLevel(), json.getLogLevel(), flag.getLogLevel())))
       .logFile(parseLogFile(firstNonBlankRequiring(env.getLogFile(), json.getLogFile(), flag.getLogToFile())))
       .registerContainerNames(firstNonNullRequiring(
         env.getRegisterContainerNames(), json.getRegisterContainerNames(), flag.getRegisterContainerNames()
@@ -47,14 +51,23 @@ public class Configs {
       .build();
   }
 
+  static LogLevel buildLogLevel(String logLevelName) {
+    final var logLevel = EnumUtils.getEnumIgnoreCase(LogLevel.class, logLevelName);
+    if (logLevel == null) {
+      log.warn("status=unrecognizedLogLevel, level={}, action=settingToDefault, default=INFO", logLevelName);
+      return LogLevel.INFO;
+    }
+    return logLevel;
+  }
+
   static String parseLogFile(String v) {
-      return switch (StringUtils.lowerCase(v)) {
-        case "true" -> "/var/log/dns-proxy-server.log";
-        case "false" -> null;
+    return switch (StringUtils.lowerCase(v)) {
+      case "true" -> "/var/log/dns-proxy-server.log";
+      case "false" -> null;
 //        case "console":1
-        default -> v;
-      };
- }
+      default -> v;
+    };
+  }
 
   public static Config buildAndRegister(String[] args) {
     return buildAndRegister(ConfigFlag.parse(args));

@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.config;
 
+import com.mageddo.dnsproxyserver.config.entrypoint.LogLevel;
 import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
 import com.mageddo.dnsproxyserver.server.dns.solver.RemoteSolverConfig;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ public class Config {
   private Boolean defaultDns;
 
   @NonNull
-  private String logLevel;
+  private LogLevel logLevel;
 
   @NonNull
   private String logFile;

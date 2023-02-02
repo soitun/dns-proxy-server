@@ -15,11 +15,11 @@ public class App {
   public static void main(String[] args) {
 
     // configurations
-    // fixme fazer um teste baseado em args validando cada propriedade depois de mergear os 3 tipos de config
     final var config = Configs.buildAndRegister(args);
     System.setProperty("quarkus.http.port", String.valueOf(config.getWebServerPort()));
+    System.setProperty("quarkus.log.level", config.getLogLevel().name());
 
-    // setup as default dns
+    // todo setup as default dns
 
     // install as service
 
