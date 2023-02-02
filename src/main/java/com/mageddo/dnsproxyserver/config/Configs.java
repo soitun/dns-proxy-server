@@ -80,7 +80,7 @@ public class Configs {
   }
 
   public static Config getInstance() {
-    return instance;
+    return instance != null ? instance : buildAndRegister(new String[]{});
   }
 
   private static Path toAbsolutePath(ConfigFlag configFlag) {
