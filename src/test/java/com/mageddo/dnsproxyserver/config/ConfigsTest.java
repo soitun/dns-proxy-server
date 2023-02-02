@@ -35,7 +35,7 @@ class ConfigsTest {
     assertTrue(Files.exists(tmpConfigFile));
 
     assertEquals(expectedJsonConfig, sortJson(config));
-    assertEquals(readString("/configs-test/002.json"), readString(tmpConfigFile));
+    assertEquals(sortJson(readString("/configs-test/002.json")), sortJson(readString(tmpConfigFile)));
   }
 
 
