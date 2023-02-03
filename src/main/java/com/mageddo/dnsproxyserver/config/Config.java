@@ -1,13 +1,14 @@
 package com.mageddo.dnsproxyserver.config;
 
 import com.mageddo.dnsproxyserver.config.entrypoint.LogLevel;
+import com.mageddo.dnsproxyserver.server.dns.IpAddr;
 import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
-import com.mageddo.dnsproxyserver.server.dns.solver.RemoteSolverConfig;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,11 +25,12 @@ public class Config {
   @NonNull
   private String version;
 
-  // fixme isso nao precisa estar aqui,
-  //  soh precisa ficar no json para ser respondido quando o solver da base local perguntar
-//  @NonNull
-//  @Builder.Default
-//  private List<DNSServer> remoteDnsServers = new ArrayList<>();
+  @NonNull
+  @Builder.Default
+  private List<IpAddr> remoteDnsServers = new ArrayList<>();
+
+// fixme isso nao precisa estar aqui,
+//   soh precisa ficar no json para ser respondido quando o solver da base local perguntar
 //
 //  @NonNull
 //  @Builder.Default
@@ -67,28 +69,11 @@ public class Config {
   @NonNull
   private Boolean dpsNetworkAutoConnect;
 
+  @NonNull
+  private Path configPath;
+
   public static SimpleServer.Protocol findDnsServerProtocol() {
     return SimpleServer.Protocol.BOTH;
-  }
-
-  public static RemoteSolverConfig findRemoverSolverConfig() {
-    return new RemoteSolverConfig()
-      .setIp(new byte[]{8, 8, 8, 8})
-      .setPort((short) 53);
-  }
-
-  @Value
-  @AllArgsConstructor
-  public static class DNSServer {
-    @NonNull
-    private String ip;
-
-    @NonNull
-    private Integer port;
-
-    public static DNSServer of(String ip, int port) {
-      return new DNSServer(ip, port);
-    }
   }
 
   @Value

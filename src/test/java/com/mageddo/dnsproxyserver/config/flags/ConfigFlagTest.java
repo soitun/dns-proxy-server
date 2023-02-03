@@ -1,15 +1,18 @@
 package com.mageddo.dnsproxyserver.config.flags;
 
+import com.mageddo.commons.lang.regex.Regexes;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag;
 import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 import static com.mageddo.utils.TestUtils.readAndSortJson;
 import static com.mageddo.utils.TestUtils.readString;
 import static com.mageddo.utils.TestUtils.sortJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConfigFlagTest {
 
@@ -30,7 +33,7 @@ class ConfigFlagTest {
   }
 
   @Test
-  void mustPrintHelp() throws Exception {
+  void mustPrintHelp() {
 
     // arrange
     final var sw = new StringWriter();
@@ -44,11 +47,11 @@ class ConfigFlagTest {
         readString("/flags-test/002.txt"),
         sw.toString()
     );
-
+    assertTrue(config.getHelp());
   }
 
   @Test
-  void mustPrintVersion() throws Exception {
+  void mustPrintVersion()  {
 
     // arrange
     final var sw = new StringWriter();
@@ -58,10 +61,8 @@ class ConfigFlagTest {
     final var config = ConfigFlag.parse(args, new PrintWriter(sw));
 
     // assert
-    assertEquals(
-       "${version}",
-        sw.toString()
-    );
-
+    final var validVersion = Regexes.matcher(sw.toString(), Pattern.compile("\\d+\\.\\d+.\\d+.*")).matches();
+    assertTrue(validVersion, sw.toString());
+    assertTrue(config.isVersion());
   }
 }

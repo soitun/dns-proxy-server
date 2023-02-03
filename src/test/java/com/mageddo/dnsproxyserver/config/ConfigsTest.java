@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConfigsTest {
 
+  static final String[] excludingFields = new String[]{"version", "configPath"};
+
+
   @Test
   void mustParseDefaultConfigsAndCreateConfigFile(@TempDir Path tmpDir) {
 
@@ -32,8 +35,8 @@ class ConfigsTest {
 
     // assert
     assertEquals(
-      readAndSortJsonExcluding("/configs-test/001.json", "version"),
-      readAndSortJsonExcluding(config, "version")
+      readAndSortJsonExcluding("/configs-test/001.json", excludingFields),
+      readAndSortJsonExcluding(config, excludingFields)
     );
     assertTrue(Files.exists(tmpConfigFile));
 
@@ -61,8 +64,8 @@ class ConfigsTest {
 
     // assert
     assertEquals(
-      readAndSortJsonExcluding("/configs-test/004.json", "version"),
-      sortJsonExcluding(config, "version")
+      readAndSortJsonExcluding("/configs-test/004.json", excludingFields),
+      sortJsonExcluding(config, excludingFields)
     );
   }
 
