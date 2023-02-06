@@ -1,9 +1,13 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.server.dns.IpAddr;
-import com.mageddo.utils.Bytes;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -22,8 +26,10 @@ public class ConfigJsonV1 implements ConfigJson {
 
   private Boolean registerContainerNames;
 
-  private List<Byte[]> remoteDnsServers;
+  private List<Integer[]> remoteDnsServers;
 
+  @JsonProperty("envs")
+  private List<Env> _envs;
 
   @Override
   public Boolean getDefaultDns() {
@@ -54,11 +60,67 @@ public class ConfigJsonV1 implements ConfigJson {
   public List<IpAddr> getRemoteDnsServers() {
     return this.remoteDnsServers
       .stream()
-      .map(it -> toIpAddr(Bytes.toNative(it)))
+      .map(IpAddr::of)
       .toList();
   }
 
-  private IpAddr toIpAddr(byte[] ip) {
-    return IpAddr.of(IP.of(ip));
+  @JsonIgnore
+  @Override
+  public List<Config.Env> getEnvs() {
+    return ConfigJsonV1EnvsConverter.toDomainEnvs(this._envs);
   }
+
+  public ConfigJsonV2 toConfigV2() {
+    return new ConfigJsonV2()
+      .setDomain(this.getDomain())
+      .setActiveEnv(this.getActiveEnv())
+      .setDefaultDns(this.getDefaultDns())
+      .setDpsNetwork(this.getDpsNetwork())
+      .setDnsServerPort(this.getDnsServerPort())
+      .setWebServerPort(this.getWebServerPort())
+      .setDpsNetworkAutoConnect(this.getDpsNetworkAutoConnect())
+      .setHostMachineHostname(this.getHostMachineHostname())
+      .setRegisterContainerNames(this.getRegisterContainerNames())
+      .setLogFile(this.getLogFile())
+      .setLogLevel(this.getLogLevel())
+      .setRemoteDnsServers(this
+        .getRemoteDnsServers()
+        .stream()
+        .map(IpAddr::toString).toList()
+      )
+      .set_envs(this.getEnvs()
+        .stream()
+        .map(ConfigJsonV2.Env::from)
+        .toList()
+      )
+      ;
+  }
+
+
+  @Data
+  @Accessors(chain = true)
+  public static class Env {
+
+    private String name;
+
+    @JsonProperty("hostnames")
+    private List<Entry> entries;
+  }
+
+  @Data
+  @Accessors(chain = true)
+  @NoArgsConstructor
+  public static class Entry {
+    private Long id;
+
+    @NonNull
+    private String hostname;
+
+    @NonNull
+    private Integer[] ip;
+
+    @NonNull
+    private Integer ttl;
+  }
+
 }

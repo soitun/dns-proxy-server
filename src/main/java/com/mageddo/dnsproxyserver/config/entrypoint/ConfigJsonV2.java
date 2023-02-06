@@ -1,13 +1,15 @@
 package com.mageddo.dnsproxyserver.config.entrypoint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mageddo.dnsproxyserver.config.Config;
-import com.mageddo.dnsproxyserver.config.EntryType;
 import com.mageddo.dnsproxyserver.server.dns.IpAddr;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Accessors(chain = true)
@@ -17,9 +19,11 @@ public class ConfigJsonV2 implements ConfigJson {
 
   private String activeEnv = Config.Env.DEFAULT_ENV;
 
+  @JsonProperty("remoteDnsServers")
   private List<String> remoteDnsServers = new ArrayList<>(); // dns servers formatted like 192.168.0.1:53
 
-  private List<Env> envs = new ArrayList<>();
+  @JsonProperty("envs")
+  private List<Env> _envs = new ArrayList<>();
 
   private Integer webServerPort;
 
@@ -41,6 +45,7 @@ public class ConfigJsonV2 implements ConfigJson {
 
   private Boolean dpsNetworkAutoConnect;
 
+  @JsonIgnore
   public List<IpAddr> getRemoteDnsServers(){
     return this.remoteDnsServers
       .stream()
@@ -48,23 +53,61 @@ public class ConfigJsonV2 implements ConfigJson {
       .toList();
   }
 
-  @Data
-  @Accessors(chain = true)
-  public static class Env {
-    private String name;
-    private List<Hostname> hostnames;
+  @JsonIgnore
+  @Override
+  public List<Config.Env> getEnvs() {
+    return ConfigJsonV2EnvsConverter.toDomainEnvs(this._envs);
   }
 
   @Data
   @Accessors(chain = true)
-  public static class Hostname {
+  public static class Env {
+
+    private String name;
+    private List<Entry> hostnames = new ArrayList<>();
+
+    public Env add(Entry env){
+      this.hostnames.add(env);
+      return this;
+    }
+
+    public static Env from(Config.Env from) {
+      return new Env()
+        .setName(from.getName())
+        .setHostnames(Entry.from(from.getEntries()))
+        ;
+    }
+  }
+
+  @Data
+  @Accessors(chain = true)
+  public static class Entry {
+
     private Long id;
     private String hostname;
     private String ip;
     private String target; // target hostname when type=CNAME
 
     private Integer ttl;
-    private EntryType type;
+    private Config.Entry.Type type;
+
+    public static Entry from(Config.Entry entry) {
+      return new Entry()
+        .setHostname(entry.getHostname())
+        .setId(entry.getId())
+        .setIp(entry.getIp())
+        .setTtl(entry.getTtl())
+        .setTarget(entry.getTarget())
+        .setType(entry.getType())
+        ;
+    }
+
+    public static List<Entry> from(List<Config.Entry> entries) {
+      return entries
+        .stream()
+        .map(Entry::from)
+        .collect(Collectors.toList());
+    }
   }
 
 }
