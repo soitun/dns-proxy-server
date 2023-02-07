@@ -4,26 +4,40 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Network;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
+import java.util.Collection;
+
+import static com.mageddo.dnsproxyserver.docker.domain.Network.BRIDGE;
+import static com.mageddo.dnsproxyserver.docker.domain.Network.DPS;
 
 @Slf4j
 public class DockerNetworks {
 
-  public static final String NETWORK_DPS = "dps";
-  public static final String NETWORK_BRIDGE = "bridge";
+  public static final String NETWORK_DPS = DPS.lowerName();
+  public static final String NETWORK_BRIDGE = BRIDGE.lowerName();
 
-  public static String findBestIpMatching(InspectContainerResponse c, String... networksNames) {
-    final var networks = c.getNetworkSettings().getNetworks();
+  public static final String DEFAULT_NETWORK_LABEL = "dps.network";
+
+  public static String findBestIpMatching(InspectContainerResponse c, Collection<String> networksNames) {
+    final var networks = c
+      .getNetworkSettings()
+      .getNetworks();
+
     for (final var name : networksNames) {
       if (!networks.containsKey(name)) {
+        log.debug("status=networkNotFoundForContainer, name={}", name);
         continue;
       }
       final var ip = networks.get(name).getIpAddress();
       log.debug("status=foundIp, network={}, container={}, ip={}", name, c.getName(), ip);
       return ip;
     }
-    log.debug("status=noIpFound, searchedNetworks={}, container={}", Arrays.toString(networksNames), c.getName());
-    return null;
+    log.debug(
+      "status=predefinedNetworkNotFound, action=findSecondOption, searchedNetworks={}, container={}",
+      networksNames, c.getName()
+    );
+    return c
+      .getNetworkSettings()
+      .getIpAddress();
   }
 
   public static String findIp(Network network) {
