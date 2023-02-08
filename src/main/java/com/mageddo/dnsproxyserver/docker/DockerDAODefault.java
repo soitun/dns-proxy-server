@@ -14,15 +14,12 @@ import javax.inject.Singleton;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.mageddo.dnsproxyserver.docker.Docker.findContainerHostname;
-import static com.mageddo.dnsproxyserver.docker.Docker.findHostnameFromEnv;
-import static com.mageddo.dnsproxyserver.docker.DockerNetworks.DEFAULT_NETWORK_LABEL;
 import static com.mageddo.dnsproxyserver.docker.DockerNetworks.NETWORK_BRIDGE;
 import static com.mageddo.dnsproxyserver.docker.DockerNetworks.NETWORK_DPS;
+import static com.mageddo.dnsproxyserver.docker.Labels.DEFAULT_NETWORK_LABEL;
 
 @Slf4j
 @Default
@@ -34,7 +31,7 @@ public class DockerDAODefault implements DockerDAO {
   private final DockerClient dockerClient;
 
   @Override
-  public String findHostIp(Hostname host) {
+  public String findBestHostIP(Hostname host) {
 
     final var stopWatch = StopWatch.createStarted();
     final var activeContainers = this.dockerClient
@@ -47,8 +44,8 @@ public class DockerDAODefault implements DockerDAO {
     final var foundIp = activeContainers
       .stream()
       .map(it -> this.dockerClient.inspectContainerCmd(it.getId()).exec())
-      .filter(matchingHostName(host))
-      .map(c -> DockerNetworks.findBestIpMatching(c, buildNetworks(c)))
+      .filter(ContainerHostnameMatcher.buildPredicate(host))
+      .map(c -> DockerNetworks.findBestIpMatching(c, buildNetworks(c), this::findHostMachineIp))
       .findFirst()
       .orElse(null);
     log.debug("status=findDone, host={}, found={}, time={}", host, foundIp, stopWatch.getTime());
@@ -83,22 +80,5 @@ public class DockerDAODefault implements DockerDAO {
       .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  static Predicate<InspectContainerResponse> matchingHostName(Hostname host) {
-    return it -> {
-      if (host.isEqualTo(findContainerHostname(it.getConfig()))) {
-        return true;
-      }
-      return findHostnameFromEnv(it.getConfig().getEnv()).contains(host);
 
-      // todo find hostname by container name or service name Config.registerContainerNames
-      //      usar o Config.domain como dominio para o nome do service ou do container.
-
-      // 	if conf.ShouldRegisterContainerNames() {
-      //		hostnames = append(hostnames, getHostnameFromContainerName(inspect))
-      //		if hostnameFromServiceName, err := getHostnameFromServiceName(inspect); err == nil {
-      //			hostnames = append(hostnames, hostnameFromServiceName)
-      //		}
-      //	}
-    };
-  }
 }
