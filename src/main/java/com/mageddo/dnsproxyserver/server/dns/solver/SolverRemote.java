@@ -36,8 +36,8 @@ public class SolverRemote implements Solver {
         }
       } catch (IOException e) {
         log.warn(
-          "status=failed, i={}, req={}, server={}, errClass={}, msg={}",
-          i, simplePrint(req), resolver, ClassUtils.getSimpleName(e), e.getMessage(), e
+            "status=failed, i={}, req={}, server={}, errClass={}, msg={}",
+            i, simplePrint(req), resolver, ClassUtils.getSimpleName(e), e.getMessage(), e
         );
       }
     }
