@@ -23,7 +23,9 @@ public class App {
     // setup quarkus configs
     QuarkusConfig.setup(config);
 
-    // todo setup as default dns
+    // fixme ficou lento quando liguei como default dns
+    //     talvez entregar esse pr que configura o dns como default e criar um novo pra otmizar
+    //     vou precisar criar uma cache pra guardar as respostas para otimizar a performance.
 
     // todo install as service
 
