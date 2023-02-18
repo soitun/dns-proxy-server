@@ -13,4 +13,4 @@ jobs:
           java-version: '19'
           distribution: 'adopt'
       - name: Build and Tests
-        run: ./gradlew build test
+        run: ./gradlew build test -i
