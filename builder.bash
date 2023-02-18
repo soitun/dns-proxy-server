@@ -112,12 +112,15 @@ case $1 in
 		fi
 	;;
 
-	deploy-ci )
+	deploy )
 
-	echo "> Deploy CI"
+	echo "> Deploy"
 	./builder.bash validate-release
 
-	echo "> Build test and generate the binaries to the output dir"
+	echo "> Build, test and generate the binaries to the output dir"
+
+
+
 	EC=0
 	docker-compose up --force-recreate --abort-on-container-exit prod-ci-deploy || EC=$?
 	if [ "$EC" = "3" ]; then

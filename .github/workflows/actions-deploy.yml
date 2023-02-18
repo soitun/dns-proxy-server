@@ -24,7 +24,11 @@ jobs:
           fetch-depth: '0'
 
       - name: Deploy
-        run: ./builder.bash deploy-ci
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'adopt'
+        run: ./builder.bash deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
