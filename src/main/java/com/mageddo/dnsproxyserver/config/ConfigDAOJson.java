@@ -167,7 +167,7 @@ public class ConfigDAOJson implements ConfigDAO {
       .filter(EnvPredicate.byName(envKey))
       .findFirst()
       .orElse(Config.Env.theDefault());
-    log.debug("activeEnv={}", env.getName());
+    log.trace("activeEnv={}", env.getName());
     return env;
   }
 

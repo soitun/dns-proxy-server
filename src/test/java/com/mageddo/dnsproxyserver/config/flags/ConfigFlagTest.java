@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver.config.flags;
 
-import com.mageddo.commons.lang.regex.Regexes;
+import com.mageddo.commons.regex.Regexes;
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigFlag;
 import org.junit.jupiter.api.Test;
 
