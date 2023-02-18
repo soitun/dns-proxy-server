@@ -86,9 +86,8 @@ class ConfigsTest {
     assertNotNull(firstEntry.getId());
     final var currentNanoTime = System.nanoTime();
     assertTrue(
-      firstEntry.getId() > currentNanoTime,
+      firstEntry.getId() < currentNanoTime,
       String.format("id=%s, currentTimeInMillis=%s", firstEntry.getId(), currentNanoTime)
     );
   }
-
 }
