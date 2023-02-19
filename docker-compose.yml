@@ -1,6 +1,12 @@
 version: '2.3'
 services:
 
+  # Build Default (Java + Linux 64) DPS Binaries
+  build-default:
+    build:
+      context: .
+      dockerfile: Dockerfile.builder
+
   # Base Image to build project
   compiler-dps:
     build:
@@ -87,3 +93,6 @@ networks:
   dps:
   dps_bridge:
     driver: bridge
+
+
+#  docker run --rm -t docker.io/library/dns-proxy-server-build-default bash

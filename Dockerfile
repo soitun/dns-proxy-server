@@ -1,5 +1,5 @@
 FROM debian:10-slim
-ADD build/dns-proxy-server-linux-amd64*.tgz /app/
+COPY --from=ARTIFACTS /artifacts/binary/* /app/dns-proxy-server
 WORKDIR /app
 LABEL dps.container=true
 VOLUME ["/var/run/docker.sock", "/var/run/docker.sock"]

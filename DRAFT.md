@@ -1,3 +1,4 @@
+
 ## Build project
 
 Binary using Native Image
@@ -5,6 +6,16 @@ Binary using Native Image
 $ ./gradlew build -Dquarkus.package.type=native &&\
    ./build/dns-proxy-server-*-runner --server-port 8053
 ```
+
+## Generate binaries 
+```
+ native-image -H:+ReportExceptionStackTraces -H:Class=com.mageddo.dnsproxyserver.App  build/dns-proxy-server-3.0.0-alpha.jar 
+
+```
+libfreetype-dev
+sudo apt-get install build-essential
+
+
 
 # Drafts
 
