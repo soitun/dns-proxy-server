@@ -1,4 +1,4 @@
-package com.mageddo.os.linux.files;
+package com.mageddo.os.linux.struct;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
@@ -50,7 +50,7 @@ public class Stat extends Structure {
   @Override
   protected List<String> getFieldOrder() {
     return Arrays.asList(
-      "st_dev", "st_ino",  "st_nlink", "st_mode", "st_uid", "st_gid", "st_rdev", "st_size", "st_blksize",
+      "st_dev", "st_ino", "st_nlink", "st_mode", "st_uid", "st_gid", "st_rdev", "st_size", "st_blksize",
       "st_blocks", "st_atim", "st_mtim", "st_ctim", "__unused"
     );
   }

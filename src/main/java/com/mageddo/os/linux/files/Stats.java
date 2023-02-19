@@ -1,5 +1,6 @@
 package com.mageddo.os.linux.files;
 
+import com.mageddo.os.linux.struct.Stat;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;

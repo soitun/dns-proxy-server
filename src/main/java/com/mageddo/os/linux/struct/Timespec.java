@@ -1,4 +1,4 @@
-package com.mageddo.os.linux.files;
+package com.mageddo.os.linux.struct;
 
 import com.sun.jna.Structure;
 

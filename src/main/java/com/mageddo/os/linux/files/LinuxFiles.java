@@ -1,5 +1,6 @@
 package com.mageddo.os.linux.files;
 
+import com.mageddo.os.linux.struct.Stat;
 import org.apache.commons.lang3.Validate;
 
 import java.nio.file.Path;
