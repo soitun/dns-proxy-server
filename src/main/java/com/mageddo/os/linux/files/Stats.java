@@ -17,6 +17,4 @@ public interface Stats extends Library {
    */
   int stat(String pathname, Stat.ByReference statbuf);
 
-
-
 }
