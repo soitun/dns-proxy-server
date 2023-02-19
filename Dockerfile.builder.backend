@@ -1,6 +1,6 @@
 FROM debian:9-slim AS BULDER
 # GLIB 2.24
-ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java17-linux-amd64-22.3.1.tar.gz'
+ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java19-linux-amd64-22.3.1.tar.gz'
 ADD ${GRAALVM_URL} /graalvm/graalvm.tgz
 RUN tar --strip 1 -zxvf /graalvm/graalvm.tgz -C /graalvm &&\
     /graalvm/bin/gu install native-image &&\
@@ -9,7 +9,7 @@ RUN tar --strip 1 -zxvf /graalvm/graalvm.tgz -C /graalvm &&\
 ENV JAVA_HOME=/graalvm
 COPY ./ /app
 WORKDIR /app
-RUN ./gradlew build -Dquarkus.package.type=native &&\
+RUN ./gradlew clean build -Dquarkus.package.type=native &&\
     cd build &&\
     ls -lha &&\
     mkdir -p artifacts &&\
