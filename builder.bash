@@ -5,7 +5,7 @@ set -e
 REPO_DIR=`pwd`
 APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')
 
-echo "> builder.bash version=${APP_VERSION}"
+echo "> builder.bash version=${APP_VERSION}, path=${REPO_DIR}"
 
 copyFileFromService(){
 
@@ -34,30 +34,7 @@ generateDocs(){
   ls -lha $2
 }
 
-uploadRelease(){
-  echo "> upload-release "
-  DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
-  github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" $PWD/build/*.tgz
-}
-
 case $1 in
-
-  docs )
-
-    P=${2:-${PWD}/build}
-    echo "> Docs ${P}"
-
-    MINOR_VERSION=$(echo $APP_VERSION | awk -F '.' '{ print $1"."$2}');
-    rm -r "$2/docs" || echo "> build dir already clear"
-
-    TARGET="$2/docs/${MINOR_VERSION}"
-    generateDocs ${MINOR_VERSION} ${TARGET}
-
-    MINOR_VERSION=latest
-    TARGET="$2/docs/${MINOR_VERSION}"
-    generateDocs ${MINOR_VERSION} ${TARGET}
-
-  ;;
 
   validate-release )
     echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION 2>/dev/null)"
@@ -72,10 +49,7 @@ case $1 in
   echo "> Deploy started , current branch=$CURRENT_BRANCH"
   ./builder.bash validate-release
 
-  if [ "$CURRENT_BRANCH" = "master" ]; then
-    echo "> deploying new version"
-    applyVersion && builder.bash build && builder.bash upload-release
-  else
+  if [ "$CURRENT_BRANCH" != "master" ]; then
     echo "> refusing to go ahead outside the master branch"
 #    exit 8
   fi
@@ -85,21 +59,23 @@ case $1 in
   copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
 
   echo "> Build, test and generate the binaries"
+  mkdir -p "${REPO_DIR}/build"
 
   OS=linux
   ARCH=amd64
   SERVICE_NAME="build-${OS}-${ARCH}"
-  BIN_FILE="./build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
+  BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
   TAR_FILE=${BIN_FILE}.tgz
 
   docker-compose build --progress=plain ${SERVICE_NAME}
   copyFileFromService ${SERVICE_NAME} /app/dns-proxy-server ${BIN_FILE}
-  cd $PWD/build/
+  cd $REPO_DIR/build/
   tar --exclude=*.tgz -czf $TAR_FILE ${BIN_FILE}
 
   echo "> Uploading the release artifacts"
   cd $REPO_DIR
-  uploadRelease
+  DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
+  github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" $REPO_DIR/build/*.tgz
 
 	echo "> Push docker images to docker hub"
 #	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
@@ -109,7 +85,22 @@ case $1 in
 #	docker-compose push prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&
 #	docker push defreitas/dns-proxy-server:latest
 
-	;;
+
+  echo "> Generate the docs"
+#  P=${2:-${PWD}/build}
+#  echo "> Docs ${P}"
+#
+#  MINOR_VERSION=$(echo $APP_VERSION | awk -F '.' '{ print $1"."$2}');
+#  rm -r "$2/docs" || echo "> build dir already clear"
+#
+#  TARGET="$2/docs/${MINOR_VERSION}"
+#  generateDocs ${MINOR_VERSION} ${TARGET}
+#
+#  MINOR_VERSION=latest
+#  TARGET="$2/docs/${MINOR_VERSION}"
+#  generateDocs ${MINOR_VERSION} ${TARGET}
+
+  ;;
 
 
 esac

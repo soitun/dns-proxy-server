@@ -27,9 +27,5 @@ ENTRYPOINT "/app/dns-proxy-server"
 ###	apt install -y jq &&\
 ###	curl -s -L https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh > /usr/bin/github-cli &&\
 ###	chmod +x /usr/bin/github-cli
-###ENV GOPATH=/app
-###ENV MG_WORK_DIR=/app/src/github.com/mageddo/dns-proxy-server
-###LABEL dps.container=true
-###WORKDIR /app/src/github.com/mageddo/dns-proxy-server
 ###COPY --from=BUILDER /app/build /static
 ###COPY ./builder.bash /bin/builder.bash

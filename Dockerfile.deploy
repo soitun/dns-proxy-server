@@ -1,0 +1,11 @@
+FROM debian:11-slim
+
+ENV GITHUB_CLI_URL='https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh'
+RUN apt update &&\
+  apt install -y jq &&\
+  curl -s -L ${GITHUB_CLI_URL} > /usr/bin/github-cli &&\
+  chmod +x /usr/bin/github-cli
+
+COPY ./builder.bash /bin/builder.bash
+COPY build /app
+WORKDIR /app
