@@ -9,7 +9,7 @@ RUN tar --strip 1 -zxvf /graalvm/graalvm.tgz -C /graalvm &&\
 ENV JAVA_HOME=/graalvm
 COPY ./ /app
 WORKDIR /app
-RUN ./gradlew clean build -Dquarkus.package.type=native &&\
+RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
     cd build &&\
     ls -lha &&\
     mkdir -p artifacts &&\
