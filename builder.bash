@@ -77,8 +77,8 @@ case $1 in
     applyVersion && builder.bash build && builder.bash upload-release
   else
     echo "> refusing to go ahead outside the master branch"
+    exit 8
   fi
-
 
   echo "> Building frontend files..."
   copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
