@@ -1,17 +1,19 @@
 version: '2.3'
 services:
 
-  # Build: FrontEnd
+  # tag:build
   build-frontend:
     build:
       context: .
       dockerfile: Dockerfile.builder.frontend
 
-  # Build: Default (Java + Linux 64) DPS Binaries
-  build-backend-default:
+  build-linux-x86:
+    image: defreitas/dns-proxy-server:2.19.5
     build:
       context: .
-      dockerfile: Dockerfile.builder.backend
+      dockerfile: Dockerfile
+  # end:build
+
 
   # Base Image to build project
   compiler-dps:
