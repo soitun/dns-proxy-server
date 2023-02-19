@@ -30,11 +30,3 @@ services:
       context: .
       dockerfile: Dockerfile.arm8x64
     image: defreitas/dns-proxy-server:2.19.5-arm8x64
-
-networks:
-  dps:
-  dps_bridge:
-    driver: bridge
-
-
-#  docker run --rm -t docker.io/library/dns-proxy-server-build-default bash

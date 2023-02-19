@@ -13,7 +13,7 @@ copyFileFromService(){
   from=$2
   to=$3
 
-  docker-compose --compatibility create --build $serviceName --force-recreate 1>&2
+  docker-compose up --no-start --build --force-recreate $serviceName 1>&2
   id=$(docker ps -a | grep $serviceName | awk '{print $1}')
   docker cp "$id:$from" "$to"
 }
@@ -81,6 +81,7 @@ case $1 in
   fi
 
   echo "> Building frontend files..."
+  docker-compose build --progress=plain build-frontend
   copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
 
   echo "> Build, test and generate the binaries"
