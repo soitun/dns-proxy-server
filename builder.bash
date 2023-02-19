@@ -20,7 +20,7 @@ copyFileFromService(){
 
 applyVersion(){
   echo "> Apply version"
-  sed -i -E "s/(dns-proxy-server.*)[0-9]+\.[0-9]+\.[0-9]+/\1$APP_VERSION/" docker-compose.yml
+  sed -i -E "s/(dns-proxy-server.*)[0-9]+\.[0-9]+\..+/\1$APP_VERSION/" docker-compose.yml
 }
 
 generateDocs(){
