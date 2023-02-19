@@ -26,11 +26,12 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Deploy
+      - name: Environment
         uses: actions/setup-java@v3
         with:
           java-version: '19'
           distribution: 'adopt'
+      - name: Deploy
         run: ./builder.bash deploy
         env:
           # github token to deploy the binary
