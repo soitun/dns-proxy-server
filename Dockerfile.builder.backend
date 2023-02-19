@@ -13,8 +13,7 @@ RUN ./gradlew clean build -Dquarkus.package.type=native &&\
     cd build &&\
     ls -lha &&\
     mkdir -p artifacts &&\
-    mv $(ls -p ./ | grep -v / | grep dns-proxy-server) ./artifacts/ &&\
-    ls -lha artifacts
+    mv $(ls -p ./ | grep -v / | grep dns-proxy-server) ./artifacts/
 
 FROM debian:10-slim
 COPY --from=BULDER /app/build/artifacts/* /app/dns-proxy-server

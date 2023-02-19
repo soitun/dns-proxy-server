@@ -20,7 +20,7 @@ public class LinuxFiles {
 
   public static boolean isUnixSocket(Path path) {
     final var stat = new Stat.ByReference();
-    final var res = Stats.INSTANCE.stat(path.toString(), stat);
+    final var res = Stats.INSTANCE.wrappedStat(path.toString(), stat);
     Validate.isTrue(res == 0, "Failed to get file permission details: %s", path);
     return S_ISSOCK(stat.st_mode.intValue());
   }

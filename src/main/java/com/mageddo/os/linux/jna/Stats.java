@@ -9,11 +9,12 @@ import com.sun.jna.Platform;
  */
 public interface Stats extends Library {
 
-  Stats INSTANCE = Native.loadLibrary((Platform.isLinux() ? Platform.C_LIBRARY_NAME : null), Stats.class);
+  Stats INSTANCE = Native.loadLibrary(Platform.C_LIBRARY_NAME, Stats.class);
 
-  /**
-   * int stat(const char *restrict pathname, struct stat *restrict statbuf);
-   */
-  int stat(String pathname, Stat.ByReference statbuf);
+  int syscall(int number, Object... args);
+
+  default int wrappedStat(String pathname, Stat statbuf){
+    return this.syscall(4, pathname, statbuf);
+  }
 
 }
