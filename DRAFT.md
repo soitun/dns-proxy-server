@@ -7,6 +7,12 @@ $ ./gradlew build -Dquarkus.package.type=native &&\
    ./build/dns-proxy-server-*-runner --server-port 8053
 ```
 
+CD
+```
+docker-compose build build-frontend
+```
+
+
 ## Generate binaries 
 ```
  native-image -H:+ReportExceptionStackTraces -H:Class=com.mageddo.dnsproxyserver.App  build/dns-proxy-server-3.0.0-alpha.jar 

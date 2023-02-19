@@ -117,6 +117,12 @@ case $1 in
 	echo "> Deploy"
 	./builder.bash validate-release
 
+  echo "> Building frontend files..."
+  docker-compose --compatibility create --build build-frontend --force-recreate &&\
+   id=$(docker ps -a | grep build-frontend | awk '{print $1}') &&\
+   docker cp $id:/static ./src/main/resources/META-INF/resources/static
+
+
 	echo "> Build, test and generate the binaries to the output dir"
 
 

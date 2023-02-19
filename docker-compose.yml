@@ -1,17 +1,23 @@
 version: '2.3'
 services:
 
-  # Build Default (Java + Linux 64) DPS Binaries
-  build-default:
+  # Build: FrontEnd
+  build-frontend:
     build:
       context: .
-      dockerfile: Dockerfile.builder
+      dockerfile: Dockerfile.builder.frontend
+
+  # Build: Default (Java + Linux 64) DPS Binaries
+  build-backend-default:
+    build:
+      context: .
+      dockerfile: Dockerfile.builder.backend
 
   # Base Image to build project
   compiler-dps:
     build:
       context: .
-      dockerfile: Dockerfile.builder
+      dockerfile: Dockerfile.builder.frontend
     volumes:
       - ./:/app/src/github.com/mageddo/dns-proxy-server
       - /var/run/docker.sock:/var/run/docker.sock
