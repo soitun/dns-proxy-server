@@ -19,20 +19,6 @@ services:
 
   # end:development
 
-  app-dps:
-    image: node:12-alpine
-    volumes:
-      - ./app:/app
-    working_dir: /app
-    networks:
-      - dps_bridge
-      - dps
-    ports:
-      - 5381:3000
-    command: tail -f /dev/null
-    links:
-      - compiler-dps
-
   prod-build-image-dps-arm7x86:
     build:
       context: .
