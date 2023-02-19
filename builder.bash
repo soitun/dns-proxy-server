@@ -88,7 +88,7 @@ case $1 in
 
   OS=linux
   ARCH=amd64
-  SERVICE_NAME="build-${OS}-ARCH"
+  SERVICE_NAME="build-${OS}-${ARCH}"
   BIN_FILE="./build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
   TAR_FILE=${BIN_FILE}.tgz
 
