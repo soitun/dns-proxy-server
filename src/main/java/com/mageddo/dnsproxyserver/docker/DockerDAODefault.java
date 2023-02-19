@@ -24,7 +24,6 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class DockerDAODefault implements DockerDAO {
 
-  public static final String LINUX_DISCONNECTED_ERROR = "LastErrorException: [2] No such file or directory";
   private final DockerClient dockerClient;
 
   @Override
