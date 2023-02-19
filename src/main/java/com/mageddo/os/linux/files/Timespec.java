@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Timespec extends Structure {
 
-  public int tv_sec;
+  public long tv_sec;
   public long tv_nsec;
 
   @Override

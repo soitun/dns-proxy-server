@@ -15,4 +15,7 @@ public interface Stats extends Library {
    * int stat(const char *restrict pathname, struct stat *restrict statbuf);
    */
   int stat(String pathname, Stat.ByReference statbuf);
+
+
+
 }
