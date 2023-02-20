@@ -22,7 +22,7 @@ RUN uname -m && ls -lha &&\
   --exclude-config io\.netty\.netty-handler /META-INF/native-image/io\.netty/netty-handler/generated/handlers/reflect-config\.json dns-proxy-server \
   -jar dns-proxy-server.jar
 
-RUN ls lha &&\
+RUN ls -lha &&\
     mkdir -p ./artifacts/linux-aarch64 &&\
     mv ./dns-proxy-server ./artifacts/linux-aarch64/
 
