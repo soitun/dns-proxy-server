@@ -4,6 +4,7 @@ set -e
 
 REPO_DIR=`pwd`
 APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')
+export VERSION=${APP_VERSION}
 
 echo "> builder.bash version=${APP_VERSION}, path=${REPO_DIR}"
 
@@ -24,8 +25,8 @@ copyFileFromService(){
   from=$2
   to=$3
 
-  docker-compose up --no-start --build --force-recreate $serviceName 1>&2
-  id=$(docker ps -a | grep $serviceName | awk '{print $1}')
+  id=$(docker-compose up --no-start --build --force-recreate $serviceName 2>&1 | grep Container | awk '{print $2}' | head -1)
+  echo "> copy from service=${serviceName}, id=${id}, from=${from}, to=${to}"
   docker cp "$id:$from" "$to"
 }
 
@@ -38,6 +39,10 @@ validateRelease(){
 }
 
 case $1 in
+
+  copy )
+    copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
+  ;;
 
   validate-release )
     validateRelease
@@ -67,13 +72,11 @@ case $1 in
 
     mkdir -p ${ARTIFACTS_DIR}
 
-    VERSION=${APP_VERSION} \
     docker-compose build --no-cache --progress=plain ${BUILD_SERVICE_NAME}
 
     copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts /tmp/
     mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
 
-    VERSION=${APP_VERSION} \
     docker-compose build --no-cache --progress=plain "${IMAGE_SERVICE_NAME}"
 
   ;;
@@ -112,6 +115,8 @@ case $1 in
   deploy )
 
   echo "> Deploy started , current branch=$CURRENT_BRANCH"
+  rm -vrf build
+  ls -lha
 
   ./builder.bash validate-release || exit 0
 
