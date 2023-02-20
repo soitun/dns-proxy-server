@@ -81,7 +81,7 @@
 	"title": "Developing at the project",
 	"tags": [],
 	"description": "",
-	"content": "Developing with docker $ docker-compose rm -f \u0026amp;\u0026amp; docker-compose up --build app-dps compiler-dps  Running the application\n$ docker-compose exec compiler-dps bash $ go run dns.go Running the GUI\n$ docker-compose exec app-dps sh $ npm start Running unit tests\n$ go test -cover=false ./.../  Developing at Intellij   Install Golang plugin\n  Import the project at File -\u0026gt; New -\u0026gt; Project from existing sources\n  Make solve dependencies\n File -\u0026gt; Settings -\u0026gt; Languages \u0026amp; Frameworks -\u0026gt; Go -\u0026gt; Go Libraries At Project Libraries section add the project folder     Running: At Intellij you will want to make some customizes like these:\n Custom port to evict conflicts and don\u0026rsquo;t need root privleges Custom config path Don\u0026rsquo;t set it up at the default DNS     "
+	"content": "Vanilla Developing Backend\n$ ./gradlew quarkusDev Front end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start Developing with docker $ docker-compose rm -f \u0026amp;\u0026amp; docker-compose up --build app-dps compiler-dps  Running the application\n$ docker-compose exec compiler-dps bash $ go run dns.go Running the GUI\n$ docker-compose exec app-dps sh $ npm start Running unit tests\n$ go test -cover=false ./.../  "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/6-generating-docs/",

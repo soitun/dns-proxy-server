@@ -12,20 +12,20 @@
     <title>Developing at the project :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1674966252" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1674966252" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1676863580" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1676863580" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1674966252" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1676863580" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1674966252"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1676863580"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1674966252"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1674966252"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1676863580"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1676863580"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1674966252"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1676863580"></script>
 
     
   </div>
@@ -745,8 +745,8 @@
   <ul>
     <li>
       <ul>
+        <li><a href="#vanilla-developing">Vanilla Developing</a></li>
         <li><a href="#developing-with-docker">Developing with docker</a></li>
-        <li><a href="#developing-at-intellij">Developing at Intellij</a></li>
       </ul>
     </li>
   </ul>
@@ -775,7 +775,12 @@
 
 
 
-	<h3 id="developing-with-docker">Developing with docker</h3>
+	<h3 id="vanilla-developing">Vanilla Developing</h3>
+<p>Backend</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ./gradlew quarkusDev
+</code></pre></div><p>Front end app (optional)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd app <span style="color:#f92672">&amp;&amp;</span> npm start
+</code></pre></div><h3 id="developing-with-docker">Developing with docker</h3>
 <pre><code>$ docker-compose rm -f &amp;&amp; docker-compose up --build app-dps compiler-dps
 </code></pre>
 <p>Running the application</p>
@@ -787,32 +792,6 @@ $ npm start
 </code></pre><p>Running unit tests</p>
 <pre><code>$ go test -cover=false ./.../
 </code></pre>
-<h3 id="developing-at-intellij">Developing at Intellij</h3>
-<ul>
-<li>
-<p><a href="https://github.com/go-lang-plugin-org">Install Golang plugin</a></p>
-</li>
-<li>
-<p>Import the project at <code>File -&gt; New -&gt; Project from existing sources</code></p>
-</li>
-<li>
-<p>Make solve dependencies</p>
-<ul>
-<li><code>File -&gt; Settings -&gt; Languages &amp; Frameworks -&gt; Go -&gt; Go Libraries</code></li>
-<li>At Project Libraries section add the project folder
-<img src="http://pix.toile-libre.org/upload/original/1499630100.png" alt=""></li>
-</ul>
-</li>
-<li>
-<p>Running: At Intellij you will want to make some customizes like these:</p>
-<ul>
-<li>Custom port to evict conflicts and don&rsquo;t need root privleges</li>
-<li>Custom config path</li>
-<li>Don&rsquo;t set it up at the default DNS
-<img src="http://i.imgur.com/gCUCndC.jpg" alt=""></li>
-</ul>
-</li>
-</ul>
 
 
 
@@ -1201,20 +1180,20 @@ $ npm start
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1674966252"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1676863580"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1674966252"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1674966252"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1676863580"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1676863580"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1674966252" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1674966252"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1676863580" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1676863580"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
