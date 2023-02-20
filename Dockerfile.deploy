@@ -1,4 +1,4 @@
-# https://github.com/mageddo/dockerized-database-servers/tree/newtools/_hub/generic-cd
 FROM docker.io/defreitas/tools-generic-cd:0.1.0
 COPY . /app
+COPY ./builder.bash /bin/builder.bash
 WORKDIR /app
