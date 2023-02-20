@@ -1,0 +1,9 @@
+FROM defreitas/tools_graalvm-22.3_java-17_debian-9_aarch64:0.1.2
+COPY ./ /app
+WORKDIR /app
+RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
+    ls -lha ./build &&\
+    mkdir -p ./artifacts/linux-arm64 &&\
+    mv ./build/dns-proxy-server ./artifacts/linux-arm64/
+
+ENTRYPOINT cat
