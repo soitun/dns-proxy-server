@@ -29,14 +29,50 @@ copyFileFromService(){
   docker cp "$id:$from" "$to"
 }
 
+validateRelease(){
+  echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION 2>/dev/null)"
+  if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
+    echo "> Tag already exists $APP_VERSION"
+    exit 3
+  fi
+}
+
 case $1 in
 
   validate-release )
-    echo "> validate release, version=${APP_VERSION}, git=$(git rev-parse $APP_VERSION 2>/dev/null)"
-    if git rev-parse "$APP_VERSION^{}" >/dev/null 2>&1; then
-      echo "> Tag already exists $APP_VERSION"
-      exit 3
-    fi
+    validateRelease
+  ;;
+
+  build-frontend )
+    ./builder.bash validate-release || exit 0
+
+    echo "> Building frontend files..."
+    docker-compose build --progress=plain build-frontend
+    rm -rf ./src/main/resources/META-INF/resources/static
+    copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
+
+    echo "> Build, test and generate the binaries"
+    mkdir -p "${REPO_DIR}/build"
+
+  ;;
+
+  build-backend )
+
+    OS=linux
+    ARCH=amd64
+    SERVICE_NAME="build-${OS}-${ARCH}"
+    ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
+
+    mkdir -p ${ARTIFACTS_DIR}
+
+#    BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
+#    TAR_FILE=${BIN_FILE}.tgz
+
+    VERSION=${APP_VERSION} docker-compose build --progress=plain ${SERVICE_NAME}
+    copyFileFromService ${SERVICE_NAME} /app/build/artifacts ${ARTIFACTS_DIR}
+#    cd $REPO_DIR/build/
+#    tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
+
   ;;
 
   deploy )
@@ -44,29 +80,11 @@ case $1 in
   echo "> Deploy started , current branch=$CURRENT_BRANCH"
   ./builder.bash validate-release || exit 0
 
-  if [ "$CURRENT_BRANCH" != "master" ]; then
-    echo "> refusing to go ahead outside the master branch"
-    exit 8
-  fi
+  ./builder.bash build-frontend
 
-  echo "> Building frontend files..."
-  docker-compose build --progress=plain build-frontend
-  rm -rf ./src/main/resources/META-INF/resources/static
-  copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
+  ./builder.bash build-backend
 
-  echo "> Build, test and generate the binaries"
-  mkdir -p "${REPO_DIR}/build"
 
-  OS=linux
-  ARCH=amd64
-  SERVICE_NAME="build-${OS}-${ARCH}"
-  BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
-  TAR_FILE=${BIN_FILE}.tgz
-
-  VERSION=${APP_VERSION} docker-compose build --progress=plain ${SERVICE_NAME}
-  copyFileFromService ${SERVICE_NAME} /app/dns-proxy-server ${BIN_FILE}
-  cd $REPO_DIR/build/
-  tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
 
   echo "> Uploading the release artifacts"
   cd $REPO_DIR
