@@ -1,0 +1,37 @@
+FROM ubuntu:22.04
+
+ENV TERM=xterm
+ENV DOCKER_COMPOSE_VERSION=2.15.1
+ENV DOCKER_VERSION=20.10.14
+ENV DOCKER_BUILDKIT=1
+
+RUN mkdir -p /tmp && curl -L https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > /tmp/docker.tgz && \
+	tar -xf /tmp/docker.tgz --strip 1 -C /usr/local/bin && \
+	curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose && \
+	chmod +x /usr/bin/docker-compose &&\
+	rm -rf /tmp/*
+
+# Installing portainer deployer
+ENV PORTAINER_CLI_VERSION=0.6.0
+RUN curl -L https://github.com/mageddo-projects/portainer-cli/releases/download/${PORTAINER_CLI_VERSION}/portainer-cli-${PORTAINER_CLI_VERSION}.zip > /tmp/portainer-cli.zip &&\
+	unzip /tmp/portainer-cli.zip -d / &&\
+	ln -s /portainer-cli-*/bin/portainer-cli /bin/portainer-cli &&\
+	rm -rf /tmp/*
+
+COPY files/jdk-switcher.sh /usr/bin
+
+RUN apt-get update && apt-get install -y zip build-essential zlib1g-dev && curl -s "https://get.sdkman.io" | bash
+
+RUN groupadd docker && usermod -a -G docker jenkins && id
+USER jenkins
+
+
+ENV GITHUB_CLI_URL='https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh'
+RUN apt update &&\
+  apt install -y jq hugo git &&\
+  curl -s -L ${GITHUB_CLI_URL} > /usr/bin/github-cli &&\
+  chmod +x /usr/bin/github-cli
+
+COPY ./builder.bash /bin/builder.bash
+COPY . ./app
+WORKDIR /app
