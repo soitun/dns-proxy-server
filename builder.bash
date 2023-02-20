@@ -53,6 +53,8 @@ case $1 in
   docker-compose build --progress=plain build-frontend
   copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
 
+  touch ./src/main/resources/META-INF/resources/static/marroi
+
   echo "> Build, test and generate the binaries"
   mkdir -p "${REPO_DIR}/build"
 
