@@ -4,6 +4,7 @@ set -e
 
 REPO_DIR=`pwd`
 APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')
+VERSION=$APP_VERSION
 
 echo "> builder.bash version=${APP_VERSION}, path=${REPO_DIR}"
 
@@ -16,11 +17,6 @@ copyFileFromService(){
   docker-compose up --no-start --build --force-recreate $serviceName 1>&2
   id=$(docker ps -a | grep $serviceName | awk '{print $1}')
   docker cp "$id:$from" "$to"
-}
-
-applyVersion(){
-  echo "> Apply version"
-  sed -i -E "s/(dns-proxy-server.*)[0-9]+\.[0-9]+\..+/\1$APP_VERSION/" docker-compose.yml
 }
 
 generateDocs(){
@@ -70,7 +66,7 @@ case $1 in
   docker-compose build --progress=plain ${SERVICE_NAME}
   copyFileFromService ${SERVICE_NAME} /app/dns-proxy-server ${BIN_FILE}
   cd $REPO_DIR/build/
-  tar --exclude=*.tgz -czf $TAR_FILE ${BIN_FILE}
+  tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
 
   echo "> Uploading the release artifacts"
   cd $REPO_DIR
