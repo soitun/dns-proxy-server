@@ -4,7 +4,6 @@ set -e
 
 REPO_DIR=`pwd`
 APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')
-VERSION=$APP_VERSION
 
 echo "> builder.bash version=${APP_VERSION}, path=${REPO_DIR}"
 
@@ -63,7 +62,7 @@ case $1 in
   BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
   TAR_FILE=${BIN_FILE}.tgz
 
-  docker-compose build --progress=plain ${SERVICE_NAME}
+  VERSION=${APP_VERSION} docker-compose build --progress=plain ${SERVICE_NAME}
   copyFileFromService ${SERVICE_NAME} /app/dns-proxy-server ${BIN_FILE}
   cd $REPO_DIR/build/
   tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
@@ -73,11 +72,11 @@ case $1 in
   DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
   github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" $REPO_DIR/build/*.tgz
 
-	echo "> Push docker images to docker hub"
+  echo "> Push docker images to docker hub"
 #	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
 #	docker tag defreitas/dns-proxy-server:${APP_VERSION} defreitas/dns-proxy-server:latest &&\
-	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
-	docker-compose push build-linux-amd64
+  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
+  VERSION=${APP_VERSION} docker-compose push build-linux-amd64
 #	docker-compose push prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&
 #	docker push defreitas/dns-proxy-server:latest
 
