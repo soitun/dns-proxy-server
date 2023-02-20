@@ -63,7 +63,7 @@ case $1 in
   build-backend )
 
     OS=linux
-    ARCH=$1
+    ARCH=$2
     BUILD_SERVICE_NAME="build-${OS}-${ARCH}"
     IMAGE_SERVICE_NAME="image-${OS}-${ARCH}"
     ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
@@ -109,7 +109,7 @@ case $1 in
     echo "> Push docker images to docker hub"
     docker tag defreitas/dns-proxy-server:${APP_VERSION} defreitas/dns-proxy-server:latest &&\
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
-    VERSION=${APP_VERSION} docker-compose push image-linux-amd64 image-linux-aarch64
+    docker-compose push image-linux-amd64 image-linux-aarch64
   ;;
 
   deploy )
