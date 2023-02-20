@@ -4,6 +4,6 @@ WORKDIR /app
 RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
     ls -lha ./build &&\
     mkdir -p ./artifacts/linux-arm64 &&\
-    mv ./build/dns-proxy-server ./artifacts/linux-arm64/
+    mv ./build/dns-proxy-server ./artifacts/linux-aarch64/
 
 ENTRYPOINT cat
