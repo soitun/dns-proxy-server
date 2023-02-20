@@ -44,10 +44,9 @@ case $1 in
   ;;
 
   build-frontend )
-    ./builder.bash validate-release || exit 0
 
     echo "> Building frontend files..."
-    docker-compose build --progress=plain build-frontend
+    docker-compose build --no-cache --progress=plain build-frontend
     rm -rf ./src/main/resources/META-INF/resources/static
     copyFileFromService build-frontend /static ./src/main/resources/META-INF/resources/static
 
@@ -69,18 +68,19 @@ case $1 in
     mkdir -p ${ARTIFACTS_DIR}
 
     VERSION=${APP_VERSION} \
-    docker-compose build --progress=plain ${BUILD_SERVICE_NAME}
+    docker-compose build --no-cache --progress=plain ${BUILD_SERVICE_NAME}
 
     copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts /tmp/
     mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
 
     VERSION=${APP_VERSION} \
-    docker-compose build --progress=plain "${IMAGE_SERVICE_NAME}"
+    docker-compose build --no-cache --progress=plain "${IMAGE_SERVICE_NAME}"
 
   ;;
 
   compress-upload-artifacts )
     echo "> compress the files ..."
+    ./builder.bash validate-release || exit 0
 
     ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
     COMPRESSED_ARTIFACTS_DIR="${REPO_DIR}/build/compressed-artifacts"
