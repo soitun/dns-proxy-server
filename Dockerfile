@@ -1,6 +1,5 @@
-FROM docker.io/defreitas/tools_graalvm-22.3_java-19_debian-9:0.1.0 AS BUILDER
+FROM docker.io/defreitas/tools_graalvm-22.3_java-19_debian-9:0.1.1 AS BUILDER
 COPY ./ /app
-RUN ls -lha /app/src/main/resources/META-INF/resources/static/
 WORKDIR /app
 RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
     cd build &&\
