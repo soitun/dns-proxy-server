@@ -33,7 +33,10 @@ jobs:
           distribution: 'adopt'
 
       - name: Packages
-        run: sudo apt-get install -y jq hugo
+        run: |
+          sudo apt-get install -y jq hugo &&\
+          curl -s -L https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh > /usr/bin/github-cli &&\
+          chmod +x /usr/bin/github-cli
 
       - name: Deploy
         run: ./builder.bash deploy
