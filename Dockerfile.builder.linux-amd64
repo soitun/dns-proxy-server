@@ -4,8 +4,8 @@ WORKDIR /app
 RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
     ./gradlew build -Dquarkus.package.type=uber-jar -i -x check &&\
     ls -lha ./build &&\
-    mkdir -p ./artifacts/linux-amd64 && mkdir -p ./artifacts/jre &&\
-    mv ./build/dns-proxy-server ./artifacts/linux-amd64/ &&\
-    mv ./build/dns-proxy-server.jar ./artifacts/jre/
+    mkdir -p ./build/artifacts/linux-amd64 && mkdir -p ./build/artifacts/jre &&\
+    mv ./build/dns-proxy-server ./build/artifacts/linux-amd64/ &&\
+    mv ./build/dns-proxy-server.jar ./build/artifacts/jre/
 
 ENTRYPOINT cat
