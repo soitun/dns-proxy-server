@@ -72,3 +72,28 @@ java  -cp './build/dns-proxy-server-3.0.0-alpha-runner.jar:../annotation-process
 docker-compose -f docker-compose-tmp.yml up --build
 
 
+
+## To build native image manually when using quarkus
+Command copied from  `./gradlew clean build -Dquarkus.package.type=native -i -x check`
+
+```bash
+$ cd build/dns-proxy-server-native-image-source-jar
+$ native-image -J-Djava.util.logging.manager=org.jboss.logmanager.LogManager -J-Dsun.nio.ch.maxUpdateArraySize=100 \
+-J-Dlogging.initial-configurator.min-level=500 -J-Dio.netty.leakDetection.level=DISABLED -J-Dio.netty.allocator.maxOrder=3 \
+-J-Dvertx.logger-delegate-factory-class-name=io.quarkus.vertx.core.runtime.VertxLogDelegateFactory \
+-J-Dvertx.disableDnsResolver=true -J-Duser.language=en -J-Duser.country=US -J-Dfile.encoding=UTF-8 \
+--features=io.quarkus.runner.Feature,io.quarkus.runtime.graal.ResourcesFeature,io.quarkus.runtime.graal.DisableLoggingFeature \
+-J--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED -J--add-opens=java.base/java.text=ALL-UNNAMED \
+-J--add-opens=java.base/java.io=ALL-UNNAMED -J--add-opens=java.base/java.lang.invoke=ALL-UNNAMED \
+-J--add-opens=java.base/java.util=ALL-UNNAMED -H:+CollectImageBuildStatistics \
+-H:ImageBuildStatisticsFile=dns-proxy-server-timing-stats.json \
+-H:BuildOutputJSONFile=dns-proxy-server-build-output-stats.json -H:+AllowFoldMethods -J-Djava.awt.headless=true \
+--no-fallback --link-at-build-time -H:+ReportExceptionStackTraces -H:-AddAllCharsets --enable-url-protocols=http \
+-H:NativeLinkerOption=-no-pie -H:-UseServiceLoaderFeature -H:+StackTrace \
+-J--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED \
+-J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED \
+--exclude-config io\.netty\.netty-codec /META-INF/native-image/io\.netty/netty-codec/generated/handlers/reflect-config\.json \
+--exclude-config io\.netty\.netty-handler /META-INF/native-image/io\.netty/netty-handler/generated/handlers/reflect-config\.json dns-proxy-server \
+-jar dns-proxy-server.jar
+
+```
