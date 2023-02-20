@@ -1,4 +1,4 @@
-version: '2.3'
+version: '3'
 services:
 
   # tag:build
@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.builder.linux-aarch64
+    platform: linux/arm64/v8
+
   # end:build
 
   # tag:image
@@ -32,7 +34,8 @@ services:
     image: defreitas/dns-proxy-server:${VERSION:-snapshot}-aarch64
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.aarch64
+
   # end:image
 
   # tag:development

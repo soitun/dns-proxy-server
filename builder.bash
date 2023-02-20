@@ -71,11 +71,6 @@ case $1 in
     mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
 
     docker-compose build "${IMAGE_SERVICE_NAME}"
-#    BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
-#    TAR_FILE=${BIN_FILE}.tgz
-
-#    cd $REPO_DIR/build/
-#    tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
 
   ;;
 
