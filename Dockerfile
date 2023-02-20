@@ -1,12 +1,4 @@
-FROM debian:9-slim AS BUILDER
-# GLIB 2.24
-ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.1/graalvm-ce-java19-linux-amd64-22.3.1.tar.gz'
-ADD ${GRAALVM_URL} /graalvm/graalvm.tgz
-RUN tar --strip 1 -zxvf /graalvm/graalvm.tgz -C /graalvm &&\
-    /graalvm/bin/gu install native-image &&\
-    apt-get update -y &&\
-    apt-get install --force-yes -y build-essential libz-dev zlib1g-dev
-ENV JAVA_HOME=/graalvm
+FROM docker.io/defreitas/tools_graalvm-22.3_java-19_debian-9
 COPY ./ /app
 WORKDIR /app
 RUN ./gradlew clean build -Dquarkus.package.type=native -i &&\
