@@ -2,8 +2,9 @@ FROM defreitas/tools_graalvm-22.3_java-17_debian-9_aarch64:0.1.3
 WORKDIR /app/build
 COPY ./build/artifacts/native-image-source/ /app/build
 
-RUN ls -lha &&\
-  native-image -J-Djava.util.logging.manager=org.jboss.logmanager.LogManager -J-Dsun.nio.ch.maxUpdateArraySize=100 \
+ENV JAVA_TOOL_OPTIONS='-Djdk.lang.Process.launchMechanism=fork'
+RUN uname -m && ls -lha &&\
+  native-image -Djdk.lang.Process.launchMechanism=fork -J-Djdk.lang.Process.launchMechanism=fork -J-Djava.util.logging.manager=org.jboss.logmanager.LogManager -J-Dsun.nio.ch.maxUpdateArraySize=100 \
   -J-Dlogging.initial-configurator.min-level=500 -J-Dio.netty.leakDetection.level=DISABLED -J-Dio.netty.allocator.maxOrder=3 \
   -J-Dvertx.logger-delegate-factory-class-name=io.quarkus.vertx.core.runtime.VertxLogDelegateFactory \
   -J-Dvertx.disableDnsResolver=true -J-Duser.language=en -J-Duser.country=US -J-Dfile.encoding=UTF-8 \
