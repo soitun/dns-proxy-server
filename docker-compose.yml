@@ -1,4 +1,4 @@
-version: '2.3'
+version: '3'
 services:
 
   # tag:build
@@ -9,12 +9,34 @@ services:
     image: defreitas/dns-proxy-server-build-frontend:${VERSION:-snapshot}
 
   build-linux-amd64:
+    image: defreitas/dns-proxy-server-build:${VERSION:-snapshot}-amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.builder.linux-amd64
+
+  build-linux-aarch64:
+    image: defreitas/dns-proxy-server-build:${VERSION:-snapshot}-aarch64
+    build:
+      context: .
+      dockerfile: Dockerfile.builder.linux-aarch64
+    platform: linux/arm64/v8
+
+  # end:build
+
+  # tag:image
+  image-linux-amd64:
     image: defreitas/dns-proxy-server:${VERSION:-snapshot}
     build:
       context: .
       dockerfile: Dockerfile
 
-  # end:build
+  image-linux-aarch64:
+    image: defreitas/dns-proxy-server:${VERSION:-snapshot}-aarch64
+    build:
+      context: .
+      dockerfile: Dockerfile.aarch64
+
+  # end:image
 
   # tag:development
 
@@ -29,5 +51,5 @@ services:
   prod-build-image-dps-arm8x64:
     build:
       context: .
-      dockerfile: Dockerfile.arm8x64
+      dockerfile: Dockerfile.aarch64
     image: defreitas/dns-proxy-server:${VERSION:-snapshot}-arm8x64
