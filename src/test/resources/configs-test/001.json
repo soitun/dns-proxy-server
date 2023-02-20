@@ -1,0 +1,18 @@
+{
+  "defaultDns" : true,
+  "dnsServerPort" : 53,
+  "domain" : "docker",
+  "dpsNetwork" : false,
+  "dpsNetworkAutoConnect" : false,
+  "hostMachineHostname" : "host.docker",
+  "logFile" : "console",
+  "logLevel" : "INFO",
+  "registerContainerNames" : false,
+  "remoteDnsServers" : [ {
+    "ip" : "8.8.8.8",
+    "port" : 53,
+    "rawIP" : "8.8.8.8"
+  } ],
+  "webServerPort" : 5380,
+  "resolvConfPath" : "file:///etc/resolv.conf"
+}
