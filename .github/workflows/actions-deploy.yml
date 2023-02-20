@@ -35,8 +35,9 @@ jobs:
       - name: Packages
         run: |
           sudo apt-get install -y jq hugo &&\
-          sudo curl -s -L https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh > /usr/bin/github-cli &&\
-          sudo chmod +x /usr/bin/github-cli
+          curl -s -L https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh > $HOME/.local/bin/github-cli &&\
+          chmod +x $HOME/.local/bin/github-cli &&\
+          github-cli
 
       - name: Deploy
         run: ./builder.bash deploy

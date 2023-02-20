@@ -4,4 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.deploy
-    command: /bin/builder.bash
+    command: /bin/builder.bash deploy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
