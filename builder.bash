@@ -60,16 +60,20 @@ case $1 in
 
     OS=linux
     ARCH=amd64
-    SERVICE_NAME="build-${OS}-${ARCH}"
+    BUILD_SERVICE_NAME="build-${OS}-${ARCH}"
+    IMAGE_SERVICE_NAME="image-${OS}-${ARCH}"
     ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
 
     mkdir -p ${ARTIFACTS_DIR}
 
+    VERSION=${APP_VERSION} docker-compose build --progress=plain ${BUILD_SERVICE_NAME}
+    copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts /tmp/
+    mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
+
+    docker-compose build "${IMAGE_SERVICE_NAME}"
 #    BIN_FILE="${REPO_DIR}/build/dns-proxy-server-${OS}-${ARCH}-${APP_VERSION}"
 #    TAR_FILE=${BIN_FILE}.tgz
 
-    VERSION=${APP_VERSION} docker-compose build --progress=plain ${SERVICE_NAME}
-    copyFileFromService ${SERVICE_NAME} /app/build/artifacts ${ARTIFACTS_DIR}
 #    cd $REPO_DIR/build/
 #    tar --exclude=*.tgz -czf $TAR_FILE $(basename ${BIN_FILE})
 

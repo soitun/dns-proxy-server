@@ -12,9 +12,16 @@ services:
     image: defreitas/dns-proxy-server:${VERSION:-snapshot}
     build:
       context: .
-      dockerfile: Dockerfile
-
+      dockerfile: Dockerfile.builder.linux-amd64
   # end:build
+
+  # tag:image
+  image-linux-amd64:
+    image: defreitas/dns-proxy-server:${VERSION:-snapshot}
+    build:
+      context: .
+      dockerfile: Dockerfile
+  # end:image
 
   # tag:development
 
