@@ -59,47 +59,69 @@ case $1 in
   build-backend )
 
     OS=linux
-#    ARCH=amd64
-    ARCH=aarch64
+    ARCH=$1
     BUILD_SERVICE_NAME="build-${OS}-${ARCH}"
     IMAGE_SERVICE_NAME="image-${OS}-${ARCH}"
     ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
 
+    echo "> building backend to: os=${OS}, arch=${ARCH}"
+
     mkdir -p ${ARTIFACTS_DIR}
 
-    VERSION=${APP_VERSION} docker-compose build --progress=plain ${BUILD_SERVICE_NAME}
+    VERSION=${APP_VERSION} \
+    docker-compose build --progress=plain ${BUILD_SERVICE_NAME}
 
     copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts /tmp/
     mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
 
-    VERSION=${APP_VERSION} docker-compose build "${IMAGE_SERVICE_NAME}"
+    VERSION=${APP_VERSION} \
+    docker-compose build --progress=plain "${IMAGE_SERVICE_NAME}"
 
+  ;;
+
+  compress-upload-artifacts )
+    echo "> compress the files ..."
+
+    ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
+    COMPRESSED_ARTIFACTS_DIR="${REPO_DIR}/build/compressed-artifacts"
+
+    mkdir -p ${COMPRESSED_ARTIFACTS_DIR}
+    cd ${ARTIFACTS_DIR}
+
+    ls ${ARTIFACTS_DIR} | grep -v "native-image-source" |\
+    while read -r f ; do
+      tgz="${COMPRESSED_ARTIFACTS_DIR}/dns-proxy-server-${f}.tgz"
+      tar -czvf ${tgz} ${f}
+      echo "> compressed ${f} to ${tgz} ..."
+    done
+
+    echo "> Uploading the release artifacts"
+    cd $REPO_DIR
+    DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
+    github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" ${COMPRESSED_ARTIFACTS_DIR}/*.tgz
+
+  ;;
+
+  docker-push )
+    echo "> Push docker images to docker hub"
+    docker tag defreitas/dns-proxy-server:${APP_VERSION} defreitas/dns-proxy-server:latest &&\
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
+    VERSION=${APP_VERSION} docker-compose push image-linux-amd64 image-linux-aarch64
   ;;
 
   deploy )
 
   echo "> Deploy started , current branch=$CURRENT_BRANCH"
+
   ./builder.bash validate-release || exit 0
 
   ./builder.bash build-frontend
+  ./builder.bash build-backend amd64 #also builds the jar
+  ./builder.bash build-backend aarch64
 
-  ./builder.bash build-backend
+  ./builder.bash compress-upload-artifacts
 
-
-
-  echo "> Uploading the release artifacts"
-  cd $REPO_DIR
-  DESC=$(cat RELEASE-NOTES.md | awk 'BEGIN {RS="|"} {print substr($0, 0, index(substr($0, 3), "###"))}' | sed ':a;N;$!ba;s/\n/\\r\\n/g')
-  github-cli release mageddo dns-proxy-server $APP_VERSION $CURRENT_BRANCH "${DESC}" $REPO_DIR/build/*.tgz
-
-  echo "> Push docker images to docker hub"
-#	docker-compose build prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&\
-#	docker tag defreitas/dns-proxy-server:${APP_VERSION} defreitas/dns-proxy-server:latest &&\
-  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&\
-  VERSION=${APP_VERSION} docker-compose push build-linux-amd64
-#	docker-compose push prod-build-image-dps prod-build-image-dps-arm7x86 prod-build-image-dps-arm8x64 &&
-#	docker push defreitas/dns-proxy-server:latest
-
+  ./builder.bash docker-push
   ;;
 
   deploy-docs )
