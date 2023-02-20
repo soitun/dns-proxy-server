@@ -26,24 +26,8 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Environment
-        uses: actions/setup-java@v3
-        with:
-          java-version: '19'
-          distribution: 'adopt'
-
-      - name: Packages
-        run: |
-          sudo apt-get install -y jq hugo &&\
-          mkdir -p $HOME/.local/bin &&\
-          curl -s -L https://github.com/mageddo-projects/github-cli/releases/download/v1.8/github-cli.sh > $HOME/.local/bin/github-cli &&\
-          echo "Setup github cli" &&\
-          chmod +x $HOME/.local/bin/github-cli &&\
-          echo "Running github cli" &&\
-          github-cli
-
       - name: Deploy
-        run: ./builder.bash deploy
+        run: docker-compose -f docker-compose-deploy.yml up --force-create
         env:
           # github token to deploy the binary
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
