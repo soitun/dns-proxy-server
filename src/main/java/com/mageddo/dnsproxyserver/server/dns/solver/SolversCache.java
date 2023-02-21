@@ -36,7 +36,7 @@ public class SolversCache {
     });
     return Optional
       .ofNullable(res)
-      .map(it -> Messages.copyAnswers(reqMsg, it))
+      .map(it -> Messages.matchId(reqMsg, it))
       .orElse(null);
   }
 
@@ -45,4 +45,7 @@ public class SolversCache {
     return String.format("%s-%s", type != null ? type : UUID.randomUUID(), findQuestionHostname(reqMsg));
   }
 
+  public int getSize(){
+    return this.cache.getSize();
+  }
 }
