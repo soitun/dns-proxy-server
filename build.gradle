@@ -25,7 +25,19 @@ configurations.all {
   }
 }
 
+configure([tasks.compileJava]) {
+  sourceCompatibility = 19
+  options.release = 8
+
+  javaCompiler = javaToolchains.compilerFor {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
 dependencies {
+
+  annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:0.4.2'
+  compileOnly 'com.github.bsideup.jabel:jabel-javac-plugin:0.4.2'
 
   compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
