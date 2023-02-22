@@ -1,5 +1,7 @@
 package com.mageddo.dnsproxyserver.config;
 
+import com.mageddo.dnsproxyserver.config.entrypoint.LogLevel;
+import com.mageddo.dnsproxyserver.templates.ConfigFlagTemplates;
 import com.mageddo.dnsproxyserver.templates.EnvTemplates;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.mageddo.utils.TestUtils.readAndSortJsonExcluding;
 import static com.mageddo.utils.TestUtils.readAsStream;
@@ -89,5 +92,30 @@ class ConfigsTest {
       firstEntry.getId() < currentNanoTime,
       String.format("id=%s, currentTimeInMillis=%s", firstEntry.getId(), currentNanoTime)
     );
+  }
+
+  @Test
+  void mustBuildConfPathRelativeToWorkDir(){
+    // arrange
+    final var flags = ConfigFlagTemplates.defaultWithConfigPath(Paths.get("conf/config.json"));
+    final var currentPath = Paths.get("/tmp/");
+
+    // act
+    final var path = Configs.buildConfigPath(flags, currentPath);
+
+    // assert
+    assertEquals("/tmp/conf/config.json", path.toString());
+  }
+
+  @Test
+  void mustParseLowerCaseLogLevel(){
+    // arrange
+    final var args = new String[]{"--log-level", "warning"};
+
+    // act
+    final var config = Configs.buildAndRegister(args);
+
+    // assert
+    assertEquals(LogLevel.WARNING, config.getLogLevel());
   }
 }
