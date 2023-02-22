@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.91.2" />
+    <meta name="generator" content="Hugo 0.55.4" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Getting Started :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/theme.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677037374" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/theme.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677079665" rel="stylesheet">
     
-      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677037374" rel="stylesheet">
+      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677079665" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677079665"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677037374"></script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677079665"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677079665"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/3.1\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677079665"></script>
 
     
   </div>
@@ -741,7 +741,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents"></nav>
+
     </div>
 </div>
 
@@ -767,17 +767,23 @@
 
 
 	<p>Running it</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm --hostname dns.mageddo <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>-v /var/run/docker.sock:/var/run/docker.sock <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>-v /etc/resolv.conf:/etc/resolv.conf <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>defreitas/dns-proxy-server
-</code></pre></div><p>Try it out</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ping dns.mageddo
-PING dns.mageddo <span style="color:#f92672">(</span>172.17.0.4<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
-<span style="color:#ae81ff">64</span> bytes from 172.17.0.4: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.063 ms
-<span style="color:#ae81ff">64</span> bytes from 172.17.0.4: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.074 ms
-<span style="color:#ae81ff">64</span> bytes from 172.17.0.4: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.064 ms
-</code></pre></div><p><a href="/dns-proxy-server/3.1/en/1-getting-started/running-it/">Click here</a> to see more details about run DPS</p>
+
+<pre><code class="language-bash">$ docker run --rm --hostname dns.mageddo \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v /etc/resolv.conf:/etc/resolv.conf \
+defreitas/dns-proxy-server
+</code></pre>
+
+<p>Try it out</p>
+
+<pre><code class="language-bash">$ ping dns.mageddo
+PING dns.mageddo (172.17.0.4) 56(84) bytes of data.
+64 bytes from 172.17.0.4: icmp_seq=1 ttl=64 time=0.063 ms
+64 bytes from 172.17.0.4: icmp_seq=2 ttl=64 time=0.074 ms
+64 bytes from 172.17.0.4: icmp_seq=3 ttl=64 time=0.064 ms
+</code></pre>
+
+<p><a href="/dns-proxy-server/3.1/en/1-getting-started/running-it/">Click here</a> to see more details about run DPS</p>
 
 
 
@@ -1163,20 +1169,20 @@ PING dns.mageddo <span style="color:#f92672">(</span>172.17.0.4<span style="colo
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677079665"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/learn.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/learn.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677079665"></script>
 
-    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677037374" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677037374"></script>
+    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677079665" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677079665"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

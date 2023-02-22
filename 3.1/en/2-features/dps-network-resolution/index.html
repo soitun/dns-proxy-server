@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.91.2" />
+    <meta name="generator" content="Hugo 0.55.4" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>DPS docker network :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/theme.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677037374" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/theme.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677079665" rel="stylesheet">
     
-      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677037374" rel="stylesheet">
+      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677079665" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677079665"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677037374"></script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677079665"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677079665"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/3.1\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677079665"></script>
 
     
   </div>
@@ -748,13 +748,15 @@
                     <div class="progress">
     <div class="wrapper">
 <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#simulating-the-issue">Simulating the issue</a></li>
-      </ul>
-    </li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#why-it-is-necessary">Why it is necessary</a></li>
+</ul></li>
+</ul></li>
+</ul>
 </nav>
     </div>
 </div>
@@ -780,71 +782,95 @@
 
 
 
-	<p>At previous versions <em>DPS</em> had a caveat where you only would be able to access other docker containers, access host or
-be accessed if they were at a bridge network, DPS inclusively, this bridge network also had to be the first defined
-on container networks to have sure <em>DPS</em> would solve to its IP, since <strong>2.15.0</strong> <em>DPS</em> can do this job for you.</p>
-<p>It is a really helpful behavior when you are in development but maybe a security issue when you are in production, this
-way you can enable or disable this feature if you want.</p>
+	
+
+<p>Since: 2.15.0</p>
+
+<p>DPS can create its own network which is called <code>dps</code> and connect all running containers to that network this way
+all containers can comunicate to each other, when container A solve container B IP, which will be able to
+ping B cause they are on the same network (dps). Observes that you are also able to create your own network and
+make this job of connect the containers you want to be able to talk each other.</p>
+
 <p><strong>Activating by command line</strong></p>
-<pre><code>./dns-proxy-server --dps-network-auto-connect
+
+<pre><code class="language-bash">./dns-proxy-server --dps-network-auto-connect
 </code></pre>
+
 <p><strong>Configuring at json config file</strong></p>
-<pre tabindex="0"><code>...
+
+<pre><code>...
 &quot;dpsNetworkAutoConnect&quot;: true
 ...
-</code></pre><p><strong>Using environment variable</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">MG_DPS_NETWORK_AUTO_CONNECT<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ./dns-proxy-server
-</code></pre></div><blockquote>
-<p>OBS: even if this feature is disabled a fix was made and now DPS gives priority to solve bridge networks over the
+</code></pre>
+
+<p><strong>Using environment variable</strong></p>
+
+<pre><code class="language-bash">MG_DPS_NETWORK_AUTO_CONNECT=1 ./dns-proxy-server
+</code></pre>
+
+<blockquote>
+<p>OBS: with this feature disabled or not, DPS gives priority to solve bridge networks over the
 others (if a bridge network were found for the container)</p>
 </blockquote>
-<h3 id="simulating-the-issue">Simulating the issue</h3>
+
+<h3 id="why-it-is-necessary">Why it is necessary</h3>
+
 <p>We can simulate the issue by the following example:</p>
-<p>You have a container running on a overlay network, it means the container can not be accessed by the host or by
-containers which are not on its network</p>
-<p>docker-compose.yml</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
-<span style="color:#f92672">services</span>:
-  <span style="color:#f92672">nginx-1</span>:
-    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx</span>
-    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">nginx-1</span>
-    <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">nginx-1.app</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">nginx-network</span>
 
-<span style="color:#f92672">networks</span>:
-  <span style="color:#f92672">nginx-network</span>:
-    <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">overlay</span>
-</code></pre></div><p>starting up the container and testing</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker-compose up
-$ curl --connect-timeout <span style="color:#ae81ff">2</span> nginx-1.app
-curl: <span style="color:#f92672">(</span>7<span style="color:#f92672">)</span> Failed to connect to nginx-1.app port 80: Connection timed out
-</code></pre></div><p>The solution for this is to specify a bridge network on the <strong>docker-compose.yml</strong> and also specify
-that you wanna solve the ip of the bridge network instead of the overlay one</p>
-<p>docker-compose.yml</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
-<span style="color:#f92672">services</span>:
-  <span style="color:#f92672">nginx-1</span>:
-    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx</span>
-    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">nginx-1</span>
-    <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">nginx-1.app</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">nginx-network</span>
-      - <span style="color:#ae81ff">nginx-network-bridge</span>
-    <span style="color:#f92672">labels</span>:
-      <span style="color:#f92672">dps.network</span>: <span style="color:#ae81ff">tmp_nginx-network-bridge</span>
+<p>You have a container running on an overlay network (so you need to be running docker in a swarm mode),
+then it means the container can not be accessed by the host or by containers which are not in this same network</p>
 
-<span style="color:#f92672">networks</span>:
-  <span style="color:#f92672">nginx-network</span>:
-    <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">overlay</span>
-  <span style="color:#f92672">nginx-network-bridge</span>:
-    <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">bridge</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker-compose up
-$ curl -I --connect-timeout <span style="color:#ae81ff">2</span> nginx-3.app
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-</code></pre></div><p>So since 2.15.0 DPS can do all of this for you just by creating a bridge network and making sure all containers are
-connected to it, this way you will not have issues to access a container from another,
-the host from a container or vice versa.</p>
+<p>docker-compose.yml</p>
+
+<pre><code class="language-yaml">version: '3.2'
+services:
+  nginx-1:
+    image: nginx
+    container_name: nginx-1
+    hostname: nginx-1.app
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: overlay
+    attachable: true
+</code></pre>
+
+<p>starting up the container and testing</p>
+
+<pre><code class="language-bash">$ docker-compose up
+$ curl --connect-timeout 2 nginx-1.app
+curl: (7) Failed to connect to nginx-1.app port 80: Connection timed out
+</code></pre>
+
+<p>The solution for it can be use <code>dps</code> network or specify a bridge network on the <strong>docker-compose.yml</strong></p>
+
+<p>docker-compose.yml</p>
+
+<pre><code class="language-yaml">version: '3.2'
+services:
+  nginx-1:
+    image: nginx
+    container_name: nginx-1
+    hostname: nginx-1.app
+    networks:
+      - nginx-network
+      - nginx-network-bridge
+
+networks:
+  nginx-network:
+    driver: overlay
+    attachable: true
+  nginx-network-bridge:
+    driver: bridge
+</code></pre>
+
+<pre><code class="language-bash">$ docker-compose down
+$ docker-compose up
+$ curl -I --connect-timeout 2 nginx-1.app
+HTTP/1.1 200 OK
+</code></pre>
 
 
 
@@ -1237,20 +1263,20 @@ the host from a container or vice versa.</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677079665"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/learn.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/learn.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677079665"></script>
 
-    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677037374" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677037374"></script>
+    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677079665" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677079665"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

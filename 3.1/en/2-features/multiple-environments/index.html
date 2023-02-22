@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.91.2" />
+    <meta name="generator" content="Hugo 0.55.4" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Multiple Environments :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/theme.css?1677037374" rel="stylesheet">
-    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677037374" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/nucleus.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/fontawesome-all.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hybrid.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/featherlight.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/perfect-scrollbar.min.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/auto-complete.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/atom-one-dark-reasonable.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/theme.css?1677079665" rel="stylesheet">
+    <link href="/dns-proxy-server/3.1/css/hugo-theme.css?1677079665" rel="stylesheet">
     
-      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677037374" rel="stylesheet">
+      <link href="/dns-proxy-server/3.1/css/theme-mine.css?1677079665" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery-3.3.1.min.js?1677079665"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677037374"></script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/lunr.min.js?1677079665"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/auto-complete.js?1677079665"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/3.1\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677037374"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.1/js/search.js?1677079665"></script>
 
     
   </div>
@@ -747,7 +747,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents"></nav>
+
     </div>
 </div>
 
@@ -775,14 +775,19 @@
 	<p>As <strong>DPS 2.18</strong> you can group your hostnames by environments, this is a very useful feature when you wanna solve
 the same hostname to <strong>different IPs</strong> depending of what you&rsquo;re doing, e.g developing in your machine or testing the QA
 environment as the example below:</p>
-<p>Let&rsquo;s say you&rsquo;re developing at the <strong>acme.com</strong> so you wanna to solve it to your local machine, then you can configure
+
+<p>Let&rsquo;s say you&rsquo;re developing at the <strong>acme.com</strong> so you wanna solve it to your local machine, then you can configure
 DPS local entries as the following</p>
-<p><img src="https://i.imgur.com/tHwWeUT.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/tHwWeUT.png" alt="" /></p>
+
 <p>When you are done with your work and deployed to the QA environment and wanna test it, let&rsquo;s say your app is deployed at
-the QA machine addressed by the IP <strong>192.168.0.50</strong>, so you can create a new env on <em>DPS</em> e.g. <em>QA</em> and create
-the <strong>acme.com</strong> <em>A</em> record pointing to the <strong>192.168.0.50</strong> address.</p>
-<p><img src="https://i.imgur.com/nAMCxcC.png" alt=""></p>
-<p>This way you can swap between local and qa environments in a fast and convenient aproach</p>
+the QA machine addressed by the IP <code>192.168.0.50</code>, so you can create a new env on <strong>DPS</strong> e.g. <strong>QA</strong> and create
+the <code>acme.com</code> <strong>A</strong> record pointing to the <code>192.168.0.50</code> address.</p>
+
+<p><img src="https://i.imgur.com/nAMCxcC.png" alt="" /></p>
+
+<p>This way you can swap between <strong>local</strong> and <strong>qa</strong> environments in a fast and convenient approach</p>
 
 
 
@@ -1175,20 +1180,20 @@ the <strong>acme.com</strong> <em>A</em> record pointing to the <strong>192.168.
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/clipboard.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/perfect-scrollbar.jquery.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/jquery.sticky.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/featherlight.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/html5shiv-printshiv.min.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/highlight.pack.js?1677079665"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/learn.js?1677037374"></script>
-    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677037374"></script>
+    <script src="/dns-proxy-server/3.1/js/modernizr.custom-3.6.0.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/learn.js?1677079665"></script>
+    <script src="/dns-proxy-server/3.1/js/hugo-learn.js?1677079665"></script>
 
-    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677037374" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677037374"></script>
+    <link href="/dns-proxy-server/3.1/mermaid/mermaid.css?1677079665" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/3.1/mermaid/mermaid.js?1677079665"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

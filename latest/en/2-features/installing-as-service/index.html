@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.91.2" />
+    <meta name="generator" content="Hugo 0.55.4" />
     <meta name="description" content="Documentation for DPS">
 <meta name="author" content="Elvis Souza">
 
@@ -12,20 +12,20 @@
     <title>Installing DPS as service :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1677033101" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1677033101" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1677079666" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1677079666" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1677033101" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1677079666" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1677033101"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1677079666"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1677033101"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1677033101"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1677079666"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1677079666"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1677033101"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1677079666"></script>
 
     
   </div>
@@ -748,14 +748,16 @@
                     <div class="progress">
     <div class="wrapper">
 <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#installing-as-docker-service">Installing as docker service</a></li>
-        <li><a href="#installing-as-linux-service">Installing as linux service</a></li>
-      </ul>
-    </li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#installing-as-docker-service">Installing as docker service</a></li>
+<li><a href="#installing-as-linux-service">Installing as linux service</a></li>
+</ul></li>
+</ul></li>
+</ul>
 </nav>
     </div>
 </div>
@@ -781,30 +783,46 @@
 
 
 
-	<h3 id="installing-as-docker-service">Installing as docker service</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run --hostname dns.mageddo --name dns-proxy-server -p 5380:5380 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --restart<span style="color:#f92672">=</span>unless-stopped -d <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -v /opt/dns-proxy-server/conf:/app/conf <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -v /var/run/docker.sock:/var/run/docker.sock <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -v /etc/resolv.conf:/etc/resolv.conf <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  defreitas/dns-proxy-server
-</code></pre></div><h3 id="installing-as-linux-service">Installing as linux service</h3>
+	
+
+<h3 id="installing-as-docker-service">Installing as docker service</h3>
+
+<pre><code class="language-bash">docker run --hostname dns.mageddo --name dns-proxy-server -p 5380:5380 \
+  --restart=unless-stopped -d \
+  -v /opt/dns-proxy-server/conf:/app/conf \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /etc/resolv.conf:/etc/resolv.conf \
+  defreitas/dns-proxy-server
+</code></pre>
+
+<h3 id="installing-as-linux-service">Installing as linux service</h3>
+
 <ol>
 <li>Download the <a href="https://github.com/mageddo/dns-proxy-server/releases">latest release</a> and extract it</li>
 <li>Run the service installer</li>
 </ol>
-<pre tabindex="0"><code>$ sudo ./dns-proxy-server -service=docker
-</code></pre><ol start="3">
-<li>Then follow the progress at the log file</li>
+
+<pre><code>$ sudo ./dns-proxy-server -service=docker
+</code></pre>
+
+<ol>
+<li>Then follow the progress at the log file
+<code>
+$ tail -f /var/log/dns-proxy-server.log 
+</code></li>
 </ol>
-<pre tabindex="0"><code>$ tail -f /var/log/dns-proxy-server.log 
-</code></pre><p>this way it will start with the <strong>OS</strong></p>
+
+<p>this way it will start with the <strong>OS</strong></p>
+
 <p>if you want to stop</p>
+
 <pre><code>$ sudo service dns-proxy-server stop
 Stopping service…
 Service stopped
 </code></pre>
+
 <p>if you don&rsquo;t want this service anymore</p>
+
 <pre><code>$ sudo service dns-proxy-server uninstall
 Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] 
 yes
@@ -1201,20 +1219,20 @@ yes
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1677033101"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1677079666"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1677033101"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1677033101"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1677079666"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1677079666"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1677033101" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1677033101"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1677079666" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1677079666"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
