@@ -9,7 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -27,7 +29,8 @@ public class DockerNetworkService {
   public static final String NETWORK_BRIDGE = BRIDGE.lowerCaseName();
   public static final String NETWORK_MODE_HOST = HOST.lowerCaseName();
 
-  private final DockerNetworkDAO dockerNetworkDAO;
+  private final DockerNetworkDAO networkDAO;
+  private final ContainerDAO containerDAO;
 
   public String findBestIpMatch(
     InspectContainerResponse c, Collection<String> networksNames, Supplier<String> hostMachineSup
@@ -51,10 +54,10 @@ public class DockerNetworkService {
       networksNames, c.getName()
     );
 
-      return networks
+    return networks
       .keySet()
       .stream()
-      .map(this.dockerNetworkDAO::findNetwork)
+      .map(this.networkDAO::findNetwork)
       .min(NetworkComparator::compare)
       .map(network -> {
         final var name = network.getName();
@@ -102,5 +105,19 @@ public class DockerNetworkService {
     }
     final var networkMode = config.getNetworkMode();
     return Objects.equals(networkMode, NETWORK_MODE_HOST);
+  }
+
+  public List<String> disconnectContainers(String id) {
+    final var removedContainers = new ArrayList<String>();
+    final var network = this.networkDAO.findNetwork(id);
+    if (network == null) {
+      return null;
+    }
+    final var containers = this.containerDAO.findNetworkContainers(id);
+    for (final var container : containers) {
+      this.networkDAO.disconnect(id, container.getId());
+      removedContainers.add(container.getId());
+    }
+    return removedContainers;
   }
 }
