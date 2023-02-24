@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 class DnsQueryTCPHandlerTest {
 
@@ -48,6 +47,8 @@ class DnsQueryTCPHandlerTest {
           final var data = query.toWire();
           writeQueryMsgSlowly(queryOut, data);
 
+          // wait some time before "timeout"
+          Threads.sleep(50);
           IOUtils.closeQuietly(queryOut);
 
         },
