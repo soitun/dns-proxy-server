@@ -1,3 +1,6 @@
+### 3.1.5-beta
+* Fixing UDP binding server to any interface on the machine wasn't working for some clients
+ 
 ### 3.1.4-beta
 * Binding UDP server to any interface on the machine
 * Fallback to 127.0.0.1 interface when the real one is missing
