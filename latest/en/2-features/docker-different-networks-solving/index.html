@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/dns-proxy-server/latest/images/favicon.png" type="image/png">
 
-    <title>Installing DPS as service :: DNS Proxy Server</title>
+    <title>Different Docker Networks Solving :: DNS Proxy Server</title>
 
     
     <link href="/dns-proxy-server/latest/css/nucleus.css?1677331374" rel="stylesheet">
@@ -36,7 +36,7 @@
     <link href="/dns-proxy-server/latest/css/style.css" rel="stylesheet" type="text/css" />
 
   </head>
-  <body class="" data-url="/dns-proxy-server/latest/en/2-features/installing-as-service/">
+  <body class="" data-url="/dns-proxy-server/latest/en/2-features/docker-different-networks-solving/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -220,8 +220,8 @@
   
     
     <li data-nav-id="/dns-proxy-server/latest/en/2-features/installing-as-service/" title="Installing DPS as service" class="dd-item 
-        parent
-        active
+        
+        
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/installing-as-service/">
@@ -246,8 +246,8 @@
   
     
     <li data-nav-id="/dns-proxy-server/latest/en/2-features/docker-different-networks-solving/" title="Different Docker Networks Solving" class="dd-item 
-        
-        
+        parent
+        active
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/docker-different-networks-solving/">
@@ -670,7 +670,7 @@
                   
                     
                     
-                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/latest/en/2-features/installing-as-service/" selected>English</option>
+                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/latest/en/2-features/docker-different-networks-solving/" selected>English</option>
                     
                   
               
@@ -729,7 +729,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/2-features/installing-as-service/_index.en.md" target="blank">
+                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/2-features/docker-different-networks-solving/_index.en.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">Edit this page</span>
                     </a>
@@ -760,7 +760,7 @@
             
           
           
-            <a href='/dns-proxy-server/latest/en/'>Getting Started</a> > <a href='/dns-proxy-server/latest/en/2-features/'>Features</a> > Installing DPS as service
+            <a href='/dns-proxy-server/latest/en/'>Getting Started</a> > <a href='/dns-proxy-server/latest/en/2-features/'>Features</a> > Different Docker Networks Solving
           
          
           
@@ -773,18 +773,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#installing-as-docker-service">Installing as docker service</a></li>
-<li><a href="#installing-as-linux-service">Installing as linux service</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
+
     </div>
 </div>
 
@@ -800,7 +789,7 @@
           
             <h1>
               
-              Installing DPS as service
+              Different Docker Networks Solving
             </h1>
           
 
@@ -809,50 +798,53 @@
 
 
 
-	
+	<p>DPS can lead with docker containers with different networks, it will find the target container best matching IP,
+best matching means the IP which have the most chances of be accessible from the client,
+no distinction if the client is another container or not.</p>
 
-<h3 id="installing-as-docker-service">Installing as docker service</h3>
+<p>You can <a href="https://github.com/mageddo/dns-proxy-server/tree/master/examples/docker-different-networks/">click here</a> to see a pratical working sample.</p>
 
-<pre><code class="language-bash">docker run --hostname dns.mageddo --name dns-proxy-server -p 5380:5380 \
-  --restart=unless-stopped -d \
-  -v /opt/dns-proxy-server/conf:/app/conf \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /etc/resolv.conf:/etc/resolv.conf \
-  defreitas/dns-proxy-server
-</code></pre>
+<p>The following table describles the possible scenarios involving docker container networks, this is an automatic decision
+made by DPS, if you want to enforce some network resolution you can use <code>dps.network</code>
+<a href="/dns-proxy-server/latest/en/2-features/specify-from-which-network-solve-container/">label</a> .</p>
 
-<h3 id="installing-as-linux-service">Installing as linux service</h3>
+<table>
+<thead>
+<tr>
+<th>DPS Container Network</th>
+<th>Client Container Network</th>
+<th>Target Container Network</th>
+<th align="center">Result</th>
+<th>Description</th>
+</tr>
+</thead>
 
-<ol>
-<li>Download the <a href="https://github.com/mageddo/dns-proxy-server/releases">latest release</a> and extract it</li>
-<li>Run the service installer</li>
-</ol>
+<tbody>
+<tr>
+<td>any:bridge</td>
+<td>any:bridge</td>
+<td>any:bridge</td>
+<td align="center">OK</td>
+<td>Everything works fine when all the networks are using bridge driver, no problem if the networks are different</td>
+</tr>
 
-<pre><code>$ sudo ./dns-proxy-server -service=docker
-</code></pre>
+<tr>
+<td>Network x</td>
+<td>Network x</td>
+<td>Network x</td>
+<td align="center">OK</td>
+<td>Even with restrictive networks (like overlay driver) the resolution will work, since all containers are connected to this same network.</td>
+</tr>
 
-<ol>
-<li>Then follow the progress at the log file
-<code>
-$ tail -f /var/log/dns-proxy-server.log 
-</code></li>
-</ol>
-
-<p>this way it will start with the <strong>OS</strong></p>
-
-<p>if you want to stop</p>
-
-<pre><code>$ sudo service dns-proxy-server stop
-Stopping service…
-Service stopped
-</code></pre>
-
-<p>if you don&rsquo;t want this service anymore</p>
-
-<pre><code>$ sudo service dns-proxy-server uninstall
-Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] 
-yes
-</code></pre>
+<tr>
+<td>Network a, Network b</td>
+<td>Network a</td>
+<td>Network b</td>
+<td align="center">OK</td>
+<td>The minimal requirement is that client must be  on the same network which DPS so the client will able to query DPS, then client also need to be on the same network which the target container, so it will be able to ping after solve the hostname, DPS don&rsquo;t really need to be able to talk with the target container since it won&rsquo;t turn into a client a some moment</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -981,6 +973,22 @@ yes
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
                     
                 
                 
@@ -1000,22 +1008,6 @@ yes
                     
                         
                         
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -1248,10 +1240,10 @@ yes
 	 
 	 
 		
-			<a class="nav nav-prev" href="/dns-proxy-server/latest/en/2-features/gui/" title="GUI Dashboard"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/dns-proxy-server/latest/en/2-features/installing-as-service/" title="Installing DPS as service"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/dns-proxy-server/latest/en/2-features/docker-different-networks-solving/" title="Different Docker Networks Solving" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/dns-proxy-server/latest/en/2-features/solving-hostnames-wildcard/" title="Wildcards hostnames Solving" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
