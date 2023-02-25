@@ -25,7 +25,8 @@ copyFileFromService(){
   from=$2
   to=$3
 
-  id=$(docker-compose up --no-start --build --force-recreate $serviceName 2>&1 | grep Container | awk '{print $2}' | head -1)
+  docker-compose down
+  id=$(docker-compose up --no-start --force-recreate $serviceName 2>&1 | grep Container | awk '{print $2}' | head -1)
   echo "> copy from service=${serviceName}, id=${id}, from=${from}, to=${to}"
   docker cp "$id:$from" "$to"
 }
@@ -68,17 +69,21 @@ case $1 in
     IMAGE_SERVICE_NAME="image-${OS}-${ARCH}"
     ARTIFACTS_DIR="${REPO_DIR}/build/artifacts"
 
-    echo "> building backend to: os=${OS}, arch=${ARCH}"
+    echo "> Building backend to: os=${OS}, arch=${ARCH}"
 
     mkdir -p ${ARTIFACTS_DIR}
 
     docker-compose build --no-cache --progress=plain ${BUILD_SERVICE_NAME}
 
-    copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts /tmp/
-    mv -v /tmp/artifacts/* ${ARTIFACTS_DIR}
+    tmpDir=$(mktemp -d)
+    echo "> Copying artifacts to ${tmpDir}..."
+    copyFileFromService ${BUILD_SERVICE_NAME} /app/build/artifacts $tmpDir
+    mv -v ${tmpDir}/artifacts/* ${ARTIFACTS_DIR}
 
+    echo "> Building image ${IMAGE_SERVICE_NAME} ..."
     docker-compose build --no-cache --progress=plain "${IMAGE_SERVICE_NAME}"
 
+    echo "> Backend build done ${IMAGE_SERVICE_NAME}"
   ;;
 
   compress-upload-artifacts )

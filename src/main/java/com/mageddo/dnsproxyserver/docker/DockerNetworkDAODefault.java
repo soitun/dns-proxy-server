@@ -1,7 +1,11 @@
 package com.mageddo.dnsproxyserver.docker;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.ContainerNetwork;
 import com.github.dockerjava.api.model.Network;
+import com.google.common.base.Predicates;
+import com.mageddo.dnsproxyserver.net.Networks;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +15,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Slf4j
 @Default
@@ -43,17 +49,24 @@ public class DockerNetworkDAODefault implements DockerNetworkDAO {
   }
 
   @Override
-  public Pair<String, Network.ContainerNetworkConfig> findContainerWithIp(String networName, String ip) {
-    final var network = this.findByName(networName);
-    Validate.notNull(network, "network not found: %s", networName);
-    final var containers = network.getContainers();
-    for (final var containerId : containers.keySet()) {
-      final var container = containers.get(containerId);
-      if (container.getIpv4Address().contains(ip)) {
-        return Pair.of(containerId, container);
+  public Pair<String, ContainerNetwork> findContainerWithIp(String networkName, String ip) {
+    final var network = this.findByName(networkName);
+    Validate.notNull(network, "network not found: %s", networkName);
+    final var containers = this.findNetworkContainers(network.getId());
+    for (final var container : containers) {
+      final var containerId = container.getId();
+      if (StringUtils.contains(Networks.findIpv4Address(networkName, container), ip)) {
+        return Pair.of(containerId, Networks.findContainerNetwork(networkName, container));
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Container> findNetworkContainers(String networkId) {
+    return this.dockerClient.listContainersCmd()
+      .withNetworkFilter(List.of(networkId))
+      .exec();
   }
 
   @Override
@@ -86,20 +99,28 @@ public class DockerNetworkDAODefault implements DockerNetworkDAO {
       .withContainerId(containerId);
 
     if (StringUtils.isNotBlank(ip)) {
-      final var config = builder.getContainerConfig();
-      if (config != null) {
-        config.withIpv4Address(ip);
-      } else {
-        log.warn("status=couldntSetIp, networkNameOrId={}, ip={}", networkNameOrId, ip);
-      }
+      builder
+        .withContainerNetwork(
+          new ContainerNetwork()
+            .withIpamConfig(new ContainerNetwork
+              .Ipam()
+              .withIpv4Address(ip)
+            )
+            .withIpv4Address(ip)
+        );
     }
     builder.exec();
-    log.info("status=network-connected, network={}, container={}", networkNameOrId, containerId);
+    log.info("status=network-connected, network={}, container={}, ip={}", networkNameOrId, containerId, ip);
 
   }
 
   @Override
   public void connectRunningContainers(String networkName) {
+    this.connectRunningContainers(networkName, Predicates.alwaysTrue());
+  }
+
+  @Override
+  public void connectRunningContainers(String networkName, Predicate<Container> p) {
     this.dockerClient
       .listContainersCmd()
       .withStatusFilter(Containers.RUNNING_STATUS_LIST)
@@ -107,6 +128,7 @@ public class DockerNetworkDAODefault implements DockerNetworkDAO {
       .stream()
       .filter(it -> Boolean.FALSE.equals(DockerNetworkService.isHostNetwork(it)))
       .filter(it -> !Containers.containsNetworkName(it, networkName))
+      .filter(p)
       .forEach(container -> this.connect(networkName, container.getId()))
     ;
   }
@@ -120,4 +142,5 @@ public class DockerNetworkDAODefault implements DockerNetworkDAO {
   public boolean existsByName(String networkName) {
     return this.findByName(networkName) != null;
   }
+
 }
