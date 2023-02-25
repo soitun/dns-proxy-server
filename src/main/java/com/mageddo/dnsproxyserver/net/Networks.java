@@ -10,6 +10,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class Networks {
 
@@ -60,4 +61,12 @@ public class Networks {
       .getNetworks()
       .get(networkName);
   }
+
+  public static String findIpv4Address(ContainerNetwork containerNetwork) {
+    return Optional
+      .ofNullable(containerNetwork)
+      .map(ContainerNetwork::getIpAddress)
+      .orElse(null);
+  }
+
 }
