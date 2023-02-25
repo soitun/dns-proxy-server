@@ -12,20 +12,20 @@
     <title>Running it :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1677276961" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1677276961" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1677286952" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1677286952" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1677276961" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1677286952" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1677276961"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1677286952"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1677276961"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1677276961"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1677286952"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1677286952"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1677276961"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1677286952"></script>
 
     
   </div>
@@ -843,13 +843,20 @@ defreitas/dns-proxy-server
 
 <ul>
 <li>Press <code>Windows + R</code> and type <code>ncpa.cpl</code> then press <strong>enter</strong> or go to your network interfaces Window</li>
-<li>Change your default internet adapterDNS to <code>127.0.0.1</code> by following the below
-pictures (sorry they are in portuguese)</li>
+<li>Change your default internet adapter DNS to <code>127.0.0.1</code> by following the
+pictures below</li>
 </ul>
 
-<p><img src="https://i.imgur.com/1goUHp0.png?width=10pc&amp;classes=shadow" alt="Screenshot" />
-<img src="https://i.imgur.com/XKM7JwN.png?width=10pc&amp;classes=shadow" alt="Screenshot" />
-<img src="https://i.imgur.com/EFno6F6.png?width=10pc&amp;classes=shadow" alt="Screenshot" /></p>
+<p><img src="https://i.imgur.com/UAVUgLf.png?width=10pc&amp;classes=shadow" alt="Screenshot" /></p>
+
+<p>Uncheck IPV6 because Windows can try to solve hostnames by using a IPV6 DNS server,
+then requests won&rsquo;t be sent to DPS, actually DPS doesn&rsquo;t support IPV6.</p>
+
+<p><img src="https://i.imgur.com/DGPdFRD.png?width=10pc&amp;classes=shadow" alt="Screenshot" /></p>
+
+<p><img src="https://i.imgur.com/EcZF6mG.png?width=10pc&amp;classes=shadow" alt="screenshot" /></p>
+
+<p><img src="https://i.imgur.com/0bxASqd.png?width=10pc&amp;classes=shadow" alt="Screenshot" /></p>
 
 <h3 id="testing-the-dns-server">Testing the DNS server</h3>
 
@@ -883,7 +890,7 @@ Address: 172.217.29.206
 
 <p>Start the server at <a href="#configure-your-dns">custom port</a> and solving from it</p>
 
-<pre><code>nslookup -port=8980 google.com 127.0.0.1
+<pre><code class="language-bash">$ nslookup -port=8980 google.com 127.0.0.1
 </code></pre>
 
 
@@ -1271,20 +1278,20 @@ Address: 172.217.29.206
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1677276961"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1677286952"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1677276961"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1677276961"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1677286952"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1677286952"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1677276961" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1677276961"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1677286952" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1677286952"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
