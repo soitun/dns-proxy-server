@@ -10,6 +10,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import static com.mageddo.dnsproxyserver.docker.Labels.DEFAULT_NETWORK_LABEL;
 @Default
 @Singleton
 @AllArgsConstructor(onConstructor = @__({@Inject}))
+// todo rename to ContainerSolvingService
 public class DockerService {
 
   private final DockerDAO dockerDAO;
@@ -30,11 +32,9 @@ public class DockerService {
 
   public String findBestHostIP(Hostname host) {
     final var stopWatch = StopWatch.createStarted();
-    final var activeContainers = this.dockerDAO.findActiveContainers();
-    final var foundIp = activeContainers
+    final var matchedContainers = this.findMatchingContainers(host);
+    final var foundIp = matchedContainers
       .stream()
-      .map(it -> this.dockerDAO.inspect(it.getId()))
-      .filter(ContainerHostnameMatcher.buildPredicate(host))
       .map(this::findBestIpMatch)
       .findFirst()
       .orElse(null);
@@ -54,6 +54,14 @@ public class DockerService {
       )
       .filter(Objects::nonNull)
       .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  private List<InspectContainerResponse> findMatchingContainers(Hostname host) {
+    return this.dockerDAO.findActiveContainers()
+      .stream()
+      .map(it -> this.dockerDAO.inspect(it.getId()))
+      .filter(ContainerHostnameMatcher.buildPredicate(host))
+      .toList();
   }
 
 }
