@@ -88,7 +88,7 @@
 	"title": "Developing at the project",
 	"tags": [],
 	"description": "",
-	"content": " Vanilla Developing Backend\n$ ./gradlew quarkusDev  Make your DNS queries to IP and TCP/UDP ports indicated at the console log.\nFront end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start  Then access http://localhost:3000/ , front end will proxy to http://localhost:5380 backend.\n"
+	"content": " Vanilla Developing Backend\n$ ./gradlew quarkusDev  Make your DNS queries to IP and TCP/UDP ports indicated at the console log.\nFront end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start  Then access http://localhost:3000/ , front end will proxy to http://localhost:5380 backend.\nWith Docker $ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml up  or\n$ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml run --rm -it backend bash  "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.2/en/6-generating-docs/",
@@ -158,7 +158,7 @@
 	"title": "Credits",
 	"tags": [],
 	"description": "",
-	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 714 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n\n"
+	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 715 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.2/en/",
