@@ -2,7 +2,7 @@ package com.mageddo.dnsproxyserver.dnsconfigurator.linux;
 
 import com.mageddo.dnsproxyserver.config.entrypoint.ConfigEnv;
 import com.mageddo.dnsproxyserver.dnsconfigurator.linux.ResolvFile.Type;
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.dnsproxyserver.templates.IpTemplates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -21,17 +21,19 @@ class LinuxDnsConfiguratorTest {
   LinuxDnsConfigurator configurator = spy(new LinuxDnsConfigurator());
 
   @Test
-  void mustConfigureDpsServerOnEmptyFile(@TempDir Path tmpDir) throws Exception {
+  void mustConfigureDpsServerOnEmptyFileAsResolvconf(@TempDir Path tmpDir) throws Exception {
 
     // arrrange
     final var resolvFile = Files.createTempFile(tmpDir, "resolv", ".conf");
+    final var ip = IpTemplates.local();
+
     doReturn(Collections.singletonList(resolvFile))
       .when(this.configurator)
       .buildConfPaths()
     ;
 
     // act
-    this.configurator.configure(IP.of("10.10.0.1"));
+    this.configurator.configure(ip);
 
     // assert
     assertEquals(
@@ -44,50 +46,24 @@ class LinuxDnsConfiguratorTest {
   }
 
   @Test
-  void mustCommentExistingServerAndSetupPassedConf(@TempDir Path tmpDir) throws Exception {
+  void mustConfigureDpsServerOnEmptyFileAsResolved(@TempDir Path tmpDir) throws Exception {
 
     // arrrange
-    final var resolvFile = tmpDir.resolve("resolv.conf");
-    Files.writeString(resolvFile, "nameserver 8.8.8.8");
+    final var resolvFile = Files.createFile(tmpDir.resolve("resolved.conf"));
+    final var ip = IpTemplates.local();
+
     doReturn(Collections.singletonList(resolvFile))
       .when(this.configurator)
       .buildConfPaths()
     ;
 
     // act
-    this.configurator.configure(IP.of("10.10.0.1"));
+    this.configurator.configure(ip);
 
     // assert
     assertEquals(
       """
-        # nameserver 8.8.8.8 # dps-comment
-        nameserver 10.10.0.1 # dps-entry
-        """,
-      Files.readString(resolvFile)
-    );
-
-  }
-
-
-  @Test
-  void mustUseAlreadyExistentDpsServerLine(@TempDir Path tmpDir) throws Exception {
-
-    // arrrange
-    final var resolvFile = tmpDir.resolve("resolv.conf");
-    Files.writeString(resolvFile, "nameserver 8.8.8.8\nnameserver 4.4.4.4 # dps-entry");
-    doReturn(Collections.singletonList(resolvFile))
-      .when(this.configurator)
-      .buildConfPaths()
-    ;
-
-    // act
-    this.configurator.configure(IP.of("10.10.0.1"));
-
-    // assert
-    assertEquals(
-      """
-        # nameserver 8.8.8.8 # dps-comment
-        nameserver 10.10.0.1 # dps-entry
+        DNS=10.10.0.1 # dps-entry
         """,
       Files.readString(resolvFile)
     );
@@ -95,30 +71,25 @@ class LinuxDnsConfiguratorTest {
   }
 
   @Test
-  void mustRestoreOriginalResolvconf(@TempDir Path tmpDir) throws Exception {
+  void shouldntConfigureResolvedTwice(@TempDir Path tmpDir) throws Exception {
 
     // arrrange
-    final var resolvFile = tmpDir.resolve("resolv.conf");
-    Files.writeString(resolvFile, """
-      # Provided by test
-      # nameserver 7.7.7.7
-      # nameserver 8.8.8.8 # dps-comment
-      nameserver 9.9.9.9 # dps-entry
-      """);
+    final var resolvFile = Files.createFile(tmpDir.resolve("resolved.conf"));
+    final var ip = IpTemplates.local();
+
     doReturn(Collections.singletonList(resolvFile))
       .when(this.configurator)
       .buildConfPaths()
     ;
 
     // act
-    this.configurator.restore();
+    this.configurator.configure(ip);
+    this.configurator.configure(IpTemplates.loopback());
 
     // assert
     assertEquals(
       """
-        # Provided by test
-        # nameserver 7.7.7.7
-        nameserver 8.8.8.8
+        DNS=10.10.0.1 # dps-entry
         """,
       Files.readString(resolvFile)
     );
@@ -137,7 +108,10 @@ class LinuxDnsConfiguratorTest {
     final var paths = this.configurator.buildConfPaths();
 
     // assert
-    assertEquals("[/host/etc/resolv.conf, /etc/resolv.conf]", paths.toString());
+    assertEquals(
+      "[/host/etc/systemd/resolved.conf, /host/etc/resolv.conf, /etc/systemd/resolved.conf, /etc/resolv.conf]",
+      paths.toString()
+    );
   }
 
   @Test
