@@ -72,7 +72,6 @@ public class Messages {
     final var res = withNoErrorResponse(query.clone());
     final var answer = new ARecord(res.getQuestion().getName(), DClass.IN, ttl, Ips.toAddress(ip));
     res.addRecord(answer, Section.ANSWER);
-
     return res;
   }
 
