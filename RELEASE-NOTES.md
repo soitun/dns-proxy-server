@@ -1,6 +1,6 @@
 ### 3.5.0
 * Final release
-* Add local entry `dps-sample.local` so people can better understand how this feature works
+* Add local entry `dps-sample.dev` so people can better understand how this feature works
 
 ### 3.4.0-beta
 
