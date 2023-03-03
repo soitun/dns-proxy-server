@@ -27,7 +27,7 @@ or via docker looking at [Dockerhub images][3].
 
 Basic running it on Linux
 ```bash
-$ curl -s -L https://github.com/mageddo/dns-proxy-server/releases/download/3.5.2/dns-proxy-server-linux-amd64-3.5.2.tgz | tar -vzx &&\
+$ curl -s -L https://github.com/mageddo/dns-proxy-server/releases/download/3.5.3/dns-proxy-server-linux-amd64-3.5.3.tgz | tar -vzx &&\
 sudo ./dns-proxy-server
 ```
 
@@ -74,3 +74,4 @@ Or via QR code
 [5]: http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/
 [6]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PYFAZCXL442B6&source=url
 [7]: https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif
+
