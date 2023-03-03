@@ -2,26 +2,35 @@ package com.mageddo.dnsproxyserver.dnsconfigurator.linux;
 
 import com.mageddo.conf.parser.ConfParser;
 import com.mageddo.conf.parser.EntryType;
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.dnsproxyserver.server.dns.IpAddr;
+import com.mageddo.dnsproxyserver.utils.DNS;
+import org.apache.commons.lang3.Validate;
 
 import java.nio.file.Path;
 import java.util.function.Function;
 
 public class ResolvconfConfigurator {
 
-  public static void process(Path confFile, IP ip) {
+  public static void process(Path confFile, IpAddr addr) {
+
+    Validate.isTrue(
+        DNS.isDefaultPortOrNull(addr),
+        "Resolvconf requires dns server port to be=%s, passedPort=%d",
+        DNS.DEFAULT_PORT, addr.getPort()
+    );
+
     ConfParser.process(
-      confFile,
-      createParser(),
-      new ConfigureDPSHandler(() -> "nameserver " + ip.raw() + " # dps-entry")
+        confFile,
+        createParser(),
+        new ConfigureDPSHandler(() -> String.format("nameserver %s # dps-entry", addr.getIp().raw()))
     );
   }
 
   public static void restore(Path confFile) {
     ConfParser.process(
-      confFile,
-      createParser(),
-      new CleanerHandler()
+        confFile,
+        createParser(),
+        new CleanerHandler()
     );
   }
 

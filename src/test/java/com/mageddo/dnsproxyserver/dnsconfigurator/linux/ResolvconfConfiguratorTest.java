@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver.dnsconfigurator.linux;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.dnsproxyserver.templates.IpAddrTemplates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResolvconfConfiguratorTest {
 
@@ -18,7 +20,7 @@ class ResolvconfConfiguratorTest {
     final var resolvFile = Files.createTempFile(tmpDir, "resolv", ".conf");
 
     // act
-    ResolvconfConfigurator.process(resolvFile, IP.of("10.10.0.1"));
+    ResolvconfConfigurator.process(resolvFile, IpAddrTemplates.local());
 
     // assert
     assertEquals(
@@ -35,7 +37,7 @@ class ResolvconfConfiguratorTest {
 
     // arrrange
     final var resolvFile = tmpDir.resolve("resolv.conf");
-    final var ip = IP.of("10.10.0.1");
+    final var ip = IpAddrTemplates.local();
     Files.writeString(resolvFile, "nameserver 8.8.8.8");
 
     // act
@@ -58,7 +60,7 @@ class ResolvconfConfiguratorTest {
 
     // arrrange
     final var resolvFile = tmpDir.resolve("resolv.conf");
-    final var ip = IP.of("10.10.0.1");
+    final var ip = IpAddrTemplates.local();
     Files.writeString(resolvFile, "nameserver 8.8.8.8\nnameserver 4.4.4.4 # dps-entry");
 
     // act
@@ -99,6 +101,24 @@ class ResolvconfConfiguratorTest {
         """,
       Files.readString(resolvFile)
     );
+
+  }
+
+  @Test
+  void wontConfigurePortsDifferentFrom53(@TempDir Path tmpDir) throws Exception {
+
+    // arrrange
+    final var addr = IpAddrTemplates.localPort54();
+    final var resolvFile = tmpDir.resolve("resolv.conf");
+
+    // act
+    final var ex = assertThrows(IllegalArgumentException.class, () -> {
+      ResolvconfConfigurator.process(resolvFile, addr);
+    });
+
+    // assert
+    final var msg = ex.getMessage();
+    assertTrue(msg.contains("requires dns server port to"), msg);
 
   }
 }
