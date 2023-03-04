@@ -3,7 +3,7 @@ package com.mageddo.dnsproxyserver.dnsconfigurator;
 import com.mageddo.commons.concurrent.ThreadPool;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.Configs;
-import com.mageddo.dnsproxyserver.dnsconfigurator.linux.LinuxDnsConfigurator;
+import com.mageddo.dnsproxyserver.dnsconfigurator.linux.DnsConfiguratorLinux;
 import com.mageddo.dnsproxyserver.server.dns.IpAddr;
 import io.quarkus.runtime.StartupEvent;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class DnsConfigurators {
 
-  private final LinuxDnsConfigurator linuxConfigurator;
+  private final DnsConfiguratorLinux linuxConfigurator;
+  private final DnsConfiguratorOSx osxConfigurator;
   private final DpsIpDiscover ipDiscover;
   private final AtomicInteger failures = new AtomicInteger();
 
@@ -51,10 +52,7 @@ public class DnsConfigurators {
         } catch (Throwable e) {
           this.failures.incrementAndGet();
           if (e instanceof IOException) {
-            log.warn(
-              "status=failedToConfigureAsDefaultDns, path={}, msg={}:{}",
-              config.getResolvConfPaths(), ClassUtils.getName(e), e.getMessage()
-            );
+            log.warn("status=failedToConfigureAsDefaultDns, msg={}:{}", ClassUtils.getName(e), e.getMessage());
           } else {
             log.warn("status=failedToConfigureAsDefaultDns, path={}, msg={}", config.getResolvConfPaths(), e.getMessage(), e);
           }
@@ -105,7 +103,15 @@ public class DnsConfigurators {
   }
 
   private DnsConfigurator getInstance0() {
-    if (OS.isFamilyUnix() && !OS.isFamilyMac()) {
+    final var instance = this.getInstance1();
+    log.info("usingDnsConfigurator={}", ClassUtils.getSimpleName(instance));
+    return instance;
+  }
+
+  private DnsConfigurator getInstance1() {
+    if (OS.isFamilyMac()) {
+      return this.osxConfigurator;
+    } else if (OS.isFamilyUnix()) {
       return this.linuxConfigurator;
     }
     log.info("status=unsupported-platform-to-set-as-default-dns-automatically, os={}", System.getProperty("os.name"));
