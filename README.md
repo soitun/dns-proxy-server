@@ -25,7 +25,7 @@ Checkout the [full list of features][4] with examples
 You can run DPS as native binary downloading the latest [binaries releases][2] 
 or via docker looking at [Dockerhub images][3].
 
-Basic running it on Linux
+Basic running it on Linux or Mac
 ```bash
 $ curl -s -L https://github.com/mageddo/dns-proxy-server/releases/download/3.7.0/dns-proxy-server-linux-amd64-3.7.0.tgz | tar -vzx &&\
 sudo ./dns-proxy-server
@@ -47,7 +47,7 @@ PING nginx.dev (172.17.0.4) 56(84) bytes of data.
 64 bytes from 172.17.0.4 (172.17.0.4): icmp_seq=2 ttl=64 time=0.022 ms
 ```
 
-See [complete running it][5] documentation for more use cases, like running on Docker, Windows, etc.
+See [complete running it][5] documentation for running on Mac, Windows, Docker, etc.
 
 ### Documents
 * [Full documentation](http://mageddo.github.io/dns-proxy-server/)
