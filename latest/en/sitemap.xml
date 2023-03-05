@@ -3,7 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/latest/en/2-features/auto-configuration-as-default-dns/</loc>
+  </url>
+  
+  <url>
     <loc>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/linux/</loc>
+  </url>
+  
+  <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/mac/</loc>
   </url>
   
   <url>
@@ -12,6 +24,10 @@
   
   <url>
     <loc>http://mageddo.github.io/dns-proxy-server/latest/en/api/v1/networks/</loc>
+  </url>
+  
+  <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/windows/</loc>
   </url>
   
   <url>
