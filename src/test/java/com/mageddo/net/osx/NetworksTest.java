@@ -1,4 +1,4 @@
-package com.mageddo.os.osx;
+package com.mageddo.net.osx;
 
 import org.apache.commons.exec.OS;
 import org.junit.jupiter.api.BeforeAll;

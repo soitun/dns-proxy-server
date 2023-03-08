@@ -24,7 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DnsConfigurators {
 
   private final DnsConfiguratorLinux linuxConfigurator;
-  private final DnsConfiguratorOSx osxConfigurator;
+  private final DnsConfiguratorOSX osxConfigurator;
+  private final DnsConfiguratorDefault configuratorDefault;
   private final DpsIpDiscover ipDiscover;
   private final AtomicInteger failures = new AtomicInteger();
 
@@ -56,7 +57,7 @@ public class DnsConfigurators {
           } else {
             log.warn("status=failedToConfigureAsDefaultDns, path={}, msg={}", config.getResolvConfPaths(), e.getMessage(), e);
           }
-          if (this.failures.get() >= this.getMaxErrors()) {
+          if (this.tooManyFailures()) {
             log.warn("status=too-many-failures, action=stopping-default-dns-configuration, failures={}", this.failures.get());
             throw new RuntimeException(e);
           }
@@ -89,6 +90,10 @@ public class DnsConfigurators {
 
   void configureShutdownHook(Config config) {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      if (this.tooManyFailures()) {
+        log.debug("status=won't try to restore as it has failed to configure");
+        return;
+      }
       log.debug("status=restoringResolvConf, path={}", config.getResolvConfPaths());
       this.getInstance().restore();
     }));
@@ -108,11 +113,17 @@ public class DnsConfigurators {
     return instance;
   }
 
+  private boolean tooManyFailures() {
+    return this.failures.get() >= this.getMaxErrors();
+  }
+
   private DnsConfigurator getInstance1() {
     if (OS.isFamilyMac()) {
       return this.osxConfigurator;
     } else if (OS.isFamilyUnix()) {
       return this.linuxConfigurator;
+    } else if (OS.isFamilyWindows()) {
+      return this.configuratorDefault;
     }
     log.info("status=unsupported-platform-to-set-as-default-dns-automatically, os={}", System.getProperty("os.name"));
     return new DnsConfigurator() {

@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.net;
+package com.mageddo.net;
 
 import org.junit.jupiter.api.Test;
 

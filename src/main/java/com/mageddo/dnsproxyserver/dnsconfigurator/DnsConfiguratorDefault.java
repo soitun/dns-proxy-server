@@ -2,11 +2,9 @@ package com.mageddo.dnsproxyserver.dnsconfigurator;
 
 import com.mageddo.dnsproxyserver.server.dns.IpAddr;
 import com.mageddo.dnsproxyserver.utils.Dns;
-import com.mageddo.os.osx.Networks;
-import lombok.RequiredArgsConstructor;
+import com.mageddo.net.Network;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,26 +13,36 @@ import java.util.Map;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
-public class DnsConfiguratorOSx implements DnsConfigurator {
+public class DnsConfiguratorDefault implements DnsConfigurator {
 
-  private final Map<String, List<String>> serversBefore = new HashMap<>();
+  private final Map<String, List<String>> serversBefore;
+  private final Network delegate;
+  private RuntimeException error;
+
+  public DnsConfiguratorDefault() {
+    this.serversBefore = new HashMap<>();
+    this.delegate = createInstance();
+  }
 
   @Override
   public void configure(IpAddr addr) {
+    this.validatePlatformIsSupported();
     Dns.validateIsDefaultPort(addr);
     for (final String network : this.findNetworks()) {
-      final var serversBefore = this.findNetworkDnsServers(network);
-      if (serversBefore != null) {
+      if (!this.serversBefore.containsKey(network)) {
+        final var serversBefore = this.findNetworkDnsServers(network);
         this.serversBefore.put(network, serversBefore);
         final var success = this.updateDnsServers(network, Collections.singletonList(addr.getRawIP()));
-        log.debug("status=configuring, network={}, serversBefore={}, success={}", network, serversBefore, success);
+        log.debug("status=configuring, network={}, serversBefore={}, success={}", network, this.serversBefore, success);
+      } else {
+        log.debug("status=alreadyConfigured, network={}", network);
       }
     }
   }
 
   @Override
   public void restore() {
+    this.validatePlatformIsSupported();
     log.info("status=restoringPreviousDnsServers...");
     this.serversBefore.forEach((network, servers) -> {
       final var success = this.updateDnsServers(network, servers);
@@ -43,18 +51,34 @@ public class DnsConfiguratorOSx implements DnsConfigurator {
   }
 
   boolean updateDnsServers(String network, List<String> servers) {
-    return Networks.updateDnsServers(network, servers);
+    return this.delegate.updateDnsServers(network, servers);
   }
 
   List<String> findNetworkDnsServers(String network) {
-    return Networks.findNetworkDnsServersOrNull(network);
+    return this.delegate.findNetworkDnsServers(network);
   }
 
   List<String> findNetworks() {
-    return Networks.findNetworksNames();
+    return this.delegate.findNetworks();
   }
 
   Map<String, List<String>> getServersBefore() {
     return this.serversBefore;
   }
+
+  Network createInstance() {
+    try {
+      return Network.getInstance();
+    } catch (UnsupportedOperationException e) {
+      this.error = e;
+      return null;
+    }
+  }
+
+  void validatePlatformIsSupported() {
+    if (this.error != null) {
+      throw this.error;
+    }
+  }
+
 }
