@@ -1,6 +1,7 @@
 package com.mageddo.net.windows.registry;
 
-import com.sun.jna.Platform;
+import com.mageddo.jna.net.windows.registry.NetworkRegistry;
+import com.mageddo.os.Platform;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinError;
 import org.junit.jupiter.api.BeforeEach;
