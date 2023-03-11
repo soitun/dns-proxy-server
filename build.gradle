@@ -31,6 +31,12 @@ configurations.all {
 
 dependencies {
 
+  annotationProcessor("com.google.dagger:dagger-compiler:2.45")
+  implementation("com.google.dagger:dagger:2.45")
+
+  testAnnotationProcessor("com.google.dagger:dagger-compiler:2.45")
+  testImplementation("com.google.dagger:dagger:2.45")
+
   compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.+'
 
@@ -65,8 +71,16 @@ dependencies {
 }
 
 test {
-  systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+  exclude "**/*CompTest.class"
   useJUnitPlatform()
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
+
+task compTest(type: Test) {
+  include "**/*CompTest.class"
+  failFast = true
   testLogging {
     events "passed", "skipped", "failed"
   }
