@@ -4,6 +4,7 @@ import com.mageddo.commons.io.IoUtils;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -13,16 +14,28 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
-public class WebServer {
+public class WebServer implements AutoCloseable {
+
+  public static final String ALL_METHODS_WILDCARD = "";
+
+  static final String DEFAULT_RES_BODY = """
+    <h1>404 Not Found</h1>No context found for request""";
+
+  private final byte[] DEFAULT_RES_BODY_BYTES = DEFAULT_RES_BODY.getBytes(UriUtils.DEFAULT_CHARSET);
 
   private static final String ROOT = "/";
-  public static final String ALL_METHODS_WILDCARD = "";
 
   private final Set<HttpMapper> mappers;
   private final Map<String, Map<String, HttpHandler>> handlesStore = new HashMap<>();
   private HttpServer server;
+
+  public WebServer(HttpMapper... mappers) {
+    this(Stream.of(mappers).collect(Collectors.toSet()));
+  }
 
   @Inject
   public WebServer(Set<HttpMapper> mappers) {
@@ -84,33 +97,30 @@ public class WebServer {
       this.server.createContext(ROOT, exchange -> {
         try {
           final var canonicalPath = UriUtils.canonicalPath(exchange.getRequestURI());
-          final var handler = this.handlesStore.get(canonicalPath);
-
+          final var handler = this.lookupForHandler(canonicalPath);
           if (handler == null) {
-            final var html = """
-                <h1>404 Not Found</h1>No context found for request""".getBytes(UriUtils.DEFAULT_CHARSET);
-            exchange.sendResponseHeaders(404, html.length);
-            exchange.getResponseBody().write(html);
+            exchange.sendResponseHeaders(HttpStatus.NOT_FOUND, DEFAULT_RES_BODY_BYTES.length);
+            exchange.getResponseBody().write(DEFAULT_RES_BODY_BYTES);
             return;
           }
 
           handler
-              .getOrDefault(exchange.getRequestMethod(), pExchange -> {
-                final var defaultPathHandler = handler.get(ALL_METHODS_WILDCARD);
-                if (defaultPathHandler != null) {
-                  defaultPathHandler.handle(pExchange);
-                } else {
-                  pExchange.sendResponseHeaders(415, 0);
-                }
-              })
-              .handle(exchange);
-        } catch (IOException e) {
-          log.error("status=handleFailed, msg={}", e.getMessage(), e);
+            .getOrDefault(exchange.getRequestMethod(), pExchange -> {
+              final var defaultPathHandler = handler.get(ALL_METHODS_WILDCARD);
+              if (defaultPathHandler != null) {
+                defaultPathHandler.handle(pExchange);
+              } else {
+                pExchange.sendResponseHeaders(HttpStatus.METHOD_NOT_ALLOWED, 0);
+              }
+            })
+            .handle(exchange);
+        } catch (Exception e) {
+          log.error("status=handleFailed, msg={}:{}", ClassUtils.getSimpleName(e), e.getMessage(), e);
         } finally {
           try {
             final var responseCode = exchange.getResponseCode();
             if (responseCode == -1) {
-              exchange.sendResponseHeaders(204, 0);
+              exchange.sendResponseHeaders(HttpStatus.NO_CONTENT, -1);
             }
             exchange.close();
           } catch (Throwable e) {
@@ -122,15 +132,32 @@ public class WebServer {
       server.setExecutor(null);
       server.start();
       log.info("status=startingWebServer, port={}", port);
-    } catch (
-        IOException e) {
+    } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private Map<String, HttpHandler> lookupForHandler(String canonicalPath) {
+    if (this.handlesStore.containsKey(canonicalPath)) {
+      return this.handlesStore.get(canonicalPath);
+    } else {
+      final var wildcardMapPath = Path.of(canonicalPath, Wildcards.ALL_SUB_PATHS_WILDCARD).getRaw();
+      if (this.handlesStore.containsKey(wildcardMapPath)) {
+        return this.handlesStore.get(wildcardMapPath);
+      }
+    }
+    final var mapPath = Wildcards.findMatchingMap(this.handlesStore.keySet(), canonicalPath);
+    return this.handlesStore.get(mapPath);
   }
 
   public void stop() {
     IoUtils.silentClose(() -> {
       this.server.stop(1);
     });
+  }
+
+  @Override
+  public void close() {
+    this.stop();
   }
 }
