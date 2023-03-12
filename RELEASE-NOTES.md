@@ -1,4 +1,4 @@
-## 3.9.1
+### 3.9.1
 * Now, releasing the latest docker image
 
 ### 3.9.0
