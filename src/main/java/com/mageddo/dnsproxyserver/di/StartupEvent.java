@@ -2,6 +2,6 @@ package com.mageddo.dnsproxyserver.di;
 
 import dagger.Module;
 
-@Module
-public interface MainModule {
+public interface StartupEvent {
+  void onStart();
 }

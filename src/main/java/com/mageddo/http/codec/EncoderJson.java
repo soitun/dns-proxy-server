@@ -1,0 +1,32 @@
+package com.mageddo.http.codec;
+
+import com.mageddo.json.JsonUtils;
+import com.sun.net.httpserver.HttpExchange;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+
+public class EncoderJson implements Encoder {
+
+  @Override
+  public void encode(HttpExchange exchange, int status, Object o) {
+    try {
+      final var jsonBytes = JsonUtils
+          .instance()
+          .writeValueAsBytes(o);
+
+      exchange.sendResponseHeaders(status, jsonBytes.length);
+      exchange
+          .getResponseHeaders()
+          .add("Content-Type", "application/json")
+      ;
+      exchange
+          .getResponseBody()
+          .write(jsonBytes)
+      ;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+  }
+}

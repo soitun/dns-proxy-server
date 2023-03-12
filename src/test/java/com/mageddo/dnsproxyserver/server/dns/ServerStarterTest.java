@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.server.dns;
 
-import io.quarkus.test.junit.QuarkusTest;
+import com.mageddo.dnsproxyserver.di.Context;
+import dagger.sheath.junit.DaggerTest;
 import org.apache.commons.lang3.ClassUtils;
 import org.junit.jupiter.api.Test;
 
@@ -8,9 +9,8 @@ import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@QuarkusTest
-class Server0StarterTest {
-
+@DaggerTest(component = Context.class)
+class ServerStarterTest {
 
   @Inject
   ServerStarter serverStarter;

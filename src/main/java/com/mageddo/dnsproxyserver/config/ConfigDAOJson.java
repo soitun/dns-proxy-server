@@ -8,8 +8,7 @@ import com.mageddo.dnsproxyserver.config.predicate.EntryPredicate;
 import com.mageddo.dnsproxyserver.config.predicate.EnvPredicate;
 import com.mageddo.dnsproxyserver.server.dns.Hostname;
 import com.mageddo.dnsproxyserver.server.dns.Hostnames;
-import io.smallrye.mutiny.tuples.Functions;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -23,7 +22,7 @@ import java.util.function.Predicate;
 
 @Slf4j
 @Singleton
-@AllArgsConstructor(onConstructor = @__({@Inject}))
+@NoArgsConstructor(onConstructor = @__({@Inject}))
 public class ConfigDAOJson implements ConfigDAO {
 
   @Override
@@ -184,7 +183,7 @@ public class ConfigDAOJson implements ConfigDAO {
   static boolean findHostname(
     Predicate<ConfigJsonV2.Entry> p,
     List<ConfigJsonV2.Entry> hostnames,
-    Functions.TriConsumer<ConfigJsonV2.Entry, Integer, List<ConfigJsonV2.Entry>> c
+    TriConsumer<ConfigJsonV2.Entry, Integer, List<ConfigJsonV2.Entry>> c
   ) {
     for (int i = 0; i < hostnames.size(); i++) {
       final var foundEntry = hostnames.get(i);
@@ -197,5 +196,8 @@ public class ConfigDAOJson implements ConfigDAO {
     return false;
   }
 
+  interface TriConsumer<A, B, C> {
+    void accept(A a, B b, C c);
+  }
 }
 

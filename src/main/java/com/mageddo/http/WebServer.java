@@ -1,0 +1,136 @@
+package com.mageddo.http;
+
+import com.mageddo.commons.io.IoUtils;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+@Slf4j
+public class WebServer {
+
+  private static final String ROOT = "/";
+  public static final String ALL_METHODS_WILDCARD = "";
+
+  private final Set<HttpMapper> mappers;
+  private final Map<String, Map<String, HttpHandler>> handlesStore = new HashMap<>();
+  private HttpServer server;
+
+  @Inject
+  public WebServer(Set<HttpMapper> mappers) {
+    this.mappers = mappers;
+  }
+
+  public WebServer get(String path, HttpHandler handler) {
+    return this.map(HttpMethod.GET, path, handler);
+  }
+
+  public WebServer post(String path, HttpHandler handler) {
+    return this.map(HttpMethod.POST, path, handler);
+  }
+
+  public WebServer put(String path, HttpHandler handler) {
+    return this.map(HttpMethod.PUT, path, handler);
+  }
+
+  public WebServer delete(String path, HttpHandler handler) {
+    return this.map(HttpMethod.DELETE, path, handler);
+  }
+
+  public WebServer head(String path, HttpHandler handler) {
+    return this.map(HttpMethod.HEAD, path, handler);
+  }
+
+  public WebServer patch(String path, HttpHandler handler) {
+    return this.map(HttpMethod.PATCH, path, handler);
+  }
+
+  public WebServer map(String method_, String path, HttpHandler handler) {
+    final var method = method_ == null ? ALL_METHODS_WILDCARD : method_.toUpperCase(Locale.ENGLISH);
+    this.handlesStore.compute(UriUtils.canonicalPath(path), (key, value) -> {
+      if (value == null) {
+        final var collection = new HashMap<String, HttpHandler>();
+        collection.put(method, handler);
+        return collection;
+      } else {
+        value.put(method, handler);
+        return value;
+      }
+    });
+    return this;
+  }
+
+  public WebServer map(String path, HttpHandler handler) {
+    this.map(null, path, handler);
+    return this;
+  }
+
+  public void start(int port) {
+    try {
+
+      this.server = HttpServer.create(new InetSocketAddress(port), 0);
+
+      // load application mappers to the maping store
+      this.mappers.forEach(mapper -> mapper.map(this));
+
+      this.server.createContext(ROOT, exchange -> {
+        try {
+          final var canonicalPath = UriUtils.canonicalPath(exchange.getRequestURI());
+          final var handler = this.handlesStore.get(canonicalPath);
+
+          if (handler == null) {
+            final var html = """
+                <h1>404 Not Found</h1>No context found for request""".getBytes(UriUtils.DEFAULT_CHARSET);
+            exchange.sendResponseHeaders(404, html.length);
+            exchange.getResponseBody().write(html);
+            return;
+          }
+
+          handler
+              .getOrDefault(exchange.getRequestMethod(), pExchange -> {
+                final var defaultPathHandler = handler.get(ALL_METHODS_WILDCARD);
+                if (defaultPathHandler != null) {
+                  defaultPathHandler.handle(pExchange);
+                } else {
+                  pExchange.sendResponseHeaders(415, 0);
+                }
+              })
+              .handle(exchange);
+        } catch (IOException e) {
+          log.error("status=handleFailed, msg={}", e.getMessage(), e);
+        } finally {
+          try {
+            final var responseCode = exchange.getResponseCode();
+            if (responseCode == -1) {
+              exchange.sendResponseHeaders(204, 0);
+            }
+            exchange.close();
+          } catch (Throwable e) {
+            log.warn("status=could not generate default ok response, msg={}", e.getMessage());
+          }
+        }
+      });
+
+      server.setExecutor(null);
+      server.start();
+      log.info("status=startingWebServer, port={}", port);
+    } catch (
+        IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public void stop() {
+    IoUtils.silentClose(() -> {
+      this.server.stop(1);
+    });
+  }
+}
