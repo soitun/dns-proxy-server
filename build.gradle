@@ -164,3 +164,15 @@ def updateVersion(fileName, pattern, version) {
     w << text.replaceAll(pattern, version)
   }
 }
+
+task setVersionOnActions() {
+  doLast {
+    appendAppVersion(System.getenv("GITHUB_ENV"))
+    appendAppVersion(System.getenv("GITHUB_OUTPUT"))
+  }
+}
+
+void appendAppVersion(String f) {
+  println("> writing ${project.version} to $f")
+  file(f).append("APP_VERSION=${project.version}\n")
+}
