@@ -1,3 +1,6 @@
+## 3.11.0
+* Windows and MacOs binary releases (beta)
+
 ## 3.9.2
 * This version is focused on Windows and MacOS binary release
 

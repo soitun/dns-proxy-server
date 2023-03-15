@@ -27,10 +27,15 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set app version
         id: set_app_version
         run: ./gradlew setVersionOnActions
+
+      - name: Check already released
+        run: git rev-parse "${APP_VERSION}^{}" >/dev/null 2>&1 && echo "> Already released" && exit 3 || echo "Not released yet"
 
       - name: Jar and Linux AMD64 Release
         run: |
@@ -92,6 +97,68 @@ jobs:
             echo "Linux arm64 is done!"
           ' &&\
           tree -h ./build/
+
+      # Release details will be provided by primary-release
+      - name: Github release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.APP_VERSION }}
+          append_body: true
+          body: ''
+          files: |
+            ./build/compressed-artifacts/*
+
+  aditional_release:
+    name: ${{ matrix.os }} release
+    needs: primary_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    env:
+      APP_VERSION: ${{ needs.primary_release.outputs.APP_VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: native-image-source
+          path: ./build/artifacts/native-image-source/
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.1'
+          java-version: '19'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Os Report ${{ matrix.os }}
+        run: |
+          echo "> Building binary for: ${RUNNER_OS}-${RUNNER_ARCH}" &&\
+          mkdir tmp &&\
+          mkdir -p ./build/artifacts/${RUNNER_OS}-${RUNNER_ARCH} ./build/compressed-artifacts/${RUNNER_OS}-${RUNNER_ARCH}
+        shell: bash
+
+      - name: build native-image binary ${{ matrix.os }}
+        if: runner.os == 'Windows'
+        run: |
+          ${GRAALVM_HOME}/bin/native-image.cmd \
+          -H:+AddAllCharsets \
+          -H:ServiceLoaderFeatureExcludeServices=java.net.ContentHandlerFactory \
+          -jar ./build/artifacts/native-image-source/dns-proxy-server.jar ./tmp/dns-proxy-server
+        shell: bash
+
+      - name: build native-image binary ${{ matrix.os }}
+        if: runner.os == 'macOS'
+        run: native-image -jar ./build/artifacts/native-image-source/dns-proxy-server.jar ./tmp/dns-proxy-server
+
+      - name: build native-image binary ${{ matrix.os }}
+        run: |
+          ls -lhS ./tmp &&\
+          mv ./tmp/* ./build/artifacts/${RUNNER_OS}-${RUNNER_ARCH}/ &&\
+          7z a -tzip ./build/compressed-artifacts/dns-proxy-server-${RUNNER_OS}-${RUNNER_ARCH}-${APP_VERSION}.zip ./build/artifacts/${RUNNER_OS}-${RUNNER_ARCH}
+        shell: bash
 
       # Release details will be provided by primary-release
       - name: Github release
