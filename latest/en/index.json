@@ -25,7 +25,7 @@
 	"title": "MacOSX running instructions",
 	"tags": [],
 	"description": "",
-	"content": " Running on MAC DPS actually is fully supported on MAC knowing docker limitation features. Despite on this, there is no additional configuration to run DPS on Mac, you can do just like on Linux.\nDownload the latest release, extract and run:\n$ sudo ./dns-proxy-server  Check this for usage samples.\nWhen running on standalone mode (not on docker container) DPS will be able to auto configure itself as OSX default DNS, after 5 seconds you see something like usingDnsConfigurator=DnsConfiguratorOSx at the logs.\nRunning on Docker It\u0026rsquo;s also possible to run DPS on docker you can do it in different ways, bellow the most recommended.\n(todo: Explain)\nConfiguring DPS as default DNS manually When not running in standalone mode you will need to configure DPS as default DPS manually, check the instructions bellow:\nTo list available networks:\n$ networksetup -listallnetworkservices An asterisk (*) denotes that a network service is disabled. USB 10/100/1000 LAN Wi-Fi Thunderbolt Bridge  In my case the right Network is Wi-Fi, before change anything let\u0026rsquo;s check if it has some manual configured DNS server:\n$ networksetup -getdnsservers Wi-Fi There aren't any DNS Servers set on Wi-Fi.  If it returns some server IP then is a good idea to backup it then you can restore the configurations later.\nLet\u0026rsquo;s set DPS as the default DNS Server, best option here is to get your network IP address, Wi-Fi in my case which has 192.168.0.14 set, 127.0.0.1 will partially works because this way containers won\u0026rsquo;t be able to solve each other in my tests.\nObs: Be aware you need to run DPS in port 53 as MAC doesn\u0026rsquo;t accept custom port especification.\n$ networksetup -setdnsservers Wi-Fi 192.168.0.14  If you need to remove the configured DNS server then it will use your network provider DNS\n$ networksetup -setdnsservers Wi-Fi Empty  See this thread with more use cases.\n"
+	"content": " Running on MAC DPS actually is fully supported on MAC knowing docker limitation features.\nRunning as Docker as service Running DPS as docker service\n$ docker run -d -p 5380:5380 -p 53:53/udp -p 53:53/tcp --restart=unless-stopped \\ -v /var/run/docker.sock:/var/run/docker.sock \\ defreitas/dns-proxy-server   Go to configuring DPS as default DNS to complete DPS configuration. Check this for usage samples.  Standalone run Download the latest release (I recomend the jar one), extract and run:\n$ sudo java -jar ./dns-proxy-server  Check this for usage samples.\nWhen running on standalone mode (not on docker container) DPS will be able to auto configure itself as OSX default DNS, after 5 seconds you see something like usingDnsConfigurator=DnsConfiguratorOSx at the logs.\nConfiguring DPS as default DNS manually When not running in standalone mode you will need to configure DPS as default DPS manually, check the instructions below:\nTo list available networks:\n$ networksetup -listallnetworkservices An asterisk (*) denotes that a network service is disabled. USB 10/100/1000 LAN Wi-Fi Thunderbolt Bridge  In my case the right Network is Wi-Fi, before change anything let\u0026rsquo;s check if it has some manual configured DNS server:\n$ networksetup -getdnsservers Wi-Fi There aren't any DNS Servers set on Wi-Fi.  If it returns some server IP then is a good idea to backup it then you can restore the configurations later.\nLet\u0026rsquo;s set DPS as the default DNS Server, best option here is to get your network IP address, Wi-Fi in my case which has 192.168.0.14 set, 127.0.0.1 will partially works because this way containers won\u0026rsquo;t be able to solve each other, just the host solve the containers.\nObs: Be aware you need to run DPS in port 53 as MAC doesn\u0026rsquo;t accept custom port especification.\n$ networksetup -setdnsservers Wi-Fi 192.168.0.14  If you need to remove the configured DNS server then it will use your network provider DNS\n$ networksetup -setdnsservers Wi-Fi Empty  See this thread with more use cases.\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/running-it/",
@@ -46,7 +46,7 @@
 	"title": "Windows running instructions",
 	"tags": [],
 	"description": "",
-	"content": " Running on Windows You can run DPS on Windows host without any issues except by DPS isn\u0026rsquo;t capable yet to connect to docker API and solve containers (see backlog issue).\nRunning as Docker Service 1- If you are using docker on your machine that\u0026rsquo;s the best choice as it will automatically start DPS on every boot:\n$ docker run -d --restart=unless-stopped -p 53:53/udp -p 53:53/tcp -p 5380:5380 defreitas/dns-proxy-server:3.11.0  2- Set DPS as the default DNS on Windows, check the instructions below on (Configure DPS as default DNS on Windows) or click here\n3- Now you are able to solve containers form local configuration, also network addresses keep solving as well\n\u0026gt; nslookup dps-sample.dev Server: UnKnown Address: 127.0.0.1 Non-authoritative answer: Name: dps-sample.dev Addresses: 192.168.0.254 192.168.0.254 \u0026gt; nslookup acme.com Server: UnKnown Address: 127.0.0.1 Non-authoritative answer: Name: acme.com Address: 23.93.76.124  You can access the GUI by the address http://localhost:5380/ , see GUI Dashboard feature\nStandalone Run  Download the latest release for Windows Run dps by dns-proxy-server.exe  If you run DPS as administrator (using administrator prompt) then it will capable of configure itself as the default DNS or check instructions below of how to set DPS as default DNS manually.\nConfigure DPS as default DNS on Windows 1. Find the host network ip v4 address\nYou can also use 127.0.0.1 or if don\u0026rsquo;t work your you try the following. On prompt command run ipconfig and get one of the ipv4 addresses, it\u0026rsquo;s recommended to get the IP from the real network card, 192.168.0.128 in my case.\n\u0026gt; ipconfig Windows IP Configuration Ethernet adapter Ethernet: Connection-specific DNS Suffix . : spo.virtua.com.br IPv4 Address. . . . . . . . . . . : 192.168.0.128 Subnet Mask . . . . . . . . . . . : 255.255.255.0 Default Gateway . . . . . . . . . : 192.168.0.1  2. Change your default internet adapter DNS to IP got on the last step\n Press Windows + R and type ncpa.cpl then press enter or go to your network interfaces Window Change your default internet adapter DNS to ip you get the last step 127.0.0.1 or 192.168.0.128 in my case by following the pictures below  Uncheck IPV6 because Windows can try to solve hostnames by using a IPV6 DNS server, then requests won\u0026rsquo;t be sent to DPS, actually DPS doesn\u0026rsquo;t support IPV6.\n"
+	"content": " Running on Windows You can run DPS on Windows host without any issues except by DPS isn\u0026rsquo;t capable yet to connect to docker API and solve containers (see backlog issue).\nRunning as Docker Service 1- If you are using docker on your machine that\u0026rsquo;s the best choice as it will automatically start DPS on every boot:\n$ docker run -d --restart=unless-stopped -p 53:53/udp -p 53:53/tcp -p 5380:5380 defreitas/dns-proxy-server  2- Set DPS as the default DNS on Windows, check the instructions below on (Configure DPS as default DNS on Windows) or click here\n3- Now you are able to solve containers form local configuration, also network addresses keep solving as well\n\u0026gt; nslookup dps-sample.dev Server: UnKnown Address: 127.0.0.1 Non-authoritative answer: Name: dps-sample.dev Addresses: 192.168.0.254 192.168.0.254 \u0026gt; nslookup acme.com Server: UnKnown Address: 127.0.0.1 Non-authoritative answer: Name: acme.com Address: 23.93.76.124  You can access the GUI by the address http://localhost:5380/ , see GUI Dashboard feature\nStandalone Run  Download the latest release for Windows Run dps by dns-proxy-server.exe  If you run DPS as administrator (using administrator prompt) then it will capable of configure itself as the default DNS or check instructions below of how to set DPS as default DNS manually.\nConfigure DPS as default DNS on Windows 1. Find the host network ip v4 address\nYou can also use 127.0.0.1 or if don\u0026rsquo;t work your you try the following. On prompt command run ipconfig and get one of the ipv4 addresses, it\u0026rsquo;s recommended to get the IP from the real network card, 192.168.0.128 in my case.\n\u0026gt; ipconfig Windows IP Configuration Ethernet adapter Ethernet: Connection-specific DNS Suffix . : spo.virtua.com.br IPv4 Address. . . . . . . . . . . : 192.168.0.128 Subnet Mask . . . . . . . . . . . : 255.255.255.0 Default Gateway . . . . . . . . . : 192.168.0.1  2. Change your default internet adapter DNS to IP got on the last step\n Press Windows + R and type ncpa.cpl then press enter or go to your network interfaces Window Change your default internet adapter DNS to ip you get the last step 127.0.0.1 or 192.168.0.128 in my case by following the pictures below  Uncheck IPV6 because Windows can try to solve hostnames by using a IPV6 DNS server, then requests won\u0026rsquo;t be sent to DPS, actually DPS doesn\u0026rsquo;t support IPV6.\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/2-features/",
@@ -105,6 +105,13 @@
 	"content": " Requirements  JDK 17+  Building from source Build the frontend files (optional)\n./builder.bash build-frontend  Build and run the program\n$ ./gradlew build compTest -Dquarkus.package.type=uber-jar \u0026amp;\u0026amp; java -jar ./build/dns-proxy-server.jar  "
 },
 {
+	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/5-tutorials/",
+	"title": "Tutorials",
+	"tags": [],
+	"description": "",
+	"content": " Tutorials  Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX   3rd Tutorials  \u0026lt;Open a Pull Request and link a DPS tutorial here\u0026gt;  "
+},
+{
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/2-features/logs/",
 	"title": "Configuring logs",
 	"tags": [],
@@ -117,6 +124,13 @@
 	"tags": [],
 	"description": "",
 	"content": " Vanilla Developing Backend\n$ ./gradlew quarkusDev  Make your DNS queries to IP and TCP/UDP ports indicated at the console log.\nFront end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start  Then access http://localhost:3000/ , front end will proxy to http://localhost:5380 backend.\nWith Docker $ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml up  or\n$ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml run --rm -it backend bash  Releasing Patch version\n$ ./gradlew release  Major version\n$ VERSION=3.7.0 \u0026amp;\u0026amp; ./gradlew release -Prelease.releaseVersion=${VERSION} -Prelease.newVersion=${VERSION}  "
+},
+{
+	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/api/",
+	"title": "API",
+	"tags": [],
+	"description": "",
+	"content": " APIs  V1 Network API   "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/generating-docs/",
@@ -133,13 +147,6 @@
 	"content": "Just use host.docker\n$ ping host.docker PING host.docker (172.21.0.1) 56(84) bytes of data. 64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=1 ttl=64 time=0.086 ms 64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=2 ttl=64 time=0.076 ms 64 bytes from 172.21.0.1 (172.21.0.1): icmp_seq=3 ttl=64 time=0.081 ms  You can customize this hostname by setting\nEnvironment variable\n$ docker run dns-proxy-server -e MG_HOST_MACHINE_HOSTNAME=$(cat /etc/hostname)  Command line option\n$ ./dns-proxy-server --host-machine-hostname $(cat /etc/hostname)  Json configuration\n{ \u0026quot;hostMachineHostname\u0026quot;: \u0026quot;host.docker\u0026quot; }  Notes:\nBe aware if you set the host machine hostname as the machine name then you will have to remove its name from /etc/hosts since OS try to resolve names from hosts file first then from DNS server\n"
 },
 {
-	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/api/",
-	"title": "API",
-	"tags": [],
-	"description": "",
-	"content": " APIs  V1 Network API   "
-},
-{
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/2-features/accessing-container-by-name/",
 	"title": "Access container by its container name / service name",
 	"tags": [],
@@ -147,18 +154,18 @@
 	"content": "It\u0026rsquo;s possible solve containers by their container or service name, consider the following sample, the container my-nginx can be solved by querying the hostname my-nginx.docker, the .docker domain is also configurable by the domain configuration json property.\n$ docker run --rm --name my-nginx nginx  $ nslookup my-nginx.docker Server:\t172.17.0.3 Address:\t172.17.0.3#53 Non-authoritative answer: Name:\tmy-nginx.docker Address: 10.0.2.3  You can enable this feature by\nActivating by command line\n./dns-proxy-server -register-container-names  Configuring at json config file\n... \u0026quot;registerContainerNames\u0026quot;: true ...  Using environment variable\nMG_REGISTER_CONTAINER_NAMES=1 ./dns-proxy-server  You can also customize the domain from docker to whatever you want by\nActivating by command line\n./dns-proxy-server --domain docker  Configuring at json config file\n... \u0026quot;domain\u0026quot;: \u0026quot;docker\u0026quot; ...  Using environment variable\nMG_DOMAIN=docker ./dns-proxy-server  "
 },
 {
+	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/versions/",
+	"title": "Versions",
+	"tags": [],
+	"description": "",
+	"content": " latest 3.9 3.8 3.7 3.6 3.5 3.4 3.3 3.2 3.12 3.11 3.1 3.0 2.19 2.18 2.15 2.14 2.13  "
+},
+{
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/2-features/specify-from-which-network-solve-container/",
 	"title": "Specify from which network solve container IP",
 	"tags": [],
 	"description": "",
 	"content": "If your container have multiple networks then you can specify which network to use when solving IP by specifying dps.network label.\nCreating a container with two networks attached to\n$ docker network create --attachable network1 $ docker network create --attachable network2 $ docker run --name nginx1 --rm --label dps.network=network1 --hostname server1.acme.com --network network1 nginx $ docker network connect network2 nginx1  Getting networks masks\n$ docker network inspect -f \u0026quot;{{ .IPAM.Config }}\u0026quot; network1 [{172.31.0.0/16 172.31.0.1 map[]}] $ docker network inspect -f \u0026quot;{{ .IPAM.Config }}\u0026quot; network2 [{192.168.16.0/20 192.168.16.1 map[]}]  Solving container and checking that the solved IP will be respective to the configured network at dps.network label\n$ nslookup server1.acme.com Server:\t172.17.0.3 Address:\t172.17.0.3#53 Non-authoritative answer: Name:\tserver1.acme.com Address: 192.168.16.2  "
-},
-{
-	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/versions/",
-	"title": "Versions",
-	"tags": [],
-	"description": "",
-	"content": " latest 3.9 3.8 3.7 3.6 3.5 3.4 3.3 3.2 3.11 3.11 3.1 3.0 2.19 2.18 2.15 2.14 2.13  "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/2-features/dps-network-resolution/",
@@ -182,11 +189,18 @@
 	"content": ""
 },
 {
+	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/5-tutorials/docker-reverse-proxy/",
+	"title": "Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX",
+	"tags": [],
+	"description": "",
+	"content": " Requirements  DPS already configured, see the docs if you haven\u0026rsquo;t yet.  Tested on:  DPS 3.11 OS: Mac, Linux  Introducing You will see how to develop with docker containers solving them by hostnames from your host machine as the following picture shows:\nif you know about DPS you will figure out that\u0026rsquo;s a very basic DPS feature and you don\u0026rsquo;t need complex configurations to achieve that, except on MAC and Windows as docker runs its containers on a virtual machine so DPS default feature to solve containers names will work but the solved IPs are worthless because they aren\u0026rsquo;t accessible from the host.\nTo fix that we will configure an API Gateway, Service Discovery, Reverse Proxy solution combining DPS with Nginx, see final solution below:\n Obs: This tutorial won\u0026rsquo;t work on Windows yet because containers solving is not support yet, follow the feature request issue on github.\n Source: excalidraw\nConfiguring The pratice is simpler than the theory, let\u0026rsquo;s get it working:\nConfiguring Nginx reverse proxy and two web apps for test\n$ git clone https://github.com/mageddo/dns-proxy-server.git $ cd examples/api-gateway_service-discovery_reverse-proxyame-compose-file $ docker-compose up --build  docker-compose up created three containers, the first is a nginx reverse proxy which will listen to the host machine 80 port and two others are web apps which the reverse proxy will proxy to depending on the hostname queried.\nReverse Proxy will listen all .webapp hostnames and proxy to .container containers.\nSee docker-compose.yml for more details about each docker service.\nThe final step is to configure a wildcard to handle when something on the host queries for .webapp:\nTesting From the hostname Web app 1 is working:\n$ curl -i -X GET http://web-app.webapp HTTP/1.1 200 OK Server: nginx/1.23.3 Date: Thu, 16 Mar 2023 03:18:53 GMT Content-Type: text/html Content-Length: 37 Connection: keep-alive Last-Modified: Thu, 16 Mar 2023 02:35:50 GMT ETag: \u0026quot;64128086-25\u0026quot; Accept-Ranges: bytes \u0026lt;h1\u0026gt;Hello World from web-app!!!\u0026lt;/h1\u0026gt;  Web app 2 is also working:\n$ curl -i -X GET http://web-app-2.webapp HTTP/1.1 200 OK Server: nginx/1.23.3 Date: Thu, 16 Mar 2023 03:30:19 GMT Content-Type: text/html Content-Length: 615 Connection: keep-alive Last-Modified: Tue, 13 Dec 2022 15:53:53 GMT ETag: \u0026quot;6398a011-267\u0026quot; Accept-Ranges: bytes \u0026lt;!DOCTYPE html\u0026gt; \u0026lt;html\u0026gt; \u0026lt;head\u0026gt; \u0026lt;title\u0026gt;Welcome to nginx!\u0026lt;/title\u0026gt; ...  Apps can also access each other by its hostname No reverse proxy is necessary here, so you can connect a web-app to a database container by its hostname for example.\nweb-app-1 connecting to web-app-2\n$ docker-compose run web-app curl -I web-app-2.webapp.container HTTP/1.1 200 OK Server: nginx/1.23.3 Date: Thu, 16 Mar 2023 03:55:02 GMT Content-Type: text/html Content-Length: 615 Last-Modified: Tue, 13 Dec 2022 15:53:53 GMT Connection: keep-alive  That\u0026rsquo;s all, if you have any contribution or question feel free to open a pull request or an issue on the Github repo, thanks for reading.\n Service Discovery, API Gateway, Service Discovery, Reverse Proxy\n "
+},
+{
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/credits/",
 	"title": "Credits",
 	"tags": [],
 	"description": "",
-	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 746 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n\n"
+	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 747 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/",

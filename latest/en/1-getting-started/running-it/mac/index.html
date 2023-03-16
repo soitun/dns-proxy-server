@@ -12,20 +12,20 @@
     <title>MacOSX running instructions :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1678926630" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1678926630" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1678940187" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1678940187" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1678926630" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1678940187" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1678926630"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1678940187"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1678926630"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1678926630"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1678940187"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1678940187"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1678926630"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1678940187"></script>
 
     
   </div>
@@ -600,6 +600,59 @@
  
   
     
+    <li data-nav-id="/dns-proxy-server/latest/en/5-tutorials/" title="Tutorials" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/dns-proxy-server/latest/en/5-tutorials/">
+          <b>4. </b>Tutorials
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/dns-proxy-server/latest/en/5-tutorials/docker-reverse-proxy/" title="Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX" class="dd-item ">
+        <a href="/dns-proxy-server/latest/en/5-tutorials/docker-reverse-proxy/">
+        Create a Service Discovery solution
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
     <li data-nav-id="/dns-proxy-server/latest/en/4-developing/" title="Developing" class="dd-item 
         
         
@@ -678,7 +731,7 @@
         
         ">
       <a href="/dns-proxy-server/latest/en/api/">
-          <b>7. </b>API
+          <b>6. </b>API
           
             <i class="fas fa-check read-icon"></i>
           
@@ -731,7 +784,7 @@
         
         ">
       <a href="/dns-proxy-server/latest/en/versions/">
-          <b>8. </b>Versions
+          <b>7. </b>Versions
           
             <i class="fas fa-check read-icon"></i>
           
@@ -900,7 +953,8 @@
 <li>
 <ul>
 <li><a href="#running-on-mac">Running on MAC</a></li>
-<li><a href="#running-on-docker">Running on Docker</a></li>
+<li><a href="#running-as-docker-as-service">Running as Docker as service</a></li>
+<li><a href="#standalone-run">Standalone run</a></li>
 <li><a href="#configuring-dps-as-default-dns-manually">Configuring DPS as default DNS manually</a></li>
 </ul></li>
 </ul>
@@ -933,12 +987,27 @@
 
 <h2 id="running-on-mac">Running on MAC</h2>
 
-<p>DPS actually is fully supported on MAC knowing <a href="https://docs.docker.com/desktop/networking/#there-is-no-docker0-bridge-on-the-host">docker limitation features</a>. Despite on this,
-there is <strong>no</strong> additional configuration to run DPS on Mac, you can do just like <a href="#running-on-linux">on Linux</a>.</p>
+<p>DPS actually is fully supported on MAC knowing <a href="https://docs.docker.com/desktop/networking/#there-is-no-docker0-bridge-on-the-host">docker limitation features</a>.</p>
 
-<p>Download the <a href="https://github.com/mageddo/dns-proxy-server/releases">latest release</a>, extract and run:</p>
+<h2 id="running-as-docker-as-service">Running as Docker as service</h2>
 
-<pre><code class="language-bash">$ sudo ./dns-proxy-server
+<p>Running DPS as docker service</p>
+
+<pre><code class="language-bash">$ docker run -d -p 5380:5380 -p 53:53/udp -p 53:53/tcp --restart=unless-stopped \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  defreitas/dns-proxy-server
+</code></pre>
+
+<ul>
+<li>Go to <a href="#configuring-dps-as-default-dns-manually">configuring DPS as default DNS</a> to complete DPS configuration.</li>
+<li><a href="/dns-proxy-server/latest/en/2-features/#main-features-use-cases">Check this</a> for usage samples.</li>
+</ul>
+
+<h2 id="standalone-run">Standalone run</h2>
+
+<p>Download the <a href="https://github.com/mageddo/dns-proxy-server/releases">latest release</a> (I recomend the jar one), extract and run:</p>
+
+<pre><code class="language-bash">$ sudo java -jar ./dns-proxy-server
 </code></pre>
 
 <p><a href="/dns-proxy-server/latest/en/2-features/#main-features-use-cases">Check this</a> for usage samples.</p>
@@ -946,16 +1015,10 @@ there is <strong>no</strong> additional configuration to run DPS on Mac, you can
 <p>When running on standalone mode (not on docker container) DPS will be able to auto configure itself as OSX default DNS,
 after 5 seconds you see something like <code>usingDnsConfigurator=DnsConfiguratorOSx</code> at the logs.</p>
 
-<h2 id="running-on-docker">Running on Docker</h2>
-
-<p>It&rsquo;s also possible to run DPS on docker you can do it in different ways, bellow the most recommended.</p>
-
-<p>(todo: Explain)</p>
-
 <h2 id="configuring-dps-as-default-dns-manually">Configuring DPS as default DNS manually</h2>
 
 <p>When not running in standalone mode you will need to configure DPS as default DPS manually,
-check the instructions bellow:</p>
+check the instructions below:</p>
 
 <p>To list available networks:</p>
 
@@ -977,7 +1040,7 @@ There aren't any DNS Servers set on Wi-Fi.
 
 <p>Let&rsquo;s set DPS as the default DNS Server, best option here is to get your network IP address, <code>Wi-Fi</code> in my case which
 has <code>192.168.0.14</code> set, <code>127.0.0.1</code> will partially works because this way containers won&rsquo;t be able
-to solve each other in my tests.</p>
+to solve each other, just the host solve the containers.</p>
 
 <p><strong>Obs</strong>: Be aware you need to run DPS in port <strong>53</strong> as MAC doesn&rsquo;t accept custom port especification.</p>
 
@@ -1373,6 +1436,38 @@ to solve each other in my tests.</p>
             
         
                     
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
             
             
@@ -1462,20 +1557,20 @@ to solve each other in my tests.</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1678926630"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1678940187"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1678926630"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1678926630"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1678940187"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1678940187"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1678926630" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1678926630"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1678940187" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1678940187"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
