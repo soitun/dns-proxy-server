@@ -12,20 +12,20 @@
     <title>Linux running instructions :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1678941834" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1678941834" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1679016428" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1679016428" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1678941834" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1679016428" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1678941834"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1679016428"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1678941834"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1678941834"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1679016428"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1679016428"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1678941834"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1679016428"></script>
 
     
   </div>
@@ -953,8 +953,16 @@
 <li>
 <ul>
 <li><a href="#running-on-linux">Running on Linux</a></li>
-<li><a href="#running-as-docker-service">Running as Docker Service</a></li>
 <li><a href="#standalone-run">Standalone run</a></li>
+<li><a href="#running-as-docker-service">Running as Docker Service</a>
+<ul>
+<li>
+<ul>
+<li><a href="#in-case-you-do-have-systemd-resolved-installed">In case you do have <code>systemd-resolved</code> installed:</a></li>
+<li><a href="#in-case-you-don-t-have-systemd-resolved-installed">In case you don&rsquo;t have systemd-resolved installed:</a></li>
+<li><a href="#testing">Testing</a></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -986,39 +994,6 @@
 
 <h2 id="running-on-linux">Running on Linux</h2>
 
-<h2 id="running-as-docker-service">Running as Docker Service</h2>
-
-<p>If you are using docker on your machine that&rsquo;s the best choice as it will automatically start DPS on every boot:</p>
-
-<pre><code class="language-bash">$ docker run --hostname dns.mageddo --restart=unless-stopped -d \
-  --network host \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /etc/systemd/:/host/etc/systemd \
-  -v /etc/:/host/etc \
-  defreitas/dns-proxy-server
-</code></pre>
-
-<p>It will configure DPS as default DNS on systemd-resolved or vanilla resolv.conf depending on your system.
-If you&rsquo;re using <strong>system-resolved</strong> then run command below to restart its service
-and make DPS as default DNS changes to take effect.</p>
-
-<pre><code class="language-bash">$ service systemd-resolved restart
-</code></pre>
-
-<p><a href="/dns-proxy-server/latest/en/2-features/#main-features-use-cases">Click here</a> to see usage samples</p>
-
-<p>Explaining the running params:</p>
-
-<p><code>--network host</code>: Running on host mode make it possible to DPS bind the
-DNS server port to the host network interface, this way all containers will have access to DPS address
-and use DPS features.
-If you don&rsquo;t want to use that option then you can consider use <a href="/dns-proxy-server/latest/en/2-features/dps-network-resolution/">DPS Network feature</a>.</p>
-
-<p><code>/var/run/docker.sock</code>: Docker socket, so DPS can query the running containers and solve their IP when asked.</p>
-
-<p><code>/etc/systemd/:/host/etc/systemd</code> / <code>/etc/:/host/etc</code>: Depending on your distro you may are using system-resolved or
-vanila resolv.conf to configure available DNS Servers, DPS will look at both and choose the best to be configured.</p>
-
 <h2 id="standalone-run">Standalone run</h2>
 
 <p>Download the <a href="https://github.com/mageddo/dns-proxy-server/releases">latest release</a>, extract and run:</p>
@@ -1029,6 +1004,75 @@ vanila resolv.conf to configure available DNS Servers, DPS will look at both and
 <p>Now DNS Proxy Server is your DNS server, to back everything to original state just press <kbd>CTRL</kbd> + <kbd>C</kbd>;</p>
 
 <p><a href="/dns-proxy-server/latest/en/2-features/#main-features-use-cases">Click here</a> to see usage samples</p>
+
+<h2 id="running-as-docker-service">Running as Docker Service</h2>
+
+<p>If you are using docker on your machine that&rsquo;s the best choice as it will automatically start DPS on every boot:</p>
+
+<pre><code class="language-bash">$ docker run --hostname dns.mageddo --restart=unless-stopped -d \
+  -p 5353:53 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  defreitas/dns-proxy-server
+</code></pre>
+
+<p>Explaining the running params:</p>
+
+<p><code>--network host</code>: Running on host mode make it possible to DPS bind the
+DNS server port to the host network interface, this way all containers will have access to DPS address
+and use DPS features.
+If you don&rsquo;t want to use that option then you can consider use <a href="/dns-proxy-server/latest/en/2-features/dps-network-resolution/">DPS Network feature</a>.</p>
+
+<p><code>/var/run/docker.sock</code>: Docker socket, so DPS can query the running containers and solve their IP when asked.</p>
+
+<p><code>5353:53</code> publishing on port 5353 instead of 53 to evict port conflicts</p>
+
+<h4 id="in-case-you-do-have-systemd-resolved-installed">In case you do have <code>systemd-resolved</code> installed:</h4>
+
+<p>You can run DPS on different port if you are having conflicts as system-resolved suports custom ports.
+But you will need to configure DPS as default DPS manually, check the instructions below:</p>
+
+<p>Get your local network card IP, to list available networks run:</p>
+
+<pre><code class="language-bash">$ ip addr
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eno1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether e0:d5:5f:b7:8a:1a brd ff:ff:ff:ff:ff:ff
+    altname enp0s31f6
+    inet 192.168.0.128/24 brd 192.168.0.255 scope global dynamic noprefixroute eno1
+       valid_lft 3011sec preferred_lft 3011sec
+</code></pre>
+
+<p>In my case the right Network is <code>en01</code> with  IP <code>192.168.0.128</code>,
+<code>127.0.0.1</code> will partially works because this way containers won&rsquo;t be able
+to solve each other, just the host solve the containers.</p>
+
+<p>Edit systemd-resolved conf file with the found IP</p>
+
+<pre><code class="language-bash">$ cat /etc/systemd/resolved.conf 
+...
+[Resolve]
+DNS=192.168.0.128:5353
+</code></pre>
+
+<p>Then restart the service:</p>
+
+<pre><code class="language-bash">$ service systemd-resolved restart
+</code></pre>
+
+<h4 id="in-case-you-don-t-have-systemd-resolved-installed">In case you don&rsquo;t have systemd-resolved installed:</h4>
+
+<p>If you don&rsquo;t have systemd-resolved installed then you can volume resolv.conf with the option <code>-v /etc/:/host/etc</code>
+when running the container but will need to publish DPS on port 53 instead of 5353,
+don&rsquo;t use that if you have systemd-resolved installed because it will cause docker DNS misconfiguration.</p>
+
+<h4 id="testing">Testing</h4>
+
+<p>Once configured, <a href="/dns-proxy-server/latest/en/2-features/#main-features-use-cases">click here</a> to see usage samples.</p>
 
 
 
@@ -1530,20 +1574,20 @@ vanila resolv.conf to configure available DNS Servers, DPS will look at both and
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1678941834"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1679016428"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1678941834"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1678941834"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1679016428"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1679016428"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1678941834" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1678941834"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1679016428" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1679016428"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
