@@ -19,7 +19,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @DaggerTest(component = Context.class, eventsHandler = Events.class)
-class SolverSystemTest {
+class SolverSystemCompTest {
 
   @InjectMock
   DockerDAO dockerDAO;
@@ -42,7 +42,7 @@ class SolverSystemTest {
     final var res = this.solver.handle(query);
 
     // assert
-    final var answer = Messages.findFirstAnswerRecordStr(res);
+    final var answer = Messages.findFirstAnswerRecordStr(res.getMessage());
     assertThat(answer, CoreMatchers.containsString(hostname));
     assertEquals("host.docker.\t\t30\tIN\tA\t192.168.0.1", answer);
 

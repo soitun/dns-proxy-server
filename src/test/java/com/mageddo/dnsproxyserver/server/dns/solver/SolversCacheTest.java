@@ -24,7 +24,7 @@ class SolversCacheTest {
     final var req = MessageTemplates.acmeAQuery();
 
     // act
-    final var res = this.cache.handle(req, message -> Messages.aAnswer(message, "0.0.0.0"));
+    final var res = this.cache.handle(req, message -> Response.of(Messages.aAnswer(message, "0.0.0.0")));
 
     // assert
     assertNotNull(res);

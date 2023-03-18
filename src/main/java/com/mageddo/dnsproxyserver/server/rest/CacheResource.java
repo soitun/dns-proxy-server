@@ -6,36 +6,48 @@ import com.mageddo.http.WebServer;
 import lombok.RequiredArgsConstructor;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
 import static com.mageddo.http.codec.Encoders.encodeJson;
 
-@Path("/v1/caches")
+@Singleton
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class CacheResource implements HttpMapper {
 
   private final SolversCache cache;
 
-  @GET
-  @Path("/size")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Object findCaches() {
-    return Map.of("size", this.cache.getSize());
-  }
-
   @Override
   public void map(WebServer server) {
-    server.map(
+
+    server.get(
       "/v1/caches/size",
       exchange -> encodeJson(
         exchange,
         Response.Status.OK,
         Map.of("size", this.cache.getSize())
+      )
+    );
+
+    server.delete(
+      "/v1/caches",
+      exchange -> {
+        this.cache.clear();
+        encodeJson(
+          exchange,
+          Response.Status.OK,
+          Map.of("size", this.cache.getSize())
+        );
+      }
+    );
+
+    server.get(
+      "/v1/caches",
+      exchange -> encodeJson(
+        exchange,
+        Response.Status.OK,
+        this.cache.asMap()
       )
     );
   }
