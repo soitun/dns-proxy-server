@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -24,15 +24,22 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class TCPServer {
 
-  public static final int MAX_CLIENT_ALIVE_SECS = 5;
-  private final ScheduledExecutorService pool = ThreadPool.create(10);
+  /**
+   * See https://www.ietf.org/rfc/rfc1035.txt section 4.2.2
+   */
+  public static final Duration MAX_CLIENT_ALIVE_DURATION = Duration.ofMinutes(2);
+  public static final int WATCHDOG_DELAY_SECS = 20;
+
+  private final ExecutorService pool = ThreadPool.newCached(20);
   private final Set<WeakReference<SocketClient>> clients = new LinkedHashSet<>();
   private ServerSocket server;
 
   public void start(int port, InetAddress address, SocketClientMessageHandler handler) {
     log.debug("status=tcpServerStartScheduled, port={}", port);
     this.pool.submit(() -> this.start0(port, address, handler));
-    this.pool.scheduleWithFixedDelay(this::watchDog, MAX_CLIENT_ALIVE_SECS, MAX_CLIENT_ALIVE_SECS, TimeUnit.SECONDS);
+    ThreadPool
+      .scheduled()
+      .scheduleWithFixedDelay(this::watchDog, WATCHDOG_DELAY_SECS, WATCHDOG_DELAY_SECS, TimeUnit.SECONDS);
   }
 
   void start0(int port, InetAddress address, SocketClientMessageHandler handler) {
@@ -78,14 +85,14 @@ public class TCPServer {
           } else if (runningForTooLong(client)) {
             client.silentClose();
             itr.remove();
-            log.debug("status=forcedRemove, runningTime={}", client.getRunningTime());
+            log.debug("status=forcedToClose, runningTime={}", client.getRunningTime());
           }
         } finally {
           MDC.clear();
         }
       }
       log.debug(
-          "status=watchdog, removed={}, clientsBefore={}, after={}",
+          "status=watchdog, removed={}, before={}, actual={}",
           clientsBefore - this.clients.size(), clientsBefore, this.clients.size()
       );
     } catch (Throwable e) {
@@ -94,7 +101,7 @@ public class TCPServer {
   }
 
   static boolean runningForTooLong(SocketClient client) {
-    return Duration.ofSeconds(MAX_CLIENT_ALIVE_SECS).compareTo(client.getRunningTime()) <= 0;
+    return MAX_CLIENT_ALIVE_DURATION.compareTo(client.getRunningTime()) <= 0;
   }
 
   public void stop() {
