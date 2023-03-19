@@ -45,7 +45,7 @@ class ConfigFlagTest {
     // assert
     assertEquals(
         readString("/flags-test/002.txt"),
-        sw.toString()
+        sw.toString().replaceAll("\r\n", "\n")
     );
     assertTrue(config.getHelp());
   }
@@ -66,3 +66,4 @@ class ConfigFlagTest {
     assertTrue(config.isVersion());
   }
 }
+
