@@ -10,23 +10,23 @@ import javax.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DaggerTest(initializer = ContextSupplier.class, eventsHandler = Events.class)
-class RemoteResolversCompTest {
+class SolverProviderCompTest {
 
   @Inject
-  RemoteResolvers remoteResolvers;
+  SolverProvider provider;
 
   @Test
-  void mustBuildWithDefaultRemoteServer(){
+  void mustCreateSolverListInRightOrder(){
 
     // arrange
 
     // act
-    final var resolvers = this.remoteResolvers.resolvers();
+    final var names = this.provider.getSolvers()
+      .stream()
+      .map(Solver::name)
+      .toList();
 
     // assert
-    assertEquals(1, resolvers.size(), String.valueOf(resolvers));
-    assertEquals("[SimpleResolver [/8.8.8.8:53]]", resolvers.toString());
-
+    assertEquals("[SolverSystem, SolverDocker, SolverLocalDB, SolverCachedRemote]", names.toString());
   }
-
 }

@@ -1,7 +1,9 @@
 package dagger.sheath;
 
+import dagger.internal.DelegateFactory;
 import dagger.internal.DoubleCheck;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -17,7 +19,7 @@ public class ProviderWrapper {
   private final Class<?> type;
   private final Object provider;
 
-  public ProviderWrapper(Object provider, Class<?> type) {
+  private ProviderWrapper(Object provider, Class<?> type) {
     this.provider = provider;
     this.type = type;
   }
@@ -64,5 +66,36 @@ public class ProviderWrapper {
     } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  public static ProviderWrapper from(Object o, Class<?> type) {
+    try {
+      if (o instanceof DelegateFactory<?>) {
+        final var delegateField = FieldUtils.getField(DelegateFactory.class, "delegate", true);
+        final var provider = FieldUtils.readField(delegateField, o);
+        validateIsProviderClass(provider);
+        return new ProviderWrapper(provider, type);
+      }
+      if (isDoubleCheckClass(o)) {
+        return new ProviderWrapper(o, type);
+      }
+      final var providerClass = ClassUtils.getName(o);
+      Validate.isTrue(isGeneratedFactory(providerClass), "Unknown dagger provider: %s", providerClass);
+      return new ProviderWrapper(o, type);
+    } catch (IllegalAccessException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private static boolean isGeneratedFactory(String providerClass) {
+    return !providerClass.startsWith("dagger.");
+  }
+
+  private static void validateIsProviderClass(Object provider) {
+    Validate.isTrue(isDoubleCheckClass(provider), "Not the expected provider class!: %s", provider);
+  }
+
+  private static boolean isDoubleCheckClass(Object provider) {
+    return Objects.equals(DoubleCheck.class, provider.getClass());
   }
 }
