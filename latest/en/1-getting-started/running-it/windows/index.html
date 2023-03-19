@@ -12,20 +12,20 @@
     <title>Windows running instructions :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1679248204" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1679248204" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1679256392" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1679256392" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1679248204" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1679256392" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1679248204"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1679256392"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1679248204"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1679248204"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1679256392"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1679256392"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1679248204"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1679256392"></script>
 
     
   </div>
@@ -987,14 +987,14 @@
 
 <h2 id="running-on-windows">Running on Windows</h2>
 
-<p>You can run DPS on Windows host without any issues except by DPS isn&rsquo;t capable yet
-to connect to docker API and solve containers (<a href="https://github.com/mageddo/dns-proxy-server/issues/314">see backlog issue</a>).</p>
+<p>DPS actually is fully supported on Windows knowing <a href="https://docs.docker.com/desktop/networking/#there-is-no-docker0-bridge-on-the-host">docker limitation features</a>
+which can be bypassed with a <a href="/dns-proxy-server/latest/en/5-tutorials/docker-reverse-proxy/">reverse-proxy</a>.</p>
 
 <h2 id="running-as-docker-service">Running as Docker Service</h2>
 
 <p>1- If you are using docker on your machine that&rsquo;s the best choice as it will automatically start DPS on every boot:</p>
 
-<pre><code class="language-bash">$ docker run -d --restart=unless-stopped -p 53:53/udp -p 53:53/tcp -p 5380:5380 defreitas/dns-proxy-server
+<pre><code class="language-bash">$ docker run -d --restart=unless-stopped -p 53:53/udp -p 53:53/tcp -p 5380:5380 -v /var/run/docker.sock:/var/run/docker.sock defreitas/dns-proxy-server
 </code></pre>
 
 <p>2- Set DPS as the default DNS on Windows, check the instructions below on
@@ -1029,7 +1029,7 @@ Address:  23.93.76.124
 <li>Run dps by <code>dns-proxy-server.exe</code></li>
 </ul>
 
-<p>If you run DPS as administrator (using administrator prompt) then it will capable of configure itself as the <a href="/dns-proxy-server/latest/en/2-features/auto-configuration-as-default-dns/">default DNS</a>
+<p>If you run DPS as administrator then it will capable of configure itself as the <a href="/dns-proxy-server/latest/en/2-features/auto-configuration-as-default-dns/">default DNS</a>
 or check instructions below of how to set DPS as default DNS manually.</p>
 
 <h2 id="configure-dps-as-default-dns-on-windows">Configure DPS as default DNS on Windows</h2>
@@ -1573,20 +1573,20 @@ then requests won&rsquo;t be sent to DPS, actually DPS doesn&rsquo;t support IPV
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1679248204"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1679256392"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1679248204"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1679248204"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1679256392"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1679256392"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1679248204" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1679248204"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1679256392" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1679256392"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
