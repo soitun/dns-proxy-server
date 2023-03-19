@@ -3,9 +3,7 @@ package com.mageddo.dnsproxyserver.server.dns.solver;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.config.ConfigDAO;
-import com.mageddo.dnsproxyserver.server.dns.Hostname;
 import com.mageddo.dnsproxyserver.server.dns.Messages;
-import com.mageddo.dnsproxyserver.server.dns.Wildcards;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
@@ -35,19 +33,19 @@ public class SolverLocalDB implements Solver {
     }
 
     final var askedHost = Messages.findQuestionHostname(query);
-    for (final var host : Wildcards.buildHostAndWildcards(askedHost)) {
+    final var res = HostnameMatcher.match(askedHost, hostname -> {
       stopWatch.split();
-      final var entry = this.findEntryTo(host);
+      final var entry = this.findEntryTo(hostname);
       if (entry == null) {
         log.trace(
-            "status=partialNotFound, askedHost={}, time={}",
-            askedHost, stopWatch.getTime() - stopWatch.getSplitTime()
+          "status=partialNotFound, askedHost={}, time={}",
+          askedHost, stopWatch.getTime() - stopWatch.getSplitTime()
         );
-        continue;
+        return null;
       }
       log.trace(
-          "status=found, type={}, askedHost={}, time={}, totalTime={}",
-          entry.getType(), askedHost, stopWatch.getTime() - stopWatch.getSplitTime(), stopWatch.getTime()
+        "status=found, type={}, askedHost={}, time={}, totalTime={}",
+        entry.getType(), askedHost, stopWatch.getTime() - stopWatch.getSplitTime(), stopWatch.getTime()
       );
 
       if (Type.is(entry.getType(), Type.A, Type.AAAA)) {
@@ -57,13 +55,15 @@ public class SolverLocalDB implements Solver {
         );
       }
       return this.solverDelegate.solve(query, entry);
+    });
+    if (res != null) {
+      return res;
     }
-
     log.trace("status=notFound, askedHost={}, totalTime={}", askedHost, stopWatch.getTime());
     return null;
   }
 
-  Config.Entry findEntryTo(Hostname host) {
+  Config.Entry findEntryTo(HostnameQuery host) {
     return this.configDAO.findEntryForActiveEnv(host);
   }
 

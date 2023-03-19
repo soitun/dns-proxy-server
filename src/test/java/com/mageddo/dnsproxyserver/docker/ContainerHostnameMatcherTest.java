@@ -1,7 +1,9 @@
 package com.mageddo.dnsproxyserver.docker;
 
 import com.mageddo.dnsproxyserver.config.Configs;
-import com.mageddo.dnsproxyserver.server.dns.Hostname;
+import com.mageddo.dnsproxyserver.server.dns.solver.HostnameQuery;
+import com.mageddo.dnsproxyserver.templates.HostnameQueryTemplates;
+import com.mageddo.dnsproxyserver.templates.HostnameTemplates;
 import com.mageddo.dnsproxyserver.templates.docker.InspectContainerResponseTemplates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,10 @@ class ContainerHostnameMatcherTest {
   }
 
   @Test
-  void mustSolveFromContainerHostnameButNoDomain(){
+  void mustSolveFromContainerHostnameWithoutNoDomain(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.buildWithHostnameAndWithoutDomain();
-    final var hostname = Hostname.of("nginx-2.dev");
+    final var hostname = HostnameQueryTemplates.nginxWildcard();
     final var config = Configs.getInstance();
 
     // act
@@ -32,10 +34,10 @@ class ContainerHostnameMatcherTest {
   }
 
   @Test
-  void mustSolveFromContainerHostnameAndDomain(){
+  void mustSolveFromContainerHostnameWithDomain(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.buildWithHostnameAndDomain("acme.com", "local");
-    final var hostname = Hostname.of("acme.com.local");
+    final var hostname = HostnameQueryTemplates.acmeComLocal();
     final var config = Configs.getInstance();
 
     // act
@@ -49,7 +51,7 @@ class ContainerHostnameMatcherTest {
   void mustSolveFromContainerHostnameEnv(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.build();
-    final var hostname = Hostname.of("nginx.com.br");
+    final var hostname = HostnameQueryTemplates.nginxComBrWildcard();
     final var config = Configs.getInstance();
 
     // act
@@ -60,10 +62,27 @@ class ContainerHostnameMatcherTest {
   }
 
   @Test
+  void mustSolveRegexFromContainerHostnameEnv(){
+    // arrange
+    final var inspect = InspectContainerResponseTemplates.buildWithHostnamesEnv("/nginx.+/,/acme.+/");
+    final var hostname = HostnameQuery.ofRegex(HostnameTemplates.NGINX_COM_BR);
+    final var hostnameAcme = HostnameQuery.ofRegex(HostnameTemplates.NGINX_COM_BR);
+    final var config = Configs.getInstance();
+
+    // act
+    final var testNginx = ContainerHostnameMatcher.test(inspect, hostname, config);
+    final var testAcme = ContainerHostnameMatcher.test(inspect, hostnameAcme, config);
+
+    // assert
+    assertTrue(testNginx, String.valueOf(hostname));
+    assertTrue(testAcme, String.valueOf(hostnameAcme));
+  }
+
+  @Test
   void mustSolveFromContainerName(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.build();
-    final var hostname = Hostname.of("laughing_swanson.docker");
+    final var hostname = HostnameQuery.ofWildcard("laughing_swanson.docker");
     final var config = Configs.build(new String[]{"--register-container-names"});
 
     // act
@@ -79,7 +98,7 @@ class ContainerHostnameMatcherTest {
   void mustSolveFromServiceName(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.build();
-    final var hostname = Hostname.of("nginx-service.docker");
+    final var hostname = HostnameQuery.of("nginx-service.docker");
     final var config = Configs.build(new String[]{"--register-container-names"});
 
     // act
@@ -96,7 +115,7 @@ class ContainerHostnameMatcherTest {
   void mustNOTSolveFromServiceNameWhenFeatureIsDisabled(){
     // arrange
     final var inspect = InspectContainerResponseTemplates.build();
-    final var hostname = Hostname.of("shibata.docker");
+    final var hostname = HostnameQuery.of("shibata.docker");
     final var config = Configs.getInstance();
 
     // act
