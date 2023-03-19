@@ -12,19 +12,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.mageddo.utils.TestUtils.readAndSortJson;
 import static com.mageddo.utils.TestUtils.readAndSortJsonExcluding;
 import static com.mageddo.utils.TestUtils.readAsStream;
-import static com.mageddo.utils.TestUtils.readString;
-import static com.mageddo.utils.TestUtils.sortJson;
 import static com.mageddo.utils.TestUtils.sortJsonExcluding;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static testing.JsonAssertion.jsonPath;
 
 class ConfigsTest {
 
-  static final String[] excludingFields = new String[]{"version", "configPath", "resolvConfPaths"};
+  static final String[] excludingFields = new String[]{
+    "version", "configPath", "resolvConfPaths",
+    "dockerHost"
+  };
 
   @Test
   void mustParseDefaultConfigsAndCreateConfigFile(@TempDir Path tmpDir) {
@@ -43,8 +49,7 @@ class ConfigsTest {
       readAndSortJsonExcluding(config, excludingFields)
     );
     assertTrue(Files.exists(tmpConfigFile));
-
-    assertEquals(sortJson(readString("/configs-test/002.json")), sortJson(readString(tmpConfigFile)));
+    assertEquals(readAndSortJson("/configs-test/002.json"), readAndSortJson(tmpConfigFile));
   }
 
 
@@ -71,6 +76,11 @@ class ConfigsTest {
       readAndSortJsonExcluding("/configs-test/004.json", excludingFields),
       sortJsonExcluding(config, excludingFields)
     );
+    assertThat(
+      jsonPath(config).getString("dockerHost"),
+      anyOf(containsString("unix:"), containsString("npipe"))
+    );
+
   }
 
   @Test
