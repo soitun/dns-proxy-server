@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.docker;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.mageddo.dnsproxyserver.server.dns.IP;
 import com.mageddo.dnsproxyserver.server.dns.solver.HostnameQuery;
 import com.mageddo.net.Networks;
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class ContainerSolvingService {
     final var matchedContainers = this.findMatchingContainers(host);
     final var foundIp = matchedContainers
       .stream()
-      .map(this::findBestIpMatch)
+      .map(it -> this.findBestIpMatch(it, host.getVersion()))
       .findFirst()
       .orElse(null);
     log.trace("status=findDone, host={}, found={}, time={}", host, foundIp, stopWatch.getTime());
@@ -52,12 +53,18 @@ public class ContainerSolvingService {
   }
 
   public String findBestIpMatch(InspectContainerResponse inspect) {
-    return this.findBestIpMatch(inspect, buildNetworks(inspect), this.dockerDAO::findHostMachineIpRaw);
+    return this.findBestIpMatch(inspect, IP.Version.IPV4);
   }
 
+  public String findBestIpMatch(InspectContainerResponse inspect, IP.Version version) {
+    return this.findBestIpMatch(inspect, buildNetworks(inspect), this.dockerDAO::findHostMachineIpRaw, version);
+  }
 
   public String findBestIpMatch(
-    InspectContainerResponse c, Collection<String> networksNames, Supplier<String> hostMachineSup
+    InspectContainerResponse c,
+    Collection<String> networksNames,
+    Supplier<String> hostMachineSup,
+    IP.Version version
   ) {
 
     final var networks = c
@@ -69,9 +76,12 @@ public class ContainerSolvingService {
         log.debug("status=networkNotFoundForContainer, name={}", name);
         continue;
       }
-      final var ip = networks.get(name).getIpAddress();
+      final var containerNetwork = networks.get(name);
+      final String ip = Networks.findIP(containerNetwork, version);
       log.debug("status=foundIp, network={}, container={}, ip={}", name, c.getName(), ip);
-      return ip;
+      if (StringUtils.isNotBlank(ip)) {
+        return ip;
+      }
     }
     log.debug(
       "status=predefinedNetworkNotFound, action=findSecondOption, searchedNetworks={}, container={}",
@@ -92,7 +102,7 @@ public class ContainerSolvingService {
       .min(NetworkComparator::compare)
       .map(network -> {
         final var networkName = network.getName();
-        final var ip = Networks.findIpv4Address(networks.get(networkName));
+        final var ip = Networks.findIP(networks.get(networkName), version);
         log.debug(
           "status=foundIp, networks={}, networkName={}, driver={}, foundIp={}",
           networks.keySet(), networkName, network.getDriver(), ip
@@ -102,23 +112,26 @@ public class ContainerSolvingService {
       .filter(StringUtils::isNotBlank)
       .orElseGet(() -> {
         return Optional
-          .ofNullable(buildDefaultIp(c))
+          .ofNullable(buildDefaultIp(c, version))
           .orElseGet(() -> {
             final var hostIp = hostMachineSup.get();
             log.debug("status=noNetworkAvailable, usingHostMachineIp={}", hostIp);
             return hostIp;
-          })
-          ;
+          });
       })
       ;
 
   }
 
-  static String buildDefaultIp(InspectContainerResponse c) {
-    return StringUtils.trimToNull(c
-      .getNetworkSettings()
-      .getIpAddress()
-    );
+  static String buildDefaultIp(InspectContainerResponse c, IP.Version version) {
+    final var settings = c.getNetworkSettings();
+    if (settings == null) {
+      return null;
+    }
+    if (version.isIpv6()) {
+      return StringUtils.trimToNull(settings.getGlobalIPv6Address());
+    }
+    return StringUtils.trimToNull(settings.getIpAddress());
   }
 
 

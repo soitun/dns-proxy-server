@@ -4,6 +4,7 @@ import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.server.dns.solver.Response;
 import com.mageddo.dnsproxyserver.utils.Ips;
 import lombok.SneakyThrows;
+import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.DClass;
@@ -104,9 +105,12 @@ public class Messages {
     return section.get(0);
   }
 
-  public static Message nxDomain(Message msg) {
-    msg.getHeader().setRcode(Rcode.NXDOMAIN);
-    return msg;
+  public static Message nxDomain(Message query) {
+    final var res = query.clone();
+    final var header = res.getHeader();
+    header.setRcode(Rcode.NXDOMAIN);
+    header.setFlag(Flags.QR);
+    return res;
   }
 
   @SneakyThrows
@@ -148,6 +152,7 @@ public class Messages {
 
   /**
    * Add records from source to target for all sections
+   *
    * @return a clone with the combination.
    */
   public static Message combine(Message source, Message target) {
@@ -174,8 +179,7 @@ public class Messages {
   public static Duration findTTL(Message m) {
     final var answer = Optional
       .ofNullable(Messages.findFirstAnswerRecord(m))
-      .orElseGet(() -> Messages.findFirstAuthorityRecord(m))
-      ;
+      .orElseGet(() -> Messages.findFirstAuthorityRecord(m));
     if (answer == null) {
       return Duration.ZERO;
     }
@@ -205,4 +209,28 @@ public class Messages {
     return res;
   }
 
+  public static Message quadAnswer(Message query, String ip) {
+    return quadAnswer(query, ip, DEFAULT_TTL);
+  }
+
+  public static Message quadAnswer(Message query, String ip, final long ttl) {
+    final var res = withNoErrorResponse(query.clone());
+    final var answer = new AAAARecord(res.getQuestion().getName(), DClass.IN, ttl, Ips.toAddress(ip));
+    res.addRecord(answer, Section.ANSWER);
+    return res;
+  }
+
+  public static Message answer(Message query, String ip) {
+    if (Ips.isIpv6(ip)) {
+      return Messages.quadAnswer(query, ip);
+    }
+    return Messages.aAnswer(query, ip);
+  }
+
+  public static Message answer(Message query, String ip, IP.Version version) {
+    if (version.isIpv6()) {
+      return Messages.quadAnswer(query, ip);
+    }
+    return Messages.aAnswer(query, ip);
+  }
 }
