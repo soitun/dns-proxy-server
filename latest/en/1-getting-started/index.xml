@@ -10,5 +10,15 @@
 	<atom:link href="http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>Release Version Control</title>
+      <link>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/versioning/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/versioning/</guid>
+      <description>DPS Versioning DPS uses semantic versioning for releasing. The latest stable version is the one which is marked as &amp;ldquo;latest&amp;rdquo; label at Github releases or the latest docker tag. Click here to see the binary releases at Github.
+Promotion to the latest (Stable) Minor pre-releases with at least 1 month since they released without a confirmed bug issued on the Github oficial repo, will be released as the latest. A pre-release can take more than 1 month to be promoted to the latest though, if you want to use the most recent updates check the latest pre-release or the docker nightly tag.</description>
+    </item>
+    
   </channel>
 </rss>

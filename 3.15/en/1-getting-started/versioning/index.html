@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/dns-proxy-server/3.15/images/favicon.png" type="image/png">
 
-    <title>Tutorials :: DNS Proxy Server</title>
+    <title>Release Version Control :: DNS Proxy Server</title>
 
     
     <link href="/dns-proxy-server/3.15/css/nucleus.css?1679453965" rel="stylesheet">
@@ -36,7 +36,7 @@
     <link href="/dns-proxy-server/3.15/css/style.css" rel="stylesheet" type="text/css" />
 
   </head>
-  <body class="" data-url="/dns-proxy-server/3.15/en/5-tutorials/">
+  <body class="" data-url="/dns-proxy-server/3.15/en/1-getting-started/versioning/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -77,7 +77,7 @@
   
     
     <li data-nav-id="/dns-proxy-server/3.15/en/1-getting-started/" title="Getting Started" class="dd-item 
-        
+        parent
         
         
         ">
@@ -247,7 +247,7 @@
  
   
     
-      <li data-nav-id="/dns-proxy-server/3.15/en/1-getting-started/versioning/" title="Release Version Control" class="dd-item ">
+      <li data-nav-id="/dns-proxy-server/3.15/en/1-getting-started/versioning/" title="Release Version Control" class="dd-item active">
         <a href="/dns-proxy-server/3.15/en/1-getting-started/versioning/">
         Release Version Control
         <i class="fas fa-check read-icon"></i>
@@ -620,8 +620,8 @@
   
     
     <li data-nav-id="/dns-proxy-server/3.15/en/5-tutorials/" title="Tutorials" class="dd-item 
-        parent
-        active
+        
+        
         
         ">
       <a href="/dns-proxy-server/3.15/en/5-tutorials/">
@@ -858,7 +858,7 @@
                   
                     
                     
-                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/3.15/en/5-tutorials/" selected>English</option>
+                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/3.15/en/1-getting-started/versioning/" selected>English</option>
                     
                   
               
@@ -917,7 +917,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/5-tutorials/_index.en.md" target="blank">
+                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/1-getting-started/versioning.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">Edit this page</span>
                     </a>
@@ -944,7 +944,13 @@
             
           
           
-            <a href='/dns-proxy-server/3.15/en/'>Getting Started</a> > Tutorials
+            
+            
+          
+          
+            <a href='/dns-proxy-server/3.15/en/'>Getting Started</a> > <a href='/dns-proxy-server/3.15/en/1-getting-started/'>Getting Started</a> > Release Version Control
+          
+         
           
          
           
@@ -959,8 +965,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#tutorials">Tutorials</a></li>
-<li><a href="#3rd-tutorials">3rd Tutorials</a></li>
+<li><a href="#dps-versioning">DPS Versioning</a></li>
+<li><a href="#promotion-to-the-latest-stable">Promotion to the latest (Stable)</a></li>
+<li><a href="#docker-images">Docker Images</a></li>
+<li><a href="#release-notes">Release Notes</a></li>
+<li><a href="#reference">Reference</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -979,7 +988,7 @@
           
             <h1>
               
-              Tutorials
+              Release Version Control
             </h1>
           
 
@@ -988,58 +997,44 @@
 
 
 
-	
 
-<h2 id="tutorials">Tutorials</h2>
+<h2 id="dps-versioning">DPS Versioning</h2>
 
-<ul class="children children-li">
-    
+<p>DPS uses <a href="https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning">semantic versioning</a> for releasing. The latest stable version is the one which is marked
+as &ldquo;latest&rdquo; label at Github releases or the latest docker tag. <a href="https://github.com/mageddo/dns-proxy-server/releases">Click here</a> to see the binary releases at Github.</p>
 
-    
-        
-    
-    
-    
+<h2 id="promotion-to-the-latest-stable">Promotion to the latest (Stable)</h2>
 
-    
-        
-    
-        
-            
-                
-<li>
-<a href="/dns-proxy-server/3.15/en/5-tutorials/docker-reverse-proxy/" >Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX</a>
-</li>
-                
+<p>Minor pre-releases with at least 1 month since they released without a confirmed bug issued on the Github oficial repo,
+will be released as the latest. A pre-release can take more than 1 month to be promoted to the latest though, if
+you want to use the most recent updates check the latest pre-release or the docker <code>nightly</code> tag.</p>
 
-                
-            
-            
-        
-    
+<h2 id="docker-images">Docker Images</h2>
 
-    
-</ul>
+<p>There are three types of docker images</p>
 
 <ul>
-<li><a href="https://github.com/mageddo/dns-proxy-server/tree/master/examples">Click here</a> to see a set of pratical samples using docker and docker-compose</li>
+<li>Latest images are the latest stable image for Linux amd64</li>
+<li>Nightly/Unstable images are the latest <strong>un</strong>stable image for Linux amd64</li>
+<li>Images for Linux amd64: ex: <code>defreitas/dns-proxy-server:3.9.0</code></li>
+<li>Images for Linux aarch64: ex: <code>defreitas/dns-proxy-server:3.9.0-aarch64</code></li>
 </ul>
 
-<h2 id="3rd-tutorials">3rd Tutorials</h2>
+<p><a href="https://hub.docker.com/r/defreitas/dns-proxy-server/t">Click here</a> to see the docker images at docker hub.</p>
 
-<ul>
-<li><a href="https://medium.com/opstree-technology/resolve-docker-container-from-host-fbb2a43a5d80">Resolve Docker Container From Host - @Ankur</a></li>
-</ul>
+<h2 id="release-notes">Release Notes</h2>
 
-<p>&lt;<em>Contribute by opening a Pull Request and link a DPS tutorial here</em>&gt;</p>
+<p>You can see every release note on the <a href="https://github.com/mageddo/dns-proxy-server/releases">releases download page</a> or at the <a href="https://github.com/mageddo/dns-proxy-server/blob/master/RELEASE-NOTES.md">release notes.md</a> file</p>
 
+<h2 id="reference">Reference</h2>
 
-
+<p>DPS release process was inpired on <a href="https://docs.gradle.org/7.6.1/release-notes.html">Gradle</a> and Debian releasing process.</p>
 
 
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -1072,8 +1067,6 @@
             
                 
                     
-                        
-                        
                     
                 
                 
@@ -1089,6 +1082,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -1172,39 +1168,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -1217,19 +1180,6 @@
             
         
                     
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
             
         
                     
@@ -1238,16 +1188,18 @@
             
                 
                     
+                        
+                        
+                    
                 
                 
 
                     
                     
+                        
+                    
                     
 
-                    
-            
-        
                     
                         
             
@@ -1377,6 +1329,54 @@
             
         
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
             
         
                     
@@ -1401,7 +1401,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -1414,9 +1413,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1537,10 +1533,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/dns-proxy-server/3.15/en/3-configuration/" title="Configuration"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/dns-proxy-server/3.15/en/1-getting-started/requirements/" title="Requirements"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/dns-proxy-server/3.15/en/5-tutorials/docker-reverse-proxy/" title="Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/dns-proxy-server/3.15/en/2-features/" title="Features" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -1579,3 +1575,4 @@
 </script>
   </body>
 </html>
+

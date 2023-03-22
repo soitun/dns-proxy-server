@@ -91,6 +91,13 @@
 	"content": "DPS can lead with docker containers with different networks, it will find the target container best matching IP, best matching means the IP which have the most chances of be accessible from the client, no distinction if the client is another container or not.\nYou can click here to see a pratical working sample.\nThe following table describles the possible scenarios involving docker container networks, this is an automatic decision made by DPS, if you want to enforce some network resolution you can use dps.network label .\n   DPS Container Network Client Container Network Target Container Network Result Description     any:bridge any:bridge any:bridge OK Everything works fine when all the networks are using bridge driver, no problem if the networks are different   Network x Network x Network x OK Even with restrictive networks (like overlay driver) the resolution will work, since all containers are connected to this same network.   Network a, Network b Network a Network b OK The minimal requirement is that client must be on the same network which DPS so the client will able to query DPS, then client also need to be on the same network which the target container, so it will be able to ping after solve the hostname, DPS don\u0026rsquo;t really need to be able to talk with the target container since it won\u0026rsquo;t turn into a client a some moment    "
 },
 {
+	"uri": "http://mageddo.github.io/dns-proxy-server/3.15/en/1-getting-started/versioning/",
+	"title": "Release Version Control",
+	"tags": [],
+	"description": "",
+	"content": " DPS Versioning DPS uses semantic versioning for releasing. The latest stable version is the one which is marked as \u0026ldquo;latest\u0026rdquo; label at Github releases or the latest docker tag. Click here to see the binary releases at Github.\nPromotion to the latest (Stable) Minor pre-releases with at least 1 month since they released without a confirmed bug issued on the Github oficial repo, will be released as the latest. A pre-release can take more than 1 month to be promoted to the latest though, if you want to use the most recent updates check the latest pre-release or the docker nightly tag.\nDocker Images There are three types of docker images\n Latest images are the latest stable image for Linux amd64 Nightly/Unstable images are the latest unstable image for Linux amd64 Images for Linux amd64: ex: defreitas/dns-proxy-server:3.9.0 Images for Linux aarch64: ex: defreitas/dns-proxy-server:3.9.0-aarch64  Click here to see the docker images at docker hub.\nRelease Notes You can see every release note on the releases download page or at the release notes.md file\nReference DPS release process was inpired on Gradle and Debian releasing process.\n"
+},
+{
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.15/en/2-features/solving-hostnames-wildcard/",
 	"title": "Wildcards hostnames Solving",
 	"tags": [],
@@ -200,7 +207,7 @@
 	"title": "Credits",
 	"tags": [],
 	"description": "",
-	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 764 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @dependabot[bot] 1 commits \n\n"
+	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 765 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @dependabot[bot] 1 commits \n\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.15/en/",

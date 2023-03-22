@@ -23,6 +23,16 @@ $ curl -X DELETE dns.mageddo:5380/network/disconnect-containers/?networkId=85e75
     </item>
     
     <item>
+      <title>Release Version Control</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.15/en/1-getting-started/versioning/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.15/en/1-getting-started/versioning/</guid>
+      <description>DPS Versioning DPS uses semantic versioning for releasing. The latest stable version is the one which is marked as &amp;ldquo;latest&amp;rdquo; label at Github releases or the latest docker tag. Click here to see the binary releases at Github.
+Promotion to the latest (Stable) Minor pre-releases with at least 1 month since they released without a confirmed bug issued on the Github oficial repo, will be released as the latest. A pre-release can take more than 1 month to be promoted to the latest though, if you want to use the most recent updates check the latest pre-release or the docker nightly tag.</description>
+    </item>
+    
+    <item>
       <title>Compiling from source</title>
       <link>http://mageddo.github.io/dns-proxy-server/3.15/en/4-developing/compiling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -63,7 +73,7 @@ if you know about DPS you will figure out that&amp;rsquo;s a very basic DPS feat
       <description>Contributors Thanks to them  for making Open Source Software a better place !
 .ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }
 .ghContributors &amp;gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors &amp;gt; div label{ padding-left: 4px ; } .ghContributors &amp;gt; div span{ font-size: x-small; padding-left: 4px ; }
-  @mageddo 764 commits 
+  @mageddo 765 commits 
  @josielrocha 9 commits 
  @mrubli 3 commits 
  @addshore 3 commits</description>
