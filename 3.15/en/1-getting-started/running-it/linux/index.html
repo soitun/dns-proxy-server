@@ -12,20 +12,20 @@
     <title>Linux running instructions :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/3.15/css/nucleus.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/fontawesome-all.min.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/hybrid.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/featherlight.min.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/perfect-scrollbar.min.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/auto-complete.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/atom-one-dark-reasonable.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/theme.css?1679537830" rel="stylesheet">
-    <link href="/dns-proxy-server/3.15/css/hugo-theme.css?1679537830" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/nucleus.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/fontawesome-all.min.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/hybrid.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/featherlight.min.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/perfect-scrollbar.min.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/auto-complete.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/atom-one-dark-reasonable.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/theme.css?1679540977" rel="stylesheet">
+    <link href="/dns-proxy-server/3.15/css/hugo-theme.css?1679540977" rel="stylesheet">
     
-      <link href="/dns-proxy-server/3.15/css/theme-mine.css?1679537830" rel="stylesheet">
+      <link href="/dns-proxy-server/3.15/css/theme-mine.css?1679540977" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/3.15/js/jquery-3.3.1.min.js?1679537830"></script>
+    <script src="/dns-proxy-server/3.15/js/jquery-3.3.1.min.js?1679540977"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/3.15/js/lunr.min.js?1679537830"></script>
-<script type="text/javascript" src="/dns-proxy-server/3.15/js/auto-complete.js?1679537830"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.15/js/lunr.min.js?1679540977"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.15/js/auto-complete.js?1679540977"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/3.15\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/3.15/js/search.js?1679537830"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.15/js/search.js?1679540977"></script>
 
     
   </div>
@@ -1029,7 +1029,8 @@
 <p>If you are using docker on your machine that&rsquo;s the best choice as it will automatically start DPS on every boot:</p>
 
 <pre><code class="language-bash">$ docker run --hostname dns.mageddo --restart=unless-stopped -d \
-  -p 5353:53 \
+  -p 5354:53/tcp \
+  -p 5354:53/udp \
   -p 5380:5380 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   defreitas/dns-proxy-server
@@ -1044,7 +1045,7 @@ If you don&rsquo;t want to use that option then you can consider use <a href="/d
 
 <p><code>/var/run/docker.sock</code>: Docker socket, so DPS can query the running containers and solve their IP when asked.</p>
 
-<p><code>5353:53</code> publishing on port 5353 instead of 53 to evict port conflicts</p>
+<p><code>5354:53</code> publishing on port 5354 instead of 53 to evict port conflicts</p>
 
 <h4 id="in-case-you-do-have-systemd-resolved-installed">In case you do have <code>systemd-resolved</code> installed:</h4>
 
@@ -1076,7 +1077,7 @@ to solve each other, just the host solve the containers.</p>
 <pre><code class="language-bash">$ cat /etc/systemd/resolved.conf 
 ...
 [Resolve]
-DNS=192.168.0.128:5353
+DNS=192.168.0.128:5354
 </code></pre>
 
 <p>Then restart the service:</p>
@@ -1087,7 +1088,7 @@ DNS=192.168.0.128:5353
 <h4 id="in-case-you-don-t-have-systemd-resolved-installed">In case you don&rsquo;t have systemd-resolved installed:</h4>
 
 <p>If you don&rsquo;t have systemd-resolved installed then you can volume resolv.conf with the option <code>-v /etc/:/host/etc</code>
-when running the container but will need to publish DPS on port 53 instead of 5353,
+when running the container but will need to publish DPS on port 53 instead of 5354,
 don&rsquo;t use that if you have systemd-resolved installed because it will cause docker DNS misconfiguration.</p>
 
 <h4 id="testing">Testing</h4>
@@ -1610,20 +1611,20 @@ don&rsquo;t use that if you have systemd-resolved installed because it will caus
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/3.15/js/clipboard.min.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/perfect-scrollbar.min.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/perfect-scrollbar.jquery.min.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/jquery.sticky.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/featherlight.min.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/html5shiv-printshiv.min.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/highlight.pack.js?1679537830"></script>
+    <script src="/dns-proxy-server/3.15/js/clipboard.min.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/perfect-scrollbar.min.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/perfect-scrollbar.jquery.min.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/jquery.sticky.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/featherlight.min.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/html5shiv-printshiv.min.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/highlight.pack.js?1679540977"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/3.15/js/modernizr.custom-3.6.0.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/learn.js?1679537830"></script>
-    <script src="/dns-proxy-server/3.15/js/hugo-learn.js?1679537830"></script>
+    <script src="/dns-proxy-server/3.15/js/modernizr.custom-3.6.0.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/learn.js?1679540977"></script>
+    <script src="/dns-proxy-server/3.15/js/hugo-learn.js?1679540977"></script>
 
-    <link href="/dns-proxy-server/3.15/mermaid/mermaid.css?1679537830" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/3.15/mermaid/mermaid.js?1679537830"></script>
+    <link href="/dns-proxy-server/3.15/mermaid/mermaid.css?1679540977" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/3.15/mermaid/mermaid.js?1679540977"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
