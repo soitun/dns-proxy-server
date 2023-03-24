@@ -1,8 +1,8 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
 import com.mageddo.dnsproxyserver.server.dns.Messages;
 import com.mageddo.dnsproxyserver.usecase.HostMachineService;
+import com.mageddo.net.IP;
 import dagger.sheath.InjectMock;
 import dagger.sheath.junit.DaggerTest;
 import org.hamcrest.CoreMatchers;

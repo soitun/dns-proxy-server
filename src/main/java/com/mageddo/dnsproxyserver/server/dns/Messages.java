@@ -4,6 +4,7 @@ import com.mageddo.commons.lang.Objects;
 import com.mageddo.dnsproxyserver.config.Config.Entry;
 import com.mageddo.dnsproxyserver.server.dns.solver.Response;
 import com.mageddo.dnsproxyserver.utils.Ips;
+import com.mageddo.net.IP;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.xbill.DNS.AAAARecord;

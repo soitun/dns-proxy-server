@@ -2,7 +2,6 @@ package com.mageddo.net;
 
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerNetwork;
-import com.mageddo.dnsproxyserver.server.dns.IP;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +37,7 @@ public class Networks {
       .filter(it -> it.getAddress().length == IP.IPV4_BYTES) // todo needs a filter to exclude virtual network cards
       .map(it -> IP.of(it.getHostAddress()))
       .sorted(Comparator.comparing(it -> {
-        return it.raw().startsWith("127") ? Integer.MAX_VALUE : 0;
+        return it.toText().startsWith("127") ? Integer.MAX_VALUE : 0;
       }))
       .toList()
       ;

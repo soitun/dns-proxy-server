@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.net.IP;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class IPConverter {
       if (value == null) {
         gen.writeNull();
       } else {
-        gen.writeString(value.raw());
+        gen.writeString(value.toText());
       }
     }
   }

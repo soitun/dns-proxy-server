@@ -1,6 +1,6 @@
 package com.mageddo.dnsproxyserver.templates;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.net.IP;
 
 public class IpTemplates {
 

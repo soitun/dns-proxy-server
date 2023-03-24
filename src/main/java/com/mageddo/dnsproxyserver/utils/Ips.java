@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.utils;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
+import com.mageddo.net.IP;
+import com.mageddo.utils.Bytes;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -45,7 +46,7 @@ public class Ips {
   }
 
   public static InetAddress toAddress(IP ip) {
-    return toAddress(ip.raw());
+    return toAddress(ip.toText());
   }
 
   public static SocketAddress toSocketAddress(String ip, int port) {
@@ -70,5 +71,16 @@ public class Ips {
 
   public static boolean isIpv4(String v) {
     return !isIpv6(v);
+  }
+
+  public static Short[] toShortArray(String ip) {
+    if (StringUtils.isBlank(ip)) {
+      return null;
+    }
+    return IP.of(ip).toShortArray();
+  }
+
+  public static IP toIp(Short[] ip) {
+    return IP.of(Bytes.toNative(ip));
   }
 }

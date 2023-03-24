@@ -1,10 +1,10 @@
 package com.mageddo.dnsproxyserver.docker;
 
 import com.mageddo.dnsproxyserver.di.Context;
-import com.mageddo.dnsproxyserver.server.dns.IP;
 import com.mageddo.dnsproxyserver.templates.IpTemplates;
 import com.mageddo.dnsproxyserver.templates.docker.InspectContainerResponseTemplates;
 import com.mageddo.dnsproxyserver.templates.docker.NetworkTemplates;
+import com.mageddo.net.IP;
 import dagger.sheath.InjectMock;
 import dagger.sheath.junit.DaggerTest;
 import org.junit.jupiter.api.DisplayName;

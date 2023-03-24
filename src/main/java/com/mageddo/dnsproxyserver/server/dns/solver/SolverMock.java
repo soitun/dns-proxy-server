@@ -1,7 +1,7 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
-import com.mageddo.dnsproxyserver.server.dns.IP;
 import com.mageddo.dnsproxyserver.server.dns.Messages;
+import com.mageddo.net.IP;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xbill.DNS.Message;
@@ -27,7 +27,7 @@ public class SolverMock implements Solver {
     final var hostname = Messages.findQuestionHostname(query);
     for (final var entry : this.mocks) {
       if (entry.getKey().equalsIgnoreCase(hostname.getValue())) {
-        return Response.of(Messages.aAnswer(query, entry.getValue().raw()));
+        return Response.of(Messages.aAnswer(query, entry.getValue().toText()));
       }
     }
     return null;

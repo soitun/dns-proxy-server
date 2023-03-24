@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
+import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.config.Configs;
 import com.mageddo.dnsproxyserver.server.dns.Messages;
 import com.mageddo.dnsproxyserver.usecase.HostMachineService;
@@ -20,6 +21,11 @@ public class SolverSystem implements Solver {
   @Override
   public Response handle(Message query) {
     final var hostname = Messages.findQuestionHostname(query);
+    final var questionType = Messages.findQuestionType(query);
+    if (questionType.isNot(Type.A, Type.AAAA)) {
+      log.debug("status=unsupportedType, type={}, query={}", questionType, Messages.simplePrint(query));
+      return null;
+    }
     final var config = Configs.getInstance();
     if (hostname.isEqualTo(config.getHostMachineHostname())) { // fixme fazer case com hostname + search domain
       final var ip = this.machineService.findHostMachineIP();
@@ -28,7 +34,7 @@ public class SolverSystem implements Solver {
         return null;
       }
       log.debug("status=solvingHostMachineName, host={}, ip={}", hostname, ip);
-      return Response.of(Messages.aAnswer(query, ip.raw()), Messages.DEFAULT_TTL_DURATION);
+      return Response.of(Messages.aAnswer(query, ip.toText()), Messages.DEFAULT_TTL_DURATION);
     }
     return null;
   }
