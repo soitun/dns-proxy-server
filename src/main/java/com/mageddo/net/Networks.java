@@ -15,11 +15,18 @@ public class Networks {
 
   volatile static Network network = Network.getInstance();
 
-  @SneakyThrows
   public static IP findCurrentMachineIP() {
+    return findCurrentMachineIP(IP.Version.IPV4);
+  }
+
+  @SneakyThrows
+  public static IP findCurrentMachineIP(IP.Version version) {
     return findMachineIps()
       .stream()
-      .findFirst()
+      .filter(it -> it.version() == version) // todo needs a filter to exclude virtual network cards
+      .min(Comparator.comparing(it -> {
+        return it.isLoopback() ? Integer.MAX_VALUE : 0;
+      }))
       .orElse(null);
   }
 
@@ -29,21 +36,17 @@ public class Networks {
    *
    * @return Machine ips ordered by relevance.
    */
-  public static List<IP> findMachineIps() {
+  static List<IP> findMachineIps() {
     return findInterfaces()
       .stream()
       .sorted(Comparator.comparingInt(NetworkInterface::getIndex))
       .flatMap(NetworkInterface::inetAddresses)
-      .filter(it -> it.getAddress().length == IP.IPV4_BYTES) // todo needs a filter to exclude virtual network cards
       .map(it -> IP.of(it.getHostAddress()))
-      .sorted(Comparator.comparing(it -> {
-        return it.toText().startsWith("127") ? Integer.MAX_VALUE : 0;
-      }))
       .toList()
       ;
   }
 
-  public static List<NetworkInterface> findInterfaces() {
+  static List<NetworkInterface> findInterfaces() {
     return network.findNetworkInterfaces()
       .filter(it -> {
         try {
