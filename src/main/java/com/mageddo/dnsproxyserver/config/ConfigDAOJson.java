@@ -39,12 +39,20 @@ public class ConfigDAOJson implements ConfigDAO {
   }
 
   @Override
-  public Config.Entry findEntryForActiveEnv(HostnameQuery hostname) {
+  public Config.Entry findEntryForActiveEnv(HostnameQuery query) {
     final var env = this.findActiveEnv();
     return env.getEntries()
       .stream()
-      .filter(it -> hostname.matches(it.getHostname()))
-      .findFirst()
+      .filter(it -> query.matches(it.getHostname()))
+      .min((o1, o2) -> {
+        if (o1.getType() == o2.getType()) {
+          return 0;
+        }
+        if (query.isTypeEqualTo(o1.getType())) {
+          return -1;
+        }
+        return 1;
+      })
       .orElse(null);
   }
 
@@ -198,5 +206,6 @@ public class ConfigDAOJson implements ConfigDAO {
   interface TriConsumer<A, B, C> {
     void accept(A a, B b, C c);
   }
+
 }
 

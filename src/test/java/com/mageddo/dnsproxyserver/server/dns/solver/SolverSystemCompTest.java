@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
 import com.mageddo.dnsproxyserver.server.dns.Messages;
+import com.mageddo.dnsproxyserver.templates.HostnameTemplates;
 import com.mageddo.dnsproxyserver.usecase.HostMachineService;
 import com.mageddo.net.IP;
 import dagger.sheath.InjectMock;
@@ -8,6 +9,7 @@ import dagger.sheath.junit.DaggerTest;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.Flags;
+import org.xbill.DNS.Rcode;
 import testing.ContextSupplier;
 import testing.Events;
 
@@ -15,6 +17,7 @@ import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,9 +34,9 @@ class SolverSystemCompTest {
   SolverSystem solver;
 
   @Test
-  void mustSolverHostMachineIp(){
+  void mustSolverHostMachineIp() {
     // arrange
-    final var hostname = "host.docker.";
+    final var hostname = HostnameTemplates.HOST_DOCKER;
     final var query = Messages.aQuestion(hostname);
 
     doReturn(IP.of("192.168.0.1"))
@@ -52,6 +55,23 @@ class SolverSystemCompTest {
     assertEquals("host.docker.\t\t30\tIN\tA\t192.168.0.1", answer);
 
     verify(this.machineService).findHostMachineIP(eq(IP.Version.IPV4));
+  }
+
+  @Test
+  void mustSolveNoErrorWhenHostIsFoundButAddressIsNot() {
+
+    // arrange
+    final var query = Messages.quadAQuestion(HostnameTemplates.HOST_DOCKER);
+
+    // act
+    final var res = this.solver.handle(query);
+
+    // assert
+    assertNotNull(res);
+    final var msg = res.getMessage();
+    assertEquals(Rcode.NOERROR, msg.getRcode());
+    assertEquals("", Messages.detailedPrint(msg));
+
   }
 
 }

@@ -33,10 +33,19 @@ public class EntryTemplates {
     return a(host)
       .toBuilder()
       .type(Type.AAAA)
+      .ip(IpTemplates.LOCAL_IPV6)
       .build();
   }
 
-  public static Config.Entry acmeAAAA() {
+  public static Config.Entry acmeQuadA() {
     return aaaa(ACME_COM);
+  }
+
+  public static Config.Entry acmeA() {
+    return a(ACME_COM);
+  }
+
+  public static Config.Entry acmeCname() {
+    return cname(ACME_COM, HostnameTemplates.ORANGE_ACME_HOSTNAME);
   }
 }

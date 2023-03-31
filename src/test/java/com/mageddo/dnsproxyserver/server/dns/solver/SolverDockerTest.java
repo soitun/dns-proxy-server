@@ -1,10 +1,12 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
+import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.docker.ContainerSolvingService;
 import com.mageddo.dnsproxyserver.docker.DockerDAO;
+import com.mageddo.dnsproxyserver.server.dns.Messages;
 import com.mageddo.dnsproxyserver.templates.HostnameTemplates;
-import com.mageddo.dnsproxyserver.templates.IpTemplates;
 import com.mageddo.dnsproxyserver.templates.MessageTemplates;
+import com.mageddo.dnsproxyserver.templates.docker.EntryTemplates;
 import com.mageddo.net.IP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.xbill.DNS.Flags;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -46,16 +49,16 @@ class SolverDockerTest {
   void mustSolveExactHostname() {
     // arrange
     final var query = MessageTemplates.acmeAQuery();
-    final var ip = "0.0.0.0";
+    final var entry = EntryTemplates.zeroIp();
     final var hostname = HostnameQuery.ofWildcard(HostnameTemplates.ACME_HOSTNAME);
 
     doReturn(true)
       .when(this.dockerDAO)
       .isConnected()
     ;
-    doReturn(ip)
+    doReturn(entry)
       .when(this.containerSolvingService)
-      .findBestHostIP(eq(hostname));
+      .findBestMatch(eq(hostname));
 
     // act
     final var res = this.solver.handle(query);
@@ -64,25 +67,24 @@ class SolverDockerTest {
     assertNotNull(res);
 
     final var resText = res.toString();
-    assertTrue(resText.contains(ip), resText);
-    verify(this.containerSolvingService).findBestHostIP(hostname);
+    assertTrue(resText.contains(entry.getIp().toText()), resText);
+    verify(this.containerSolvingService).findBestMatch(hostname);
   }
-
 
   @Test
   void mustSolveQuadARecordQuery() {
     // arrange
     final var query = MessageTemplates.acmeQuadAQuery();
-    final var ip = IpTemplates.LOCAL_EXTENDED_IPV6;
+    final var entry = EntryTemplates.localIpv6();
 
     doReturn(true)
       .when(this.dockerDAO)
       .isConnected()
     ;
 
-    doReturn(ip)
+    doReturn(entry)
       .when(this.containerSolvingService)
-      .findBestHostIP(any());
+      .findBestMatch(any());
 
     // act
     final var res = this.solver.handle(query);
@@ -91,11 +93,58 @@ class SolverDockerTest {
     assertNotNull(res);
     assertTrue(Responses.hasFlag(res, Flags.RA));
     final var resText = res.toString();
-    assertTrue(resText.contains(ip), resText);
-    verify(this.containerSolvingService).findBestHostIP(this.hostnameQueryCaptor.capture());
+    assertTrue(resText.contains(entry.getIp().toText()), resText);
+    verify(this.containerSolvingService).findBestMatch(this.hostnameQueryCaptor.capture());
 
     final var v = this.hostnameQueryCaptor.getValue();
     assertEquals(IP.Version.IPV6, v.getVersion());
+  }
+
+  @Test
+  void mustSolveEmptyIpWhenHostnameMatchesButNoIpIsFound() {
+    // arrange
+    final var query = MessageTemplates.acmeQuadAQuery();
+    final var entry = EntryTemplates.hostnameMatchedButNoAddress();
+
+    doReturn(true)
+      .when(this.dockerDAO)
+      .isConnected()
+    ;
+
+    doReturn(entry)
+      .when(this.containerSolvingService)
+      .findBestMatch(any());
+
+    // act
+    final var res = this.solver.handle(query);
+
+    // assert
+    assertNotNull(res);
+    assertTrue(Responses.hasFlag(res, Flags.RA));
+    assertEquals(Type.AAAA, Messages.findQuestionType(res.getMessage()));
+    assertEquals("", Messages.detailedPrint(res.getMessage()));
+  }
+
+  @Test
+  void mustReturnNxDomainWhenHostnameDONTMatches() {
+    // arrange
+    final var query = MessageTemplates.acmeQuadAQuery();
+    final var entry = EntryTemplates.hostnameNotMatched();
+
+    doReturn(true)
+      .when(this.dockerDAO)
+      .isConnected()
+    ;
+
+    doReturn(entry)
+      .when(this.containerSolvingService)
+      .findBestMatch(any());
+
+    // act
+    final var res = this.solver.handle(query);
+
+    // assert
+    assertNull(res);
   }
 
 }

@@ -1,7 +1,9 @@
 package com.mageddo.dnsproxyserver.config;
 
+import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.server.dns.solver.HostnameQuery;
 import com.mageddo.dnsproxyserver.templates.EnvTemplates;
+import com.mageddo.dnsproxyserver.templates.HostnameQueryTemplates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,4 +39,59 @@ class ConfigDAOJsonTest {
     assertNotNull(entry);
     assertEquals(MAGEDDO_COM_CAMEL_CASE, entry.getHostname());
   }
+
+  @Test
+  void mustSolveQuadARecord(){
+    // arrange
+    final var query = HostnameQueryTemplates.acmeComQuadA();
+
+    final var env = EnvTemplates.acmeQuadA();
+    doReturn(env)
+      .when(this.dao)
+      .findActiveEnv();
+
+    // act
+    final var found = this.dao.findEntryForActiveEnv(query);
+
+    // assert
+    assertNotNull(found);
+  }
+
+  @Test
+  void mustSolveQueriedTypeWhenTwoDifferentTypesAreAvailable(){
+    // arrange
+    final var query = HostnameQueryTemplates.acmeComQuadA();
+
+    final var env = EnvTemplates.acmeAAndQuadA();
+    doReturn(env)
+      .when(this.dao)
+      .findActiveEnv();
+
+    // act
+    final var found = this.dao.findEntryForActiveEnv(query);
+
+    // assert
+    assertNotNull(found);
+    assertEquals(Type.AAAA, found.getType());
+  }
+
+
+  @Test
+  void mustReturnWhatExistsWhenNotBestMatchIsFound(){
+    // arrange
+    final var query = HostnameQueryTemplates.acmeComQuadA();
+
+    final var env = EnvTemplates.acmeCname();
+    doReturn(env)
+      .when(this.dao)
+      .findActiveEnv();
+
+    // act
+    final var found = this.dao.findEntryForActiveEnv(query);
+
+    // assert
+    assertNotNull(found);
+    assertEquals(Type.CNAME, found.getType());
+  }
+
 }

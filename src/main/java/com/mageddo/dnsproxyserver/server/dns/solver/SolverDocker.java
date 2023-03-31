@@ -1,6 +1,5 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
-import com.mageddo.commons.lang.Objects;
 import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.docker.ContainerSolvingService;
 import com.mageddo.dnsproxyserver.docker.DockerDAO;
@@ -37,11 +36,15 @@ public class SolverDocker implements Solver {
     final var askedHost = Messages.findQuestionHostname(query);
     final var version = Type.of(type).toVersion();
     return HostnameMatcher.match(askedHost, version, hostname -> {
-      final var ip = this.containerSolvingService.findBestHostIP(hostname);
-      return Objects.mapOrNull(
-        ip,
-        (it) -> Response.of(Messages.answer(query, ip, hostname.getVersion()))
-      );
+      final var entry = this.containerSolvingService.findBestMatch(hostname);
+      if (!entry.isHostnameMatched()) {
+        return null;
+      }
+      return Response.of(Messages.answer(
+        query,
+        entry.getIpText(),
+        hostname.getVersion()
+      ));
     });
 
   }

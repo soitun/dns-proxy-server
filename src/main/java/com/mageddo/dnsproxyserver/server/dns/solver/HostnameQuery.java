@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
+import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
 import com.mageddo.dnsproxyserver.server.dns.Hostname;
 import com.mageddo.dnsproxyserver.server.dns.Wildcards;
 import com.mageddo.net.IP;
@@ -25,6 +26,14 @@ public class HostnameQuery {
   private final boolean useWildcards;
 
   private final boolean useRegex;
+
+  public Type getType() {
+    return switch (this.version) {
+      case IPV4 -> Type.A;
+      case IPV6 -> Type.AAAA;
+      default -> throw new UnsupportedOperationException("Invalid version: " + this.version);
+    };
+  }
 
   public static HostnameQuery of(Hostname hostname) {
     return of(hostname, false, false);
@@ -94,6 +103,10 @@ public class HostnameQuery {
       .build();
   }
 
+  public static HostnameQuery of(String hostname, IP.Version version) {
+    return of(Hostname.of(hostname), version);
+  }
+
   public boolean matches(Hostname hostname) {
     return matches(hostname.getCanonicalValue());
   }
@@ -115,5 +128,13 @@ public class HostnameQuery {
         ;
     }
     return this.hostname.isEqualTo(hostnamePattern);
+  }
+
+  public boolean matches(HostnameQuery actual) {
+    return this.matches(actual.getHostname()) && this.getVersion() == actual.getVersion();
+  }
+
+  public boolean isTypeEqualTo(Type type) {
+    return this.getType() == type;
   }
 }

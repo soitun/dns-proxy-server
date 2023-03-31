@@ -1,9 +1,9 @@
 package com.mageddo.dnsproxyserver.config;
 
 import com.mageddo.dnsproxyserver.config.entrypoint.LogLevel;
-import com.mageddo.net.IpAddr;
 import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
 import com.mageddo.net.IP;
+import com.mageddo.net.IpAddr;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -118,15 +118,22 @@ public class Config {
   @Value
   @Builder(builderClassName = "EntryBuilder", buildMethodName = "_build", toBuilder = true)
   public static class Entry {
+
     @NonNull
     private Long id;
 
     @NonNull
     private String hostname;
 
-    private String ip; // hostname ip when type=A
+    /**
+     * Used when {@link #type} in {@link Type#AAAA} , {@link Type#A}
+     */
+    private String ip;
 
-    private String target; // target hostname when type=CNAME
+    /**
+     * Target hostname when {@link #type} = {@link Type#CNAME}
+     */
+    private String target;
 
     @NonNull
     private Integer ttl;
@@ -156,7 +163,7 @@ public class Config {
        */
       private final int type;
 
-      public boolean isNot(Type ... types) {
+      public boolean isNot(Type... types) {
         return isNot(this.type, types);
       }
 
@@ -200,6 +207,9 @@ public class Config {
         };
       }
 
+      public boolean isAddressSolving() {
+        return is(this, Config.Entry.Type.A, Config.Entry.Type.AAAA);
+      }
     }
   }
 }

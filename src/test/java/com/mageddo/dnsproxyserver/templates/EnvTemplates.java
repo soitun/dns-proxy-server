@@ -30,4 +30,26 @@ public class EnvTemplates {
         .build()
       );
   }
+  public static Config.Env acmeQuadA(){
+    return Config.Env.theDefault()
+      .add(EntryTemplates.acmeQuadA());
+  }
+
+  public static Config.Env acmeA(){
+    return Config.Env.theDefault()
+      .add(EntryTemplates.acmeA());
+  }
+
+  public static Config.Env acmeAAndQuadA(){
+    return Config.Env.theDefault()
+      .add(EntryTemplates.acmeA())
+      .add(EntryTemplates.acmeQuadA())
+      ;
+  }
+
+  public static Config.Env acmeCname() {
+    return Config.Env.theDefault()
+      .add(EntryTemplates.acmeCname())
+      ;
+  }
 }

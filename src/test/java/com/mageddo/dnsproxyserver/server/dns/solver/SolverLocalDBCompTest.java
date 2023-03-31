@@ -97,12 +97,11 @@ class SolverLocalDBCompTest {
 
   }
 
-
   @Test
   void mustSolveAAARecordAsAFromLocalDB() {
 
     // arrange
-    this.configDAO.addEntry(Config.Env.DEFAULT_ENV, EntryTemplates.acmeAAAA());
+    this.configDAO.addEntry(Config.Env.DEFAULT_ENV, EntryTemplates.acmeQuadA());
     final var msg = Messages.quadAQuestion(toAbsoluteName(EntryTemplates.ACME_COM));
 
     // act
@@ -111,7 +110,7 @@ class SolverLocalDBCompTest {
     // assert
     assertNotNull(res);
     assertEquals(
-      "acme.com.    45  IN  A  10.10.0.1",
+      "acme.com.    45  IN  AAAA  2001:db8:1:0:0:0:0:2",
       Messages.detailedPrint(res.getMessage())
     );
 
