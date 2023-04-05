@@ -31,6 +31,7 @@ public class ConfigEnv {
   public static final String DEFAULT_RESOLV_CONF_PATH =
     "/host/etc/systemd/resolved.conf,/host/etc/resolv.conf,/etc/systemd/resolved.conf,/etc/resolv.conf";
   public static final String MG_DOCKER_HOST = "MG_DOCKER_HOST";
+  public static final String MG_RESOLVCONF_OVERRIDE_NAMESERVERS = "MG_RESOLVCONF_OVERRIDE_NAMESERVERS";
 
   private Path currentPath;
   private String resolvConfPath;
@@ -42,6 +43,7 @@ public class ConfigEnv {
   private Boolean dpsNetwork;
   private Boolean dpsNetworkAutoConnect;
   private URI dockerHost;
+  private Boolean resolvConfOverrideNameServers;
 
   public static ConfigEnv fromEnv() {
     return ConfigEnv
@@ -56,6 +58,7 @@ public class ConfigEnv {
       .dpsNetwork(Envs.getBooleanOrNull(MG_DPS_NETWORK))
       .dpsNetworkAutoConnect(Envs.getBooleanOrNull(MG_DPS_NETWORK_AUTO_CONNECT))
       .dockerHost(UriUtils.createURI(Envs.getStringOrNull(MG_DOCKER_HOST)))
+      .resolvConfOverrideNameServers(Envs.getBooleanOrNull(MG_RESOLVCONF_OVERRIDE_NAMESERVERS))
       .build();
   }
 
@@ -66,4 +69,5 @@ public class ConfigEnv {
     }
     return logFile;
   }
+
 }

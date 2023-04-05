@@ -2,8 +2,6 @@ package com.mageddo.dnsproxyserver.dnsconfigurator.linux;
 
 import com.mageddo.conf.parser.Entry;
 import com.mageddo.conf.parser.Transformer;
-import com.mageddo.dnsproxyserver.dnsconfigurator.linux.DpsTokens;
-import com.mageddo.dnsproxyserver.dnsconfigurator.linux.EntryTypes;
 
 import java.util.Set;
 import java.util.function.Supplier;
