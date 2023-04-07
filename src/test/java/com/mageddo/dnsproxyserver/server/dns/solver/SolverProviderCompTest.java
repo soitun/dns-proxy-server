@@ -6,6 +6,7 @@ import testing.ContextSupplier;
 import testing.Events;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,17 +17,15 @@ class SolverProviderCompTest {
   SolverProvider provider;
 
   @Test
-  void mustCreateSolverListInRightOrder(){
+  void mustCreateSolverListInRightOrder() {
 
     // arrange
 
     // act
-    final var names = this.provider.getSolvers()
-      .stream()
-      .map(Solver::name)
-      .toList();
+    final var names = this.provider.getSolversNames();
 
     // assert
-    assertEquals("[SolverSystem, SolverDocker, SolverLocalDB, SolverCachedRemote]", names.toString());
+    assertEquals(Arrays.toString(SolverProvider.solversOrder), names.toString());
   }
+
 }

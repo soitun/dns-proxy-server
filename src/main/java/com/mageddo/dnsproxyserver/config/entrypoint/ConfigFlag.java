@@ -137,12 +137,24 @@ public class ConfigFlag implements Callable<Boolean> {
   @Option(
     names = {"-resolvconf-override-name-servers", "--resolvconf-override-name-servers"},
     description = """
-      If must comment all existing nameservers at resolv.conf file or just put DPS at the first place.
+      If must comment all existing nameservers at resolv.conf file
+      or just put DPS at the first place.
       (default true)
        """,
     defaultValue = "true"
   )
   private Boolean resolvConfOverrideNameServers;
+
+  @Option(
+    names = {"-no-remote-servers", "--no-remote-servers"},
+    description = """
+      If remote servers like 8.8.8.8 must be disabled and only local solvers like docker
+      containers or local db must be used.
+      (default false)
+       """,
+    defaultValue = "false"
+  )
+  private Boolean noRemoteServers;
 
   @Option(
     names = {"-help", "--help"},

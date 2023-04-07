@@ -15,10 +15,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.Duration;
 
+/**
+ * When finds a wildcard hostname, delegate the found hostname to {@link SolverDelegate} class.
+ */
 @Slf4j
 @Singleton
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class SolverLocalDB implements Solver {
+
+  public  static final String NAME = "SolverLocalDB";
 
   private final ConfigDAO configDAO;
   private final Lazy<SolverDelegate> solverDelegate;
@@ -66,6 +71,11 @@ public class SolverLocalDB implements Solver {
     }
     log.trace("status=notFound, askedHost={}, totalTime={}", askedHost, stopWatch.getTime());
     return null;
+  }
+
+  @Override
+  public String name() {
+    return NAME;
   }
 
   Config.Entry findEntryTo(HostnameQuery host) {

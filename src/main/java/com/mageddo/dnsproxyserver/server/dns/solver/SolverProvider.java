@@ -1,5 +1,8 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
+import com.mageddo.dnsproxyserver.config.Config;
+import com.mageddo.dnsproxyserver.config.Configs;
+import com.mageddo.utils.Priorities;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.inject.Instance;
@@ -12,26 +15,46 @@ import java.util.stream.Collectors;
 @Singleton
 public class SolverProvider {
 
-  private List<Solver> solvers;
+  static final String[] solversOrder = {
+    "SolverSystem",
+    "SolverDocker",
+    SolverLocalDB.NAME,
+    SolverCachedRemote.NAME
+  };
+
+  private final List<Solver> solvers;
 
   @Inject
   public SolverProvider(Instance<Solver> solvers) {
-    this.solvers = sorted(solvers);
+    this(solvers, Configs.getInstance());
   }
 
-  public List<Solver> getSolversExcludingLocalDB() {
-    return this.solvers
-        .stream()
-        .filter(it -> it.getClass() != SolverLocalDB.class)
-        .collect(Collectors.toList())
-        ;
+  public SolverProvider(Instance<Solver> solvers, Config config) {
+    this.solvers = solvers
+      .stream()
+      .sorted(Priorities.comparator(Solver::name, solversOrder))
+      .filter(it -> !(config.isNoRemoteServers() && it.is(SolverCachedRemote.NAME)))
+      .toList()
+    ;
   }
 
   public List<Solver> getSolvers() {
     return this.solvers;
   }
 
-  static List<Solver> sorted(Instance<Solver> solvers) {
-    return Solvers.sorted(solvers.stream().toList());
+  public List<Solver> getSolversExcluding(final Class<?> clazz) {
+    return this.solvers
+      .stream()
+      .filter(it -> it.getClass() != clazz)
+      .collect(Collectors.toList())
+      ;
   }
+
+  public List<String> getSolversNames() {
+    return getSolvers()
+      .stream()
+      .map(Solver::name)
+      .toList();
+  }
+
 }
