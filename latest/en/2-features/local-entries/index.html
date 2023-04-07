@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/dns-proxy-server/latest/images/favicon.png" type="image/png">
 
-    <title>Generating the docs :: DNS Proxy Server</title>
+    <title>Local Entries Solving (LocalDB) :: DNS Proxy Server</title>
 
     
     <link href="/dns-proxy-server/latest/css/nucleus.css?1680884437" rel="stylesheet">
@@ -36,7 +36,7 @@
     <link href="/dns-proxy-server/latest/css/style.css" rel="stylesheet" type="text/css" />
 
   </head>
-  <body class="" data-url="/dns-proxy-server/latest/en/4-developing/generating-docs/">
+  <body class="" data-url="/dns-proxy-server/latest/en/2-features/local-entries/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -274,7 +274,7 @@
   
     
     <li data-nav-id="/dns-proxy-server/latest/en/2-features/" title="Features" class="dd-item 
-        
+        parent
         
         
         ">
@@ -589,8 +589,8 @@
   
     
     <li data-nav-id="/dns-proxy-server/latest/en/2-features/local-entries/" title="Local Entries Solving (LocalDB)" class="dd-item 
-        
-        
+        parent
+        active
         
         ">
       <a href="/dns-proxy-server/latest/en/2-features/local-entries/">
@@ -699,7 +699,7 @@
   
     
     <li data-nav-id="/dns-proxy-server/latest/en/4-developing/" title="Developing" class="dd-item 
-        parent
+        
         
         
         ">
@@ -744,7 +744,7 @@
  
   
     
-      <li data-nav-id="/dns-proxy-server/latest/en/4-developing/generating-docs/" title="Generating the docs" class="dd-item active">
+      <li data-nav-id="/dns-proxy-server/latest/en/4-developing/generating-docs/" title="Generating the docs" class="dd-item ">
         <a href="/dns-proxy-server/latest/en/4-developing/generating-docs/">
         <b>6. </b>Generating the docs
         <i class="fas fa-check read-icon"></i>
@@ -884,7 +884,7 @@
                   
                     
                     
-                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/generating-docs/" selected>English</option>
+                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/latest/en/2-features/local-entries/" selected>English</option>
                     
                   
               
@@ -943,7 +943,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/4-developing/generating-docs.en.md" target="blank">
+                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/2-features/local-entries/_index.en.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">Edit this page</span>
                     </a>
@@ -974,7 +974,7 @@
             
           
           
-            <a href='/dns-proxy-server/latest/en/'>Getting Started</a> > <a href='/dns-proxy-server/latest/en/4-developing/'>Developing</a> > Generating the docs
+            <a href='/dns-proxy-server/latest/en/'>Getting Started</a> > <a href='/dns-proxy-server/latest/en/2-features/'>Features</a> > Local Entries Solving (LocalDB)
           
          
           
@@ -987,19 +987,7 @@
                 
                     <div class="progress">
   <div class="wrapper">
-    <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#requirements">Requirements</a></li>
-<li><a href="#live-docs-preview">Live docs preview</a></li>
-<li><a href="#generating-doc-statics">Generating doc statics</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
+    
   </div>
 </div>
 
@@ -1015,7 +1003,7 @@
           
             <h1>
               
-              Generating the docs
+              Local Entries Solving (LocalDB)
             </h1>
           
 
@@ -1024,32 +1012,33 @@
 
 
 
+	<p>You can configure pre-defined A, AAAA, CNAME entries to solve Records, DPS will query them after docker containers
+and before remote servers. You can configure them by the JSON config file or <a href="/dns-proxy-server/latest/en/2-features/gui/">using the GUI</a>.</p>
 
-<h3 id="requirements">Requirements</h3>
+<p>JSON Configuration Example</p>
 
-<ul>
-<li>Hugo 0.55.4</li>
-</ul>
-
-<h3 id="live-docs-preview">Live docs preview</h3>
-
-<p>To se the current docs just type</p>
-
-<pre><code>hugo server --source docs
+<pre><code class="language-json">{
+  &quot;activeEnv&quot;: &quot;&quot;,
+  &quot;envs&quot; : [{
+    &quot;name&quot;: &quot;&quot;, // empty string is the default enviroment
+    &quot;hostnames&quot;: [{ // all local hostnames entries
+      &quot;id&quot;: 1, // (optional) used to control it will be automatically generated if not passed
+      &quot;type&quot;: &quot;A&quot;, // Other options: CNAME, AAAA
+      &quot;hostname&quot;: &quot;github.com&quot;,
+      &quot;ip&quot;: &quot;192.168.0.1&quot;,
+      &quot;ttl&quot;: 255 // how many seconds cache this entry
+    }]
+  }]
+}
 </code></pre>
 
-<h3 id="generating-doc-statics">Generating doc statics</h3>
 
-<p>DPS uses Hugo to generate static docs. To generate the HTML use the following</p>
 
-<pre><code class="language-bash">$ ./builder.bash docs
-</code></pre>
 
 
 <footer class=" footline" >
 	
 </footer>
-
 
         
         </div> 
@@ -1201,6 +1190,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -1210,6 +1200,25 @@
                     
                     
 
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
                         
             
@@ -1376,21 +1385,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -1410,6 +1404,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -1459,7 +1456,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -1472,9 +1468,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1491,7 +1484,6 @@
             
             
                 
-                    
                     
                 
                 
@@ -1511,9 +1503,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1567,10 +1556,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/dns-proxy-server/latest/en/4-developing/compiling/" title="Compiling from source"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/dns-proxy-server/latest/en/2-features/multiple-environments/" title="Multiple Environments"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/dns-proxy-server/latest/en/api/" title="API" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/dns-proxy-server/latest/en/3-configuration/" title="Configuration" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -1609,4 +1598,3 @@
 </script>
   </body>
 </html>
-
