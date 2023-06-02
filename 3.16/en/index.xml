@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Getting Started on DNS Proxy Server</title>
+    <link>http://mageddo.github.io/dns-proxy-server/3.16/en/</link>
+    <description>Recent content in Getting Started on DNS Proxy Server</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="http://mageddo.github.io/dns-proxy-server/3.16/en/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>V1 Network API</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/api/v1/networks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/api/v1/networks/</guid>
+      <description> Disconnect containers from network DELETE /network/disconnect-containers HTTP/1.1  Parameters
+   Name Type Decription     netoworkId string The networkId which the containers will be disconnected from    Reponse
+HTTP/1.1 200 [ &amp;quot;success for 551adbb704bf95ae73f3f8e497560609d2016d1566196298f1787f087af4b5cd&amp;quot;, &amp;quot;success for 5f5ce51404b15069795006e7319f270db4f6d822a067e61808eeb0b2922087db&amp;quot; ]  Example
+$ curl -X DELETE dns.mageddo:5380/network/disconnect-containers/?networkId=85e7564c6b71  </description>
+    </item>
+    
+    <item>
+      <title>Release Version Control</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/1-getting-started/versioning/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/1-getting-started/versioning/</guid>
+      <description>DPS Versioning DPS uses semantic versioning [2] for releasing. The latest stable version is the one which is marked as &amp;ldquo;latest&amp;rdquo; label at Github releases or the latest docker tag. Click here to see the binary releases at Github.
+Promotion to the latest (Stable) Minor pre-releases with at least 1 month since they released without a confirmed bug issued on the Github oficial repo, will be released as the latest.</description>
+    </item>
+    
+    <item>
+      <title>Compiling from source</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/4-developing/compiling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/4-developing/compiling/</guid>
+      <description> Requirements  JDK 17+  Building from source Build the frontend files (optional)
+./builder.bash build-frontend  Build and run the program
+$ ./gradlew build compTest -Dquarkus.package.type=uber-jar &amp;amp;&amp;amp; java -jar ./build/dns-proxy-server.jar  </description>
+    </item>
+    
+    <item>
+      <title>Generating the docs</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/4-developing/generating-docs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/4-developing/generating-docs/</guid>
+      <description> Requirements  Hugo 0.55.4  Live docs preview To se the current docs just type
+hugo server --source docs  Generating doc statics DPS uses Hugo to generate static docs. To generate the HTML use the following
+$ ./builder.bash docs  </description>
+    </item>
+    
+    <item>
+      <title>Configuring a Service Discovery solution on Docker using DNS Proxy Server and NGINX</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/5-tutorials/docker-reverse-proxy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/5-tutorials/docker-reverse-proxy/</guid>
+      <description>Requirements  DPS already configured, see the docs if you haven&amp;rsquo;t yet.  Tested on:  DPS 3.11 OS: Mac, Linux, Windows  Introducing You will see how to develop with docker containers solving them by hostnames from your host machine as the following picture shows:
+if you know about DPS you will figure out that&amp;rsquo;s a very basic DPS feature and you don&amp;rsquo;t need complex configurations to achieve that, except on MAC and Windows as docker runs its containers on a virtual machine so DPS default feature to solve containers names will work but the solved IPs are worthless because they aren&amp;rsquo;t accessible from the host.</description>
+    </item>
+    
+    <item>
+      <title>Credits</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/credits/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/credits/</guid>
+      <description>Contributors Thanks to them  for making Open Source Software a better place !
+.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }
+.ghContributors &amp;gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors &amp;gt; div label{ padding-left: 4px ; } .ghContributors &amp;gt; div span{ font-size: x-small; padding-left: 4px ; }
+  @mageddo 783 commits 
+ @josielrocha 9 commits 
+ @mrubli 3 commits 
+ @addshore 3 commits</description>
+    </item>
+    
+    <item>
+      <title>Showcase</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.16/en/showcase/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.16/en/showcase/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
