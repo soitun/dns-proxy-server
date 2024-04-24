@@ -130,7 +130,7 @@
 	"title": "Developing",
 	"tags": [],
 	"description": "",
-	"content": " Vanilla Developing Backend\n$ ./gradlew quarkusDev  Make your DNS queries to IP and TCP/UDP ports indicated at the console log.\nFront end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start  Then access http://localhost:3000/ , front end will proxy to http://localhost:5380 backend.\nWith Docker $ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml up  or\n$ ./gradlew build -Dquarkus.package.type=uber-jar -i -x check $ docker-compose -f docker-compose-dev.yml run --rm -it backend bash  Releasing Patch version\n$ ./gradlew release  Major version\n$ VERSION=3.7.0 \u0026amp;\u0026amp; ./gradlew release -Prelease.releaseVersion=${VERSION} -Prelease.newVersion=${VERSION}  "
+	"content": " Vanilla Developing Backend Play class com.mageddo.dnsproxyserver.App or run\n$ ./gradlew clean shadowJar \u0026amp;\u0026amp; java -jar ./build/libs/dns-proxy-server-*-all.jar  Make your DNS queries to IP and TCP/UDP ports indicated at the console log.\nFront end app (optional)\n$ cd app \u0026amp;\u0026amp; npm start  Then access http://localhost:3000/ , front end will proxy to http://localhost:5380 backend.\nWith Docker $ ./gradlew clean build shadowJar $ docker-compose -f docker-compose-dev.yml up backend  or\n$ ./gradlew clean build shadowJar -i -x check $ docker-compose -f docker-compose-dev.yml run --rm -it backend bash $ java -jar dns-proxy-server-*-all.jar  Releasing Patch version\n$ ./gradlew release  Major version\n$ VERSION=3.7.0 \u0026amp;\u0026amp; ./gradlew release -Prelease.releaseVersion=${VERSION} -Prelease.newVersion=${VERSION}  "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/api/",
@@ -207,7 +207,7 @@
 	"title": "Credits",
 	"tags": [],
 	"description": "",
-	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 783 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @ThisIsQasim 1 commits \n @dependabot[bot] 1 commits \n\n"
+	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 784 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @SimJoSt 1 commits \n @ThisIsQasim 1 commits \n @dependabot[bot] 1 commits \n\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/latest/en/",
