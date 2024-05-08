@@ -13,6 +13,11 @@ import lombok.experimental.Accessors;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * @deprecated it won't be extended, so it makes no sense to maintain it,
+ * a roadmap to remove that feature is necessary.
+ */
+@Deprecated
 @Data
 public class ConfigJsonV1 implements ConfigJson {
 
@@ -94,6 +99,11 @@ public class ConfigJsonV1 implements ConfigJson {
 
   @Override
   public Integer getNoEntriesResponseCode() {
+    return null;
+  }
+
+  @Override
+  public Boolean getDockerSolverHostMachineFallbackActive() {
     return null;
   }
 

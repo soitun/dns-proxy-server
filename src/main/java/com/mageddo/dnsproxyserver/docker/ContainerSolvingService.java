@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.docker;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.mageddo.dnsproxyserver.config.Configs;
 import com.mageddo.dnsproxyserver.server.dns.solver.HostnameQuery;
 import com.mageddo.net.IP;
 import com.mageddo.net.Networks;
@@ -26,6 +27,12 @@ import static com.mageddo.dnsproxyserver.docker.Labels.DEFAULT_NETWORK_LABEL;
 import static com.mageddo.dnsproxyserver.docker.domain.Network.BRIDGE;
 import static com.mageddo.dnsproxyserver.docker.domain.Network.DPS;
 import static com.mageddo.dnsproxyserver.docker.domain.Network.HOST;
+
+/**
+ * Todo that's an application service with is high coupled to infrastructure docker adapter,
+ *      the docker api classes  must be isolated to a port then that port be used on that service.
+ *      See hexagonal architecture.
+ */
 
 @Slf4j
 @Default
@@ -70,12 +77,12 @@ public class ContainerSolvingService {
     return this.findBestIpMatch(
       inspect,
       buildNetworks(inspect),
-      () -> mapOrNull(this.dockerDAO.findHostMachineIp(version), IP::toText),
+      () -> mapOrNull(this.dockerDAO.findHostMachineIp(version), IP::toText), // todo there is no need to pass it as an argument, just build this supplier when it is needled
       version
     );
   }
 
-  public String findBestIpMatch(
+  String findBestIpMatch(
     InspectContainerResponse c,
     Collection<String> networksNames,
     Supplier<String> hostMachineSup,
@@ -128,14 +135,24 @@ public class ContainerSolvingService {
       .orElseGet(() -> {
         return Optional
           .ofNullable(buildDefaultIp(c, version))
-          .orElseGet(() -> {
-            final var hostIp = hostMachineSup.get();
-            log.debug("status=noNetworkAvailable, usingHostMachineIp={}", hostIp);
-            return hostIp;
-          });
+          .orElseGet(() -> buildHostMachineIpWhenActive(hostMachineSup));
       })
       ;
 
+  }
+
+  String buildHostMachineIpWhenActive(Supplier<String> hostMachineSup) {
+    if(isDockerSolverHostMachineFallbackActive()){
+      final var hostIp = hostMachineSup.get();
+      log.debug("status=noNetworkAvailable, usingHostMachineIp={}", hostIp);
+      return hostIp;
+    }
+    log.debug("dockerSolverHostMachineFallback=inactive");
+    return null;
+  }
+
+  boolean isDockerSolverHostMachineFallbackActive() {
+    return Configs.getInstance().isDockerSolverHostMachineFallbackActive();
   }
 
   static String buildDefaultIp(InspectContainerResponse c, IP.Version version) {
