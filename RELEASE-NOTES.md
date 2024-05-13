@@ -1,3 +1,6 @@
+## 3.17.1
+* Docker Solver refactoring, see #444
+
 ## 3.17.0 
 * Feature toggle to turn off Docker Solver Host Machine IP fallback, see #442
 
