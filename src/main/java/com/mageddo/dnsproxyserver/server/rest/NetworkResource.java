@@ -1,7 +1,7 @@
 package com.mageddo.dnsproxyserver.server.rest;
 
 import com.mageddo.commons.lang.Objects;
-import com.mageddo.dnsproxyserver.docker.DockerNetworkService;
+import com.mageddo.dnsproxyserver.server.dns.solver.docker.application.DockerNetworkService;
 import com.mageddo.http.HttpMapper;
 import com.mageddo.http.Request;
 import com.mageddo.http.WebServer;
@@ -27,7 +27,7 @@ public class NetworkResource implements HttpMapper {
       Encoders.encodeJson(
           exchange,
           Status.OK,
-          Objects.useItOrDefault(containers, () -> Collections.singletonList("Network not found"))
+          Objects.useItOrDefault(containers, () -> Collections.singletonList("Name not found"))
       );
     });
   }

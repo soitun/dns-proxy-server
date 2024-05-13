@@ -1,12 +1,9 @@
 package com.mageddo.dnsproxyserver.server.dns.solver;
 
 import com.mageddo.dnsproxyserver.config.Config.Entry.Type;
-import com.mageddo.dnsproxyserver.docker.ContainerSolvingService;
-import com.mageddo.dnsproxyserver.docker.DockerDAO;
 import com.mageddo.dnsproxyserver.server.dns.Messages;
-import testing.templates.HostnameTemplates;
-import testing.templates.MessageTemplates;
-import testing.templates.docker.EntryTemplates;
+import com.mageddo.dnsproxyserver.server.dns.solver.docker.application.ContainerSolvingService;
+import com.mageddo.dnsproxyserver.server.dns.solver.docker.dataprovider.DockerDAO;
 import com.mageddo.net.IP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +13,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.xbill.DNS.Flags;
+import testing.templates.HostnameTemplates;
+import testing.templates.MessageTemplates;
+import testing.templates.docker.EntryTemplates;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
