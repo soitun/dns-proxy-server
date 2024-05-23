@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developing on DNS Proxy Server</title>
+    <link>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/</link>
+    <description>Recent content in Developing on DNS Proxy Server</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Compiling from source</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/compiling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/compiling/</guid>
+      <description> Requirements  JDK 17+  Building from source Build the frontend files (optional)
+./builder.bash build-frontend  Build and run the program
+$ ./gradlew build compTest -Dquarkus.package.type=uber-jar &amp;amp;&amp;amp; java -jar ./build/dns-proxy-server.jar  </description>
+    </item>
+    
+    <item>
+      <title>Generating the docs</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/generating-docs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/generating-docs/</guid>
+      <description> Requirements  Hugo 0.55.4  Live docs preview To se the current docs just type
+hugo server --source docs  Generating doc statics DPS uses Hugo to generate static docs. To generate the HTML use the following
+$ ./builder.bash docs  </description>
+    </item>
+    
+  </channel>
+</rss>
