@@ -1,8 +1,8 @@
 package com.mageddo.dnsproxyserver.config.dataprovider.vo;
 
 import com.mageddo.dnsproxyserver.config.Config;
-import com.mageddo.net.IpAddr;
 import com.mageddo.dnsproxyserver.server.dns.SimpleServer;
+import com.mageddo.net.IpAddr;
 
 import java.net.URI;
 import java.util.List;
@@ -46,4 +46,7 @@ public interface ConfigJson {
   Integer getNoEntriesResponseCode();
 
   Boolean getDockerSolverHostMachineFallbackActive();
+
+  ConfigJsonV2.SolverRemote getSolverRemote();
+
 }

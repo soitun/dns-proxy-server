@@ -77,6 +77,8 @@ public class Config {
 
   private boolean versionCmd;
 
+  private SolverRemote solverRemote;
+
   public void resetConfigFile() {
     try {
       Files.deleteIfExists(this.getConfigPath());
