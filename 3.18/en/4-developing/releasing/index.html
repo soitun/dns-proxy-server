@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/dns-proxy-server/3.18/images/favicon.png" type="image/png">
 
-    <title>DPS docker network :: DNS Proxy Server</title>
+    <title>Release Process :: DNS Proxy Server</title>
 
     
     <link href="/dns-proxy-server/3.18/css/nucleus.css?1717016628" rel="stylesheet">
@@ -36,7 +36,7 @@
     <link href="/dns-proxy-server/3.18/css/style.css" rel="stylesheet" type="text/css" />
 
   </head>
-  <body class="" data-url="/dns-proxy-server/3.18/en/2-features/dps-network-resolution/">
+  <body class="" data-url="/dns-proxy-server/3.18/en/4-developing/releasing/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -274,7 +274,7 @@
   
     
     <li data-nav-id="/dns-proxy-server/3.18/en/2-features/" title="Features" class="dd-item 
-        parent
+        
         
         
         ">
@@ -537,8 +537,8 @@
   
     
     <li data-nav-id="/dns-proxy-server/3.18/en/2-features/dps-network-resolution/" title="DPS docker network" class="dd-item 
-        parent
-        active
+        
+        
         
         ">
       <a href="/dns-proxy-server/3.18/en/2-features/dps-network-resolution/">
@@ -699,7 +699,7 @@
   
     
     <li data-nav-id="/dns-proxy-server/3.18/en/4-developing/" title="Developing" class="dd-item 
-        
+        parent
         
         
         ">
@@ -763,7 +763,7 @@
  
   
     
-      <li data-nav-id="/dns-proxy-server/3.18/en/4-developing/releasing/" title="Release Process" class="dd-item ">
+      <li data-nav-id="/dns-proxy-server/3.18/en/4-developing/releasing/" title="Release Process" class="dd-item active">
         <a href="/dns-proxy-server/3.18/en/4-developing/releasing/">
         <b>7. </b>Release Process
         <i class="fas fa-check read-icon"></i>
@@ -903,7 +903,7 @@
                   
                     
                     
-                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/3.18/en/2-features/dps-network-resolution/" selected>English</option>
+                      <option id="en" value="http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/releasing/" selected>English</option>
                     
                   
               
@@ -962,7 +962,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/2-features/dps-network-resolution/_index.en.md" target="blank">
+                    <a class="github-link" title='Edit this page' href="https://github.com/mageddo/dns-proxy-server/edit/master/docs/content/4-developing/releasing.en.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">Edit this page</span>
                     </a>
@@ -993,7 +993,7 @@
             
           
           
-            <a href='/dns-proxy-server/3.18/en/'>Getting Started</a> > <a href='/dns-proxy-server/3.18/en/2-features/'>Features</a> > DPS docker network
+            <a href='/dns-proxy-server/3.18/en/'>Getting Started</a> > <a href='/dns-proxy-server/3.18/en/4-developing/'>Developing</a> > Release Process
           
          
           
@@ -1010,10 +1010,9 @@
 <ul>
 <li>
 <ul>
-<li>
-<ul>
-<li><a href="#why-it-is-necessary">Why it is necessary</a></li>
-</ul></li>
+<li><a href="#feature-request-phase-1">Feature Request - Phase 1</a></li>
+<li><a href="#pre-releasing-new-version-phase-2">Pre-Releasing New Version - Phase 2</a></li>
+<li><a href="#release-latest-phase-3">Release Latest - Phase 3</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -1032,7 +1031,7 @@
           
             <h1>
               
-              DPS docker network
+              Release Process
             </h1>
           
 
@@ -1041,103 +1040,59 @@
 
 
 
-	
 
-<p>Since: 2.15.0</p>
+<h2 id="feature-request-phase-1">Feature Request - Phase 1</h2>
 
-<p>DPS can create its own network which is called <code>dps</code> and connect all running containers to that network this way
-all containers can comunicate to each other, when container A solve container B IP, which will be able to
-ping B cause they are on the same network (dps). Observes that you are also able to create your own network and
-make this job of connect the containers you want to be able to talk each other.</p>
+<ul>
+<li>Create a pull request</li>
+<li>CI will be checked automatically</li>
+<li>Once CI is passing, the author <code>@mageddo</code> must approve the PR</li>
+<li>Merge the PR</li>
+</ul>
 
-<p><strong>Activating by command line</strong></p>
+<h2 id="pre-releasing-new-version-phase-2">Pre-Releasing New Version - Phase 2</h2>
 
-<pre><code class="language-bash">./dns-proxy-server --dps-network-auto-connect
+<ul>
+<li>Define the new version number</li>
+<li>Document the new version and changes at <code>RELEASE-NOTES.md</code></li>
+<li>Generate the git tag with the steps below</li>
+</ul>
+
+<p>Patch Version</p>
+
+<pre><code class="language-bash">$ ./gradlew release
 </code></pre>
 
-<p><strong>Configuring at json config file</strong></p>
+<p>Major Version</p>
 
-<pre><code>...
-&quot;dpsNetworkAutoConnect&quot;: true
-...
+<pre><code class="language-bash">$ VERSION=3.18.0 &amp;&amp; ./gradlew release -Prelease.releaseVersion=${VERSION} -Prelease.newVersion=${VERSION}
 </code></pre>
 
-<p><strong>Using environment variable</strong></p>
+<h2 id="release-latest-phase-3">Release Latest - Phase 3</h2>
 
-<pre><code class="language-bash">MG_DPS_NETWORK_AUTO_CONNECT=1 ./dns-proxy-server
-</code></pre>
-
-<blockquote>
-<p>OBS: with this feature disabled or not, DPS gives priority to solve bridge networks over the
-others (if a bridge network were found for the container)</p>
-</blockquote>
-
-<h3 id="why-it-is-necessary">Why it is necessary</h3>
-
-<p>We can simulate the issue by the following example:</p>
-
-<p>You have a container running on an overlay network (so you need to be running docker in a swarm mode),
-then it means the container can not be accessed by the host or by containers which are not in this same network</p>
-
-<p>docker-compose.yml</p>
-
-<pre><code class="language-yaml">version: '3.2'
-services:
-  nginx-1:
-    image: nginx
-    container_name: nginx-1
-    hostname: nginx-1.app
-    networks:
-      - nginx-network
-
-networks:
-  nginx-network:
-    driver: overlay
-    attachable: true
-</code></pre>
-
-<p>starting up the container and testing</p>
-
-<pre><code class="language-bash">$ docker-compose up
-$ curl --connect-timeout 2 nginx-1.app
-curl: (7) Failed to connect to nginx-1.app port 80: Connection timed out
-</code></pre>
-
-<p>The solution for it can be use <code>dps</code> network or specify a bridge network on the <strong>docker-compose.yml</strong></p>
-
-<p>docker-compose.yml</p>
-
-<pre><code class="language-yaml">version: '3.2'
-services:
-  nginx-1:
-    image: nginx
-    container_name: nginx-1
-    hostname: nginx-1.app
-    networks:
-      - nginx-network
-      - nginx-network-bridge
-
-networks:
-  nginx-network:
-    driver: overlay
-    attachable: true
-  nginx-network-bridge:
-    driver: bridge
-</code></pre>
-
-<pre><code class="language-bash">$ docker-compose down
-$ docker-compose up
-$ curl -I --connect-timeout 2 nginx-1.app
-HTTP/1.1 200 OK
-</code></pre>
-
-
-
+<ul>
+<li>Define a pre-release version which will be promoted to the latest by <a href="/dns-proxy-server/3.18/en/1-getting-started/versioning/">following the rules</a>.</li>
+<li>Edit the github release setting the pre-release version as the latest, remove the <code>-snapshot</code> suffix from the title
+and from the attachments names.</li>
+<li>Locally tag the latest docker image as the pre-release version
+<code>bash
+$ docker tag defreitas/dns-proxy-server:${PRE_RELEASE_VERSION} mageddo/dns-proxy-server:latest
+</code></li>
+<li>Check the docker image version by
+<code>bash
+$ docker run defreitas/dns-proxy-server:latest --version
+</code></li>
+<li>Push the pre-release version to the docker hub
+<code>bash
+$ docker push defreitas/dns-proxy-server:latest
+</code></li>
+</ul>
 
 
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -1289,7 +1244,6 @@ HTTP/1.1 200 OK
             
                 
                     
-                    
                 
                 
 
@@ -1304,9 +1258,6 @@ HTTP/1.1 200 OK
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -1452,122 +1403,6 @@ HTTP/1.1 200 OK
             
                 
                     
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
                 
                 
 
@@ -1618,6 +1453,126 @@ HTTP/1.1 200 OK
             
             
                 
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
                     
                 
                 
@@ -1671,10 +1626,10 @@ HTTP/1.1 200 OK
 	 
 	 
 		
-			<a class="nav nav-prev" href="/dns-proxy-server/3.18/en/2-features/specify-from-which-network-solve-container/" title="Specify from which network solve container IP"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/dns-proxy-server/3.18/en/4-developing/generating-docs/" title="Generating the docs"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/dns-proxy-server/3.18/en/2-features/multiple-environments/" title="Multiple Environments" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/dns-proxy-server/3.18/en/api/" title="API" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -1713,3 +1668,4 @@ HTTP/1.1 200 OK
 </script>
   </body>
 </html>
+

@@ -16,9 +16,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/compiling/</guid>
-      <description> Requirements  JDK 17+  Building from source Build the frontend files (optional)
+      <description> Requirements See the requirements.
+Building from Source Build the frontend files (optional)
 ./builder.bash build-frontend  Build and run the program
-$ ./gradlew build compTest -Dquarkus.package.type=uber-jar &amp;amp;&amp;amp; java -jar ./build/dns-proxy-server.jar  </description>
+Jar file $ ./gradlew clean build compTest shadowJar -i $ java -jar dns-proxy-server-*-all.jar  Native Image $ ./gradlew clean build compTest shadowJar nativeCompile $ ./build/native/nativeCompile/dns-proxy-server  </description>
     </item>
     
     <item>
@@ -27,9 +28,19 @@ $ ./gradlew build compTest -Dquarkus.package.type=uber-jar &amp;amp;&amp;amp; ja
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/generating-docs/</guid>
-      <description> Requirements  Hugo 0.55.4  Live docs preview To se the current docs just type
-hugo server --source docs  Generating doc statics DPS uses Hugo to generate static docs. To generate the HTML use the following
+      <description> Requirements  Hugo 0.55.4  Live Docs Preview Vanilla $ hugo server --source docs  Docker $ docker-compose -f docker-compose-dev.yml up docs  Generating Doc Statics DPS uses Hugo to generate static docs. To generate the HTML use the following
 $ ./builder.bash docs  </description>
+    </item>
+    
+    <item>
+      <title>Release Process</title>
+      <link>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/releasing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/3.18/en/4-developing/releasing/</guid>
+      <description>Feature Request - Phase 1  Create a pull request CI will be checked automatically Once CI is passing, the author @mageddo must approve the PR Merge the PR  Pre-Releasing New Version - Phase 2  Define the new version number Document the new version and changes at RELEASE-NOTES.md Generate the git tag with the steps below  Patch Version
+$ ./gradlew release  Major Version
+$ VERSION=3.18.0 &amp;amp;&amp;amp; .</description>
     </item>
     
   </channel>
