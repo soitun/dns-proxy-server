@@ -1,10 +1,5 @@
 package com.mageddo.dnsproxyserver.solver;
 
-import com.mageddo.dnsproxyserver.solver.RemoteResolvers;
-import com.mageddo.dnsproxyserver.solver.Resolver;
-import com.mageddo.dnsproxyserver.solver.Response;
-import com.mageddo.dnsproxyserver.solver.Responses;
-import com.mageddo.dnsproxyserver.solver.SolverRemote;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -140,7 +135,7 @@ class SolverRemoteTest {
   }
 
   @Test
-  void mustReturnRaEvenWhenRemoteServerDoesntReturns() throws Exception {
+  void mustReturnRaEvenWhenRemoteServerDoesntReturnsRA() throws Exception {
     // arrange
     final var query = MessageTemplates.acmeAQuery();
     final var res = MessageTemplates.buildAAnswer(query);
