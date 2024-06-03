@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.solver;
 
+import com.mageddo.dnsproxyserver.solver.remote.application.CircuitBreakerNonResilientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,8 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.xbill.DNS.Flags;
-import org.xbill.DNS.Rcode;
-import testing.templates.CircuitBreakerTemplates;
 import testing.templates.InetSocketAddressTemplates;
 import testing.templates.MessageTemplates;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +34,9 @@ class SolverRemoteTest {
   RemoteResolvers resolvers;
 
   @Spy
+  CircuitBreakerNonResilientService circuitBreakerService;
+
+  @Spy
   @InjectMocks
   SolverRemote solverRemote;
 
@@ -44,10 +45,6 @@ class SolverRemoteTest {
     // arrange
     final var query = MessageTemplates.acmeAQuery();
     final var answer = MessageTemplates.buildAAnswer(query);
-
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
 
     doReturn(InetSocketAddressTemplates._8_8_8_8())
       .when(this.resolver)
@@ -77,10 +74,6 @@ class SolverRemoteTest {
     final var query = MessageTemplates.acmeAQuery();
     final var answer = MessageTemplates.buildNXAnswer(query);
 
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
-
     doReturn(InetSocketAddressTemplates._8_8_8_8())
       .when(this.resolver)
       .getAddress()
@@ -107,10 +100,6 @@ class SolverRemoteTest {
   void mustReturnNullWhenGetTimeout() {
 
     // arrange
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
-
     doReturn(InetSocketAddressTemplates._8_8_8_8())
       .when(this.resolver)
       .getAddress()
@@ -141,10 +130,6 @@ class SolverRemoteTest {
     final var res = MessageTemplates.buildAAnswer(query);
     res.getHeader().unsetFlag(Flags.RA);
 
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
-
     doReturn(InetSocketAddressTemplates._8_8_8_8())
       .when(this.resolver)
       .getAddress()
@@ -167,85 +152,4 @@ class SolverRemoteTest {
     assertEquals(Response.DEFAULT_SUCCESS_TTL, result.getDpsTtl());
   }
 
-
-  @Test
-  void mustOpenCircuitAfterThresholdFailures() throws Exception {
-    // arrange
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
-
-     doReturn(InetSocketAddressTemplates._8_8_8_8())
-      .when(this.resolver)
-      .getAddress()
-    ;
-
-    doReturn(CompletableFuture.failedFuture(new SocketTimeoutException(SolverRemote.QUERY_TIMED_OUT_MSG)))
-      .when(this.resolver)
-      .sendAsync(any());
-
-    doReturn(List.of(this.resolver))
-      .when(this.resolvers)
-      .resolvers()
-    ;
-    final var query = MessageTemplates.acmeAQuery();
-
-    // act
-    assertNull(this.solverRemote.handle(query));
-    assertEquals("CircuitCheckException for /8.8.8.8:53", this.solverRemote.getStatus());
-
-    assertNull(this.solverRemote.handle(query));
-    assertEquals("CircuitCheckException for /8.8.8.8:53", this.solverRemote.getStatus());
-
-    assertNull(this.solverRemote.handle(query));
-    assertEquals("CircuitCheckException for /8.8.8.8:53", this.solverRemote.getStatus());
-
-    // assert
-    assertNull(this.solverRemote.handle(query));
-    assertEquals("CircuitBreakerOpenException for /8.8.8.8:53", this.solverRemote.getStatus());
-
-  }
-
-
-  @Test
-  void mustCheckNextServerAfterCircuitFailure() throws Exception {
-    // arrange
-    final var query = MessageTemplates.acmeAQuery();
-    final var res = MessageTemplates.acmeAResponse();
-
-    doReturn(CircuitBreakerTemplates.buildDefault())
-      .when(this.solverRemote)
-      .findCircuitBreakerConfig();
-
-    doReturn(InetSocketAddressTemplates._8_8_8_8())
-      .when(this.resolver)
-      .getAddress()
-    ;
-
-    doReturn(InetSocketAddressTemplates._8_8_8_8())
-      .when(this.resolver2)
-      .getAddress()
-    ;
-
-    doReturn(CompletableFuture.failedFuture(new SocketTimeoutException(SolverRemote.QUERY_TIMED_OUT_MSG)))
-      .when(this.resolver)
-      .sendAsync(any());
-
-    doReturn(CompletableFuture.completedFuture(res))
-      .when(this.resolver2)
-      .sendAsync(any());
-
-    doReturn(List.of(this.resolver, this.resolver2))
-      .when(this.resolvers)
-      .resolvers()
-    ;
-
-    // act
-    // assert
-    final var msg = this.solverRemote.handle(query);
-    assertNotNull(msg);
-    assertEquals("CircuitCheckException for /8.8.8.8:53", this.solverRemote.getStatus());
-    assertEquals(Rcode.NOERROR, msg.getMessage().getRcode());
-
-  }
 }
