@@ -1,3 +1,6 @@
+## 3.19.1
+* Resources usage optimization identified at #455
+
 ## 3.19.0
 * Remote Server Solver Cache Consistency Guarantee, see #455.
 
