@@ -51,10 +51,6 @@
   </url>
   
   <url>
-    <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/2-features/docker-different-networks-solving/</loc>
-  </url>
-  
-  <url>
     <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/1-getting-started/versioning/</loc>
   </url>
   
@@ -64,6 +60,10 @@
   
   <url>
     <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/4-developing/compiling/</loc>
+  </url>
+  
+  <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/2-features/docker-solving/</loc>
   </url>
   
   <url>
@@ -135,6 +135,10 @@
   
   <url>
     <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/credits/</loc>
+  </url>
+  
+  <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/3.19/en/2-features/docker-different-networks-solving/</loc>
   </url>
   
   <url>
