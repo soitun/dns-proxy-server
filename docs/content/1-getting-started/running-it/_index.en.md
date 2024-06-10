@@ -44,14 +44,12 @@ PING nginx.dev (172.17.0.4) 56(84) bytes of data.
 
 ### Running on Docker
 
-You probably want to check on [specific running instructions][3] to configure all DPS features when running on docker,
-set as default DNS and docker container solving have different docker run options for each platform.
-
-Despite on this, the standalone way to run DPS on docker can be done by following:
+The standalone way to run DPS on docker can be done by following:
 
 ```bash
 $ docker run --rm --hostname dns.mageddo -p 5380:5380 -p 53:53/udp defreitas/dns-proxy-server
 ```
+
 If you get something like `0.0.0.0:53: bind: address already in use` then probably there is some other DNS server like 
 systemd-resolved, so you can try to bind DPS to a specific network interface like `127.0.0.1` or `192.168.x.x`, check
 your local interfaces for the best fit.
@@ -60,10 +58,12 @@ your local interfaces for the best fit.
 $ docker run --rm --hostname dns.mageddo -p 5380:5380 -p 127.0.0.1:53:53/udp defreitas/dns-proxy-server
 ```
 
-Runining on docker limitations:
+You probably want to check on [specific OS running instructions][3] to configure all DPS features, when running on docker.
 
-* You have to configure docker as default DNS by yourself, check [specific instructions][3],
-to see how to do that you can check more [details here][4] for the reason.
+Running on docker limitations:
+
+* You have to configure docker as default DNS manually, check [specific instructions][3],
+to see how to do that you can check more details [here][4].
 
 [1]: https://github.com/mageddo/dns-proxy-server/issues/326
 [2]: https://github.com/mageddo/dns-proxy-server/releases
