@@ -12,20 +12,20 @@
     <title>Running it :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/3.19/css/nucleus.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/fontawesome-all.min.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/hybrid.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/featherlight.min.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/perfect-scrollbar.min.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/auto-complete.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/atom-one-dark-reasonable.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/theme.css?1718020820" rel="stylesheet">
-    <link href="/dns-proxy-server/3.19/css/hugo-theme.css?1718020820" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/nucleus.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/fontawesome-all.min.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/hybrid.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/featherlight.min.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/perfect-scrollbar.min.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/auto-complete.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/atom-one-dark-reasonable.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/theme.css?1718031373" rel="stylesheet">
+    <link href="/dns-proxy-server/3.19/css/hugo-theme.css?1718031373" rel="stylesheet">
     
-      <link href="/dns-proxy-server/3.19/css/theme-mine.css?1718020820" rel="stylesheet">
+      <link href="/dns-proxy-server/3.19/css/theme-mine.css?1718031373" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/3.19/js/jquery-3.3.1.min.js?1718020820"></script>
+    <script src="/dns-proxy-server/3.19/js/jquery-3.3.1.min.js?1718031373"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/3.19/js/lunr.min.js?1718020820"></script>
-<script type="text/javascript" src="/dns-proxy-server/3.19/js/auto-complete.js?1718020820"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.19/js/lunr.min.js?1718031373"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.19/js/auto-complete.js?1718031373"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/3.19\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/3.19/js/search.js?1718020820"></script>
+<script type="text/javascript" src="/dns-proxy-server/3.19/js/search.js?1718031373"></script>
 
     
   </div>
@@ -1142,10 +1142,7 @@ PING nginx.dev (172.17.0.4) 56(84) bytes of data.
 
 <h3 id="running-on-docker">Running on Docker</h3>
 
-<p>You probably want to check on <a href="#specific-instructions">specific running instructions</a> to configure all DPS features when running on docker,
-set as default DNS and docker container solving have different docker run options for each platform.</p>
-
-<p>Despite on this, the standalone way to run DPS on docker can be done by following:</p>
+<p>The standalone way to run DPS on docker can be done by following:</p>
 
 <pre><code class="language-bash">$ docker run --rm --hostname dns.mageddo -p 5380:5380 -p 53:53/udp defreitas/dns-proxy-server
 </code></pre>
@@ -1157,11 +1154,13 @@ your local interfaces for the best fit.</p>
 <pre><code class="language-bash">$ docker run --rm --hostname dns.mageddo -p 5380:5380 -p 127.0.0.1:53:53/udp defreitas/dns-proxy-server
 </code></pre>
 
-<p>Runining on docker limitations:</p>
+<p>You probably want to check on <a href="#specific-instructions">specific OS running instructions</a> to configure all DPS features, when running on docker.</p>
+
+<p>Running on docker limitations:</p>
 
 <ul>
-<li>You have to configure docker as default DNS by yourself, check <a href="#specific-instructions">specific instructions</a>,
-to see how to do that you can check more <a href="/dns-proxy-server/3.19/en/2-features/auto-configuration-as-default-dns/#docker-limitations">details here</a> for the reason.</li>
+<li>You have to configure docker as default DNS manually, check <a href="#specific-instructions">specific instructions</a>,
+to see how to do that you can check more details <a href="/dns-proxy-server/3.19/en/2-features/auto-configuration-as-default-dns/#docker-limitations">here</a>.</li>
 </ul>
 
 
@@ -1711,20 +1710,20 @@ to see how to do that you can check more <a href="/dns-proxy-server/3.19/en/2-fe
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/3.19/js/clipboard.min.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/perfect-scrollbar.min.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/perfect-scrollbar.jquery.min.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/jquery.sticky.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/featherlight.min.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/html5shiv-printshiv.min.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/highlight.pack.js?1718020820"></script>
+    <script src="/dns-proxy-server/3.19/js/clipboard.min.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/perfect-scrollbar.min.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/perfect-scrollbar.jquery.min.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/jquery.sticky.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/featherlight.min.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/html5shiv-printshiv.min.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/highlight.pack.js?1718031373"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/3.19/js/modernizr.custom-3.6.0.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/learn.js?1718020820"></script>
-    <script src="/dns-proxy-server/3.19/js/hugo-learn.js?1718020820"></script>
+    <script src="/dns-proxy-server/3.19/js/modernizr.custom-3.6.0.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/learn.js?1718031373"></script>
+    <script src="/dns-proxy-server/3.19/js/hugo-learn.js?1718031373"></script>
 
-    <link href="/dns-proxy-server/3.19/mermaid/mermaid.css?1718020820" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/3.19/mermaid/mermaid.js?1718020820"></script>
+    <link href="/dns-proxy-server/3.19/mermaid/mermaid.css?1718031373" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/3.19/mermaid/mermaid.js?1718031373"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
