@@ -4,11 +4,11 @@ import com.mageddo.dnsproxyserver.config.CircuitBreaker;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.SolverRemote;
 import com.mageddo.dnsproxyserver.config.dataprovider.ConfigPropDAO;
-import com.mageddo.dnsserver.SimpleServer;
+import com.mageddo.dnsproxyserver.config.validator.ConfigValidator;
 import com.mageddo.dnsproxyserver.utils.Numbers;
+import com.mageddo.dnsserver.SimpleServer;
 import com.mageddo.net.IpAddr;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
 import java.time.Duration;
@@ -46,12 +46,16 @@ public class ConfigMapper {
       .serverProtocol(firstNonNullRequiring(mapField(Config::getServerProtocol, configs)))
       .dockerHost(firstNonNullRequiring(mapField(Config::getDockerHost, configs)))
       .resolvConfOverrideNameServers(firstNonNullRequiring(mapField(Config::getResolvConfOverrideNameServers, configs)))
-      .noRemoteServers(firstNonNullRequiring(mapField(Config::getNoRemoteServers, configs)))
       .noEntriesResponseCode(firstNonNullRequiring(mapField(Config::getNoEntriesResponseCode, configs)))
       .dockerSolverHostMachineFallbackActive(firstNonNullRequiring(mapField(Config::getDockerSolverHostMachineFallbackActive, configs)))
-      .solverRemote(firstNonNullRequiring(mapField(Config::getSolverRemote, configs)))
+      .solverRemote(SolverRemote
+        .builder()
+        .active(firstNonNullRequiring(mapField(Config::isSolverRemoteActive, configs)))
+        .circuitBreaker(firstNonNullRequiring(mapField(Config::getSolverRemoteCircuitBreaker, configs)))
+        .build()
+      )
       .build();
-    validate(config);
+    ConfigValidator.validate(config);
     return config;
   }
 
@@ -63,6 +67,7 @@ public class ConfigMapper {
       .remoteDnsServers(Collections.singletonList(IpAddr.of("8.8.8.8:53")))
       .solverRemote(SolverRemote
         .builder()
+        .active(true)
         .circuitBreaker(defaultCircuitBreaker())
         .build()
       )
@@ -77,25 +82,6 @@ public class ConfigMapper {
       .successThreshold(5)
       .testDelay(Duration.ofSeconds(20))
       .build();
-  }
-
-  private static void validate(Config config) {
-    Validate.notNull(config.getVersion());
-    Validate.notNull(config.getRemoteDnsServers());
-    Validate.isTrue(config.getWebServerPort() != null && config.getWebServerPort() > 0);
-    Validate.isTrue(config.getDnsServerPort() != null && config.getDnsServerPort() > 0);
-    Validate.notNull(config.getLogFile());
-    Validate.notNull(config.getRegisterContainerNames());
-    Validate.notNull(config.getHostMachineHostname());
-    Validate.notNull(config.getDomain());
-    Validate.notNull(config.getMustConfigureDpsNetwork());
-    Validate.notNull(config.getDpsNetworkAutoConnect());
-    Validate.notNull(config.getResolvConfPaths());
-    Validate.notNull(config.getSolverRemote());
-    Validate.notNull(config.getDockerSolverHostMachineFallbackActive());
-    Validate.notNull(config.getNoRemoteServers());
-    Validate.notNull(config.getServerProtocol());
-    Validate.notNull(config.getResolvConfOverrideNameServers());
   }
 
   private static URI buildDefaultDockerHost() {
