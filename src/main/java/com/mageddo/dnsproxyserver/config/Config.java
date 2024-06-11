@@ -71,10 +71,6 @@ public class Config {
 
   private Boolean dockerSolverHostMachineFallbackActive;
 
-  private boolean helpCmd;
-
-  private boolean versionCmd;
-
   private SolverRemote solverRemote;
 
   @JsonIgnore

@@ -9,6 +9,7 @@ import com.mageddo.dnsserver.SimpleServer;
 import java.nio.file.Paths;
 
 public class ConfigTemplates {
+
   public static Config defaultWithoutId() {
     return defaultBuilder()
       .build();
