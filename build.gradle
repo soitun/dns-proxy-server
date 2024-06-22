@@ -19,8 +19,8 @@ repositories {
   maven { url "https://oss.sonatype.org/service/local/repositories/releases/content" }
 }
 
-sourceCompatibility = JavaVersion.VERSION_19
-targetCompatibility = JavaVersion.VERSION_19
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 dependencies {
 
@@ -114,19 +114,15 @@ graalvmNative {
   binaries {
     main {
       javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(19)
-        requiredVersion = '22.3'
+        languageVersion = JavaLanguageVersion.of(21)
         vendor = JvmVendorSpec.matching("GraalVM Community")
       }
 
-      // Main options
       imageName = project.name
       mainClass = mainClassName
-//      debug = true
       verbose = true
       fallback = false
       buildArgs.add('-J-Xmx5G')
-//      buildArgs.add('--link-at-build-time')
     }
   }
 }
