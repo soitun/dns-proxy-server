@@ -9,8 +9,8 @@ buildscript {
 plugins {
   id "java"
   id 'net.researchgate.release' version '3.0.2'
-  id 'com.github.johnrengelman.shadow' version '7.1.2'
-  id 'org.graalvm.buildtools.native' version '0.9.19'
+  id 'com.github.johnrengelman.shadow' version '8.1.1'
+  id 'org.graalvm.buildtools.native' version '0.10.2'
 }
 
 repositories {
