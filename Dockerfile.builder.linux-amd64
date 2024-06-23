@@ -4,8 +4,8 @@
 
 FROM debian:11 AS BUILDER
 
-RUN apt-get update -y &&\
-  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools tree
+#RUN apt-get update -y &&\
+#  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools tree
 
 ARG RESULT_LIB="/musl"
 
