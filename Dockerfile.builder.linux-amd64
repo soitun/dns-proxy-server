@@ -5,14 +5,16 @@
 FROM debian:11 AS BUILDER
 
 RUN apt-get update -y &&\
-  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools
+  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools tree
 
 ARG RESULT_LIB="/musl"
 
+RUN tree /usr/lib/gcc/
 RUN mkdir ${RESULT_LIB} && \
     curl -L -o musl.tar.gz https://more.musl.cc/10.2.1/x86_64-linux-musl/x86_64-linux-musl-native.tgz && \
     tar -xvzf musl.tar.gz -C musl --strip-components 1 && \
-    cp /usr/lib/gcc/x86_64-linux-gnu/6/libstdc++.a ${RESULT_LIB}/lib/
+    cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 ${RESULT_LIB}/lib/
+#  cp /usr/lib/gcc/x86_64-linux-gnu/6/libstdc++.a ${RESULT_LIB}/lib/
 
 ENV CC=/musl/bin/gcc
 
