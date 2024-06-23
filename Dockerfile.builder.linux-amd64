@@ -5,9 +5,7 @@
 FROM debian:11 AS BUILDER
 
 RUN apt-get update -y &&\
-  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl &&\
-  apt-get clean &&\
-  rm -r /tmp/*
+  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl
 
 ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz'
 RUN mkdir /graalvm &&\
