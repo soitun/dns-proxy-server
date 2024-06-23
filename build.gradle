@@ -122,6 +122,8 @@ graalvmNative {
       verbose = true
       fallback = false
       buildArgs.add('-J-Xmx5G')
+      buildArgs.add('--static')
+      buildArgs.add('--libc=musl')
     }
   }
 }

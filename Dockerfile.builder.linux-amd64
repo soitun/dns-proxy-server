@@ -1,4 +1,4 @@
-FROM defreitas/tools_graalvm-21_debian-9:0.0.1 AS BUILDER
+FROM ghcr.io/graalvm/graalvm-community:21.0.2-ol9-20240116 AS BUILDER
 # source: https://github.com/mageddo/dockerized-database-servers/tree/master/_hub/graalvm
 
 COPY ./ /app
