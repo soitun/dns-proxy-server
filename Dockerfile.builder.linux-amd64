@@ -11,7 +11,7 @@ RUN mkdir /graalvm &&\
 
 ENV JAVA_HOME=/graalvm
 ENV PATH="${PATH}:$JAVA_HOME/bin"
-RUN ls -lha $JAVA_HOME/bin && java -version
+RUN ls -lha $JAVA_HOME/bin && $JAVA_HOME/bin -version
 
 COPY ./ /app
 WORKDIR /app
