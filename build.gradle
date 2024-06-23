@@ -123,7 +123,7 @@ graalvmNative {
       fallback = false
       buildArgs.add('-J-Xmx5G')
       buildArgs.add('--static')
-      buildArgs.add('--libc=musl')
+      buildArgs.add('--libc=glibc')
     }
   }
 }
