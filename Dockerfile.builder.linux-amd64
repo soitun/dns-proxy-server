@@ -1,5 +1,5 @@
 FROM ghcr.io/graalvm/graalvm-community:21.0.2-ol9-20240116 AS BUILDER
-# source: https://github.com/mageddo/dockerized-database-servers/tree/master/_hub/graalvm
+RUN apk add --update musl-dev zlib-dev
 
 COPY ./ /app
 WORKDIR /app
