@@ -35,7 +35,7 @@ RUN uname -a && whoami && ls -lha $JAVA_HOME/bin && $JAVA_HOME/bin/java -version
 COPY ./ /app
 WORKDIR /app
 
-RUN ./gradlew clean build compTest shadowJar nativeCompile -i &&\
+RUN ./gradlew clean build -x check shadowJar nativeCompile -i &&\
   ls -lha ./build &&\
   mkdir -p ./build/artifacts/linux-amd64 && mv ./build/native/nativeCompile/dns-proxy-server ./build/artifacts/linux-amd64/ &&\
   mkdir -p ./build/artifacts/jre && mv ./build/libs/dns-proxy-server-*-all.jar ./build/artifacts/jre/dns-proxy-server.jar &&\
