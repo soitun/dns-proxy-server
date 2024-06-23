@@ -3,7 +3,7 @@ FROM alpine:3.20.1 AS BUILDER
 
 RUN apk add --update musl-dev zlib-dev curl zlib
 
-ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-aarch64_bin.tar.gz'
+ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz'
 RUN mkdir /graalvm &&\
   curl -L $GRAALVM_URL > /tmp/graalvm.tgz &&\
   tar --strip 1 -zxvf /tmp/graalvm.tgz -C /graalvm &&\
