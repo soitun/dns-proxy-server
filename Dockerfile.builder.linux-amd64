@@ -1,5 +1,5 @@
 #FROM ghcr.io/graalvm/graalvm-community:21.0.2-ol9-20240116 AS BUILDER
-FROM alpine:3.20.1 AS BUILDER
+FROM alpine:3.20.1@sha256:b89d9c93e9ed3597455c90a0b88a8bbb5cb7188438f70953fede212a0c4394e0 AS BUILDER
 
 RUN apk add --update musl-dev zlib-dev curl zlib
 
@@ -11,7 +11,7 @@ RUN mkdir /graalvm &&\
 
 ENV JAVA_HOME=/graalvm
 ENV PATH="${PATH}:$JAVA_HOME/bin"
-RUN ls -lha $JAVA_HOME/bin && $JAVA_HOME/bin/java -version
+RUN uname -a && whoami && ls -lha $JAVA_HOME/bin && $JAVA_HOME/bin/java -version
 
 COPY ./ /app
 WORKDIR /app
