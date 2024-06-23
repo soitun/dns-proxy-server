@@ -5,7 +5,25 @@
 FROM debian:11 AS BUILDER
 
 RUN apt-get update -y &&\
-  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools musl-gcc
+  apt-get install --force-yes -y build-essential libz-dev zlib1g-dev curl musl musl-dev musl-tools
+
+ARG RESULT_LIB="/musl"
+
+RUN mkdir ${RESULT_LIB} && \
+    curl -L -o musl.tar.gz https://more.musl.cc/10.2.1/x86_64-linux-musl/x86_64-linux-musl-native.tgz && \
+    tar -xvzf musl.tar.gz -C musl --strip-components 1 && \
+    cp /usr/lib/gcc/x86_64-linux-gnu/6/libstdc++.a ${RESULT_LIB}/lib/
+
+ENV CC=/musl/bin/gcc
+
+RUN curl -L -o zlib.tar.gz https://zlib.net/zlib-1.2.11.tar.gz && \
+    mkdir zlib && tar -xvzf zlib.tar.gz -C zlib --strip-components 1 && \
+    cd zlib && ./configure --static --prefix=/musl && \
+    make && make install && \
+    cd / && rm -rf /zlib && rm -f /zlib.tar.gz
+
+ENV PATH="$PATH:/musl/bin"
+
 
 ENV GRAALVM_URL='https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-21.0.2/graalvm-community-jdk-21.0.2_linux-x64_bin.tar.gz'
 RUN mkdir /graalvm &&\
