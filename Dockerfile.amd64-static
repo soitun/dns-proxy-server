@@ -1,7 +1,8 @@
-FROM arm64v8/debian:12-slim
-COPY ./build/artifacts/linux-aarch64/dns-proxy-server /app/dns-proxy-server
+FROM scratch
+COPY ./build/artifacts/linux-amd64-static/dns-proxy-server /app/dns-proxy-server
 WORKDIR /app
 LABEL dps.container=true
 ENV DPS_CONTAINER=1
 VOLUME ["/var/run/docker.sock", "/var/run/docker.sock"]
 ENTRYPOINT ["/app/dns-proxy-server"]
+CMD ["-D", "java.io.tmpdir=/app"]

@@ -1,3 +1,7 @@
+## 3.21.1
+* #435: Upgrading docker run images due glibc
+* #285: Linux AMD64 static binary
+
 ## 3.20.0
 * #435: GraalVM Upgrade to 21 LTS
 

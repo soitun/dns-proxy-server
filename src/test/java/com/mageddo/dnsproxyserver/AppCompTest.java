@@ -36,7 +36,7 @@ class AppCompTest {
 
 
   @Test
-  void mustExitWhenVerrsionCmd() {
+  void mustExitWhenVersionCmd() {
     // arrange
     final var args = new String[]{"--version"};
     this.app = spy(new App(args));
