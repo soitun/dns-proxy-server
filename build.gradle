@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 buildscript {
   repositories {
     mavenLocal()
@@ -105,6 +107,28 @@ jar {
       "Main-Class": mainClassName
     )
   }
+}
+
+tasks.register('nativeImageJar', ShadowJar) {
+
+  from sourceSets.main.output
+  configurations = [project.configurations.runtimeClasspath]
+  mergeServiceFiles()
+
+  archiveBaseName = "native-image"
+
+  manifest {
+    attributes("Main-Class": mainClassName)
+  }
+
+  dependencies {
+    exclude(dependency('org.graalvm.sdk:'))
+  }
+
+  exclude("/META-INF/*.SF")
+  exclude("/META-INF/*.DSA")
+  exclude("/META-INF/*.RSA")
+
 }
 
 shadowJar {
