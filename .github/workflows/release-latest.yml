@@ -1,0 +1,106 @@
+name: Release Latest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 7 * * *" # 7:30 UTC every day
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  release-latest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Install Deps
+        run: sudo apt-get install rename -y
+
+      - name: Download Artifacts
+        id: release_download
+        uses: robinraju/release-downloader@v1
+        with:
+          latest: true
+          preRelease: false
+          fileName: '*'
+          tarBall: false
+          zipBall: false
+          out-file-path: 'artifacts'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Rename Artifacts
+        run: rename 's/-snapshot//g' artifacts/*
+
+      - name: Check Artifacts
+        run: tree artifacts
+
+      - name: Find Versions
+        id: version_finder
+        run: |
+          export latest_version=$(echo ${{steps.release_download.outputs.release_name}} | grep -oP '\d+.\d+\.\d+') &&\
+          echo "latest_version=${latest_version}" >> $GITHUB_OUTPUT &&\
+          export current_version=$(echo ${{ steps.release_download.outputs.tag_name }}) &&\
+          echo "current_version=${current_version}" >> $GITHUB_OUTPUT
+
+      - name: Version checker
+        run: |
+          echo ${{ steps.version_finder.outputs.latest_version }} &&\
+          echo ${{ steps.version_finder.outputs.current_version }}
+
+      - name: Create Latest Tag
+        run: |
+          git tag ${{ steps.version_finder.outputs.latest_version }} refs/tags/${{ steps.version_finder.outputs.current_version }} &&\
+          git push origin ${{ steps.version_finder.outputs.latest_version }} --tags
+
+      - name: Docker Images - Release Latest
+        run: |
+          CURRENT_VERSION=${{ steps.version_finder.outputs.current_version }} &&\
+          LATEST_VERSION=${{ steps.version_finder.outputs.latest_version }} &&\
+          ./builder.bash release-latest-docker-images ${CURRENT_VERSION} latest
+          ./builder.bash release-latest-docker-images ${CURRENT_VERSION}-aarch64 ${LATEST_VERSION}-aarch64 
+
+      - name: Docker Images - Additional - Amd64 Static
+        run: |
+          CURRENT_VERSION=${{ steps.version_finder.outputs.current_version }} &&\
+          LATEST_VERSION=${{ steps.version_finder.outputs.latest_version }} &&\
+          ./builder.bash release-latest-docker-images ${CURRENT_VERSION}-amd64-static ${LATEST_VERSION}-amd64-static ||\
+          echo 'Não tinha a imagem'
+
+      - name: Checkout Tag To Generate Release Notes
+        run: git checkout ${{ steps.version_finder.outputs.current_version }}
+
+      - name: Generate Release Notes
+        uses: kemayo/actions-recent-changelog@v1
+        with:
+          input: RELEASE-NOTES.md
+          output: VERSION-RELEASE-NOTES.md
+
+      - name: Check Release Notes
+        run: cat ./VERSION-RELEASE-NOTES.md
+
+      - name: Github Release Latest
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{steps.version_finder.outputs.latest_version}}
+          tag_name: ${{steps.version_finder.outputs.latest_version}}
+          make_latest: true
+          append_body: false
+          body_path: VERSION-RELEASE-NOTES.md
+          files: |
+            ./artifacts/*
+
