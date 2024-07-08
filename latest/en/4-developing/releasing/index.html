@@ -12,20 +12,20 @@
     <title>Release Process :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1720454789" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1720454789" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1720455247" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1720455247" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1720454789" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1720455247" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1720454789"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1720455247"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1720454789"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1720454789"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1720455247"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1720455247"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1720454789"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1720455247"></script>
 
     
   </div>
@@ -1098,20 +1098,8 @@
 
 <ul>
 <li>Define a pre-release version which will be promoted to the latest by <a href="/dns-proxy-server/latest/en/1-getting-started/versioning/">following the rules</a>.</li>
-<li>Edit the github release setting the pre-release version as the latest, remove the <code>-snapshot</code> suffix from the title
-and from the attachments names.</li>
-<li>Locally tag the latest docker image as the pre-release version
-<code>bash
-$ docker tag defreitas/dns-proxy-server:${PRE_RELEASE_VERSION} mageddo/dns-proxy-server:latest
-</code></li>
-<li>Check the docker image version by
-<code>bash
-$ docker run defreitas/dns-proxy-server:latest --version
-</code></li>
-<li>Push the pre-release version to the docker hub
-<code>bash
-$ docker push defreitas/dns-proxy-server:latest
-</code></li>
+<li>Edit the github release setting latest flag</li>
+<li>Run <a href="https://github.com/mageddo/dns-proxy-server/actions/workflows/release-latest.yml">the release latest</a> workflow, if you don&rsquo;t run the workflow it will auto run on the next day at 07:30 UTC</li>
 </ul>
 
 
@@ -1681,20 +1669,20 @@ $ docker push defreitas/dns-proxy-server:latest
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1720454789"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1720455247"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1720454789"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1720454789"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1720455247"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1720455247"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1720454789" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1720454789"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1720455247" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1720455247"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
