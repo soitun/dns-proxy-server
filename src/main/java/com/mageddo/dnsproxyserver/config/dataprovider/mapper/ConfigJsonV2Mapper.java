@@ -4,7 +4,9 @@ import com.mageddo.dnsproxyserver.config.CircuitBreaker;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.SolverRemote;
 import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigJson;
+import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigJsonV2;
 import com.mageddo.dnsproxyserver.utils.Booleans;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.nio.file.Path;
 
@@ -34,14 +36,30 @@ public class ConfigJsonV2Mapper {
   }
 
   static SolverRemote toSolverRemote(ConfigJson json) {
-    final var solverRemote = json.getSolverRemote();
-    if (solverRemote == null) {
+    if(nothingIsSet(json)){
       return null;
+    } else if (isPossibleToBuildComplete(json)) {
+      return buildCompleteSolverRemote(json, json.getSolverRemoteCircuitBreaker());
     }
-    final var circuitBreaker = solverRemote.getCircuitBreaker();
-    if (circuitBreaker == null) {
-      return null;
-    }
+    return buildSimpleSolverRemote(json);
+  }
+
+  static boolean nothingIsSet(ConfigJson json) {
+    return ObjectUtils.allNull(json.getNoRemoteServers(), json.getSolverRemote(), json.getSolverRemoteCircuitBreaker());
+  }
+
+  static boolean isPossibleToBuildComplete(ConfigJson json) {
+    return ObjectUtils.allNotNull(json.getSolverRemote(), json.getSolverRemoteCircuitBreaker());
+  }
+
+  static SolverRemote buildSimpleSolverRemote(ConfigJson json) {
+    return SolverRemote
+      .builder()
+      .active(Booleans.reverseWhenNotNull(json.getNoRemoteServers()))
+      .build();
+  }
+
+  static SolverRemote buildCompleteSolverRemote(ConfigJson json, ConfigJsonV2.CircuitBreaker circuitBreaker) {
     return SolverRemote
       .builder()
       .active(Booleans.reverseWhenNotNull(json.getNoRemoteServers()))

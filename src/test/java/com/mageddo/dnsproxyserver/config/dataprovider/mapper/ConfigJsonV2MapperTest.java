@@ -2,7 +2,6 @@ package com.mageddo.dnsproxyserver.config.dataprovider.mapper;
 
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigJson;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import testing.templates.ConfigJsonTemplates;
 
@@ -10,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ConfigJsonV2MapperTest {
 
@@ -28,7 +28,6 @@ class ConfigJsonV2MapperTest {
   }
 
   @Test
-  @Disabled("by the bug reported at #513")
   void mustMapSolverRemoteAsInactiveEvenWhenCircuitBreakerIsNOTSet(){
     // arrange
     final var configJson = ConfigJsonTemplates.withoutCircuitBreakerDefinedWithNoRemoteServers();
@@ -38,6 +37,18 @@ class ConfigJsonV2MapperTest {
 
     // assert
     assertFalse(config.isSolverRemoteActive());
+  }
+
+  @Test
+  void mustReturnNullWhenNothingIsSet(){
+    // arrange
+    final var configJson = ConfigJsonTemplates.noRemoteServerFlagsSet();
+
+    // act
+    final var config = toConfig(configJson);
+
+    // assert
+    assertNull(config.getSolverRemote());
   }
 
   static Config toConfig(ConfigJson configJson) {
