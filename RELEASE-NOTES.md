@@ -1,4 +1,7 @@
-## 3.24.2 
+## 3.25.0
+* Optimize resource utilization by using Java Virtual Threads #436.
+
+## 3.24.2
 * Mitigate arm release failure due inexistence of required debian package #517
 
 ## 3.24.1
