@@ -85,7 +85,7 @@ if you know about DPS you will figure out that&amp;rsquo;s a very basic DPS feat
       <description>Contributors Thanks to them  for making Open Source Software a better place !
 .ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }
 .ghContributors &amp;gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors &amp;gt; div label{ padding-left: 4px ; } .ghContributors &amp;gt; div span{ font-size: x-small; padding-left: 4px ; }
-  @mageddo 844 commits 
+  @mageddo 845 commits 
  @josielrocha 9 commits 
  @mrubli 3 commits 
  @addshore 3 commits</description>
@@ -98,6 +98,18 @@ if you know about DPS you will figure out that&amp;rsquo;s a very basic DPS feat
       
       <guid>http://mageddo.github.io/dns-proxy-server/latest/en/showcase/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>Stress Tests</title>
+      <link>http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/stress-tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/stress-tests/</guid>
+      <description>Start DPS Instance to be tested
+./gradlew clean build compTest shadowJar nativeImageJar nativeCompile -i cp build/native/nativeCompile/dns-proxy-server ./src/stress-test/docker/dps-stress-test-instance/files/ docker-compose -f src/stress-test/docker/dps-stress-test-instance/docker-compose.yml up --build  Start Grafana Stack to Collect Performance Metrics
+docker-compose -f src/stress-test/docker/grafana/docker-compose.yml up --build  Run the Stress Test Suite
+./gradlew build stressTest  Access http://localhost:3000 to see the metrics</description>
     </item>
     
   </channel>

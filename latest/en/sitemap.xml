@@ -164,6 +164,10 @@
   </url>
   
   <url>
+    <loc>http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/stress-tests/</loc>
+  </url>
+  
+  <url>
     <loc>http://mageddo.github.io/dns-proxy-server/latest/en/tags/</loc>
     <priority>0</priority>
     <xhtml:link
