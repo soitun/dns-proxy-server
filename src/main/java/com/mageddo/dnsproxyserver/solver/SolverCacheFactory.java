@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.solver;
 
+import com.mageddo.concurrent.SingleThreadQueueProcessor;
 import com.mageddo.dnsproxyserver.solver.CacheName.Name;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ public class SolverCacheFactory {
 
   private final SolverCache remote;
   private final SolverCache global;
+  private final SingleThreadQueueProcessor queueProcessor;
 
   @Inject
   public SolverCacheFactory(
@@ -30,6 +32,7 @@ public class SolverCacheFactory {
   ) {
     this.remote = remote;
     this.global = global;
+    this.queueProcessor = new SingleThreadQueueProcessor();
   }
 
   public SolverCache getInstance(Name name) {
@@ -59,7 +62,7 @@ public class SolverCacheFactory {
 
   public void clear(Name name) {
     if (name == null) {
-      this.clearCaches();
+      this.scheduleCacheClear();
       return;
     }
     this.getInstance(name).clear();
@@ -73,16 +76,23 @@ public class SolverCacheFactory {
   }
 
   /**
-   * This method should be called from one single thread, or it will cause deadlock.
+   * This method should be called from one single thread, or it can cause deadlock, see #522
    */
-  public void clearCaches() {
-    // fixme #526 possible solutions for the deadlock:
-    //       1 - only one thread can clear the cache at a time
-    //       2 - move the locks to one centralized thread responsible for the cache management
+  public void scheduleCacheClear() {
+    this.queueProcessor.schedule(this::clearCaches);
+    log.debug("status=scheduled");
+  }
+
+  void clearCaches() {
     for (final var cache : this.getCaches()) {
       log.trace("status=clearing, cache={}", cache.name());
       cache.clear();
       log.trace("status=cleared, cache={}", cache.name());
     }
+    log.debug("status=finished, caches={}", this.getCaches().size());
+  }
+
+  public int getProcessedInBackground(){
+    return this.queueProcessor.getProcessedCount();
   }
 }
