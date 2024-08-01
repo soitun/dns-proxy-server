@@ -40,11 +40,11 @@ class ResolverStatsFactoryTest {
 
     doReturn(CircuitStatus.OPEN)
       .when(this.circuitBreakerService)
-      .getCircuitStatus(server1.getAddress());
+      .findCircuitStatus(server1.getAddress());
 
     doReturn(CircuitStatus.CLOSED)
       .when(this.circuitBreakerService)
-      .getCircuitStatus(server2.getAddress());
+      .findCircuitStatus(server2.getAddress());
 
     doReturn(List.of(server1, server2, server3))
       .when(this.remoteResolvers)
@@ -59,6 +59,6 @@ class ResolverStatsFactoryTest {
       .toString();
 
     // assert
-    assertEquals("[/8.8.8.8:53, /8.8.4.4:53, /1.1.1.1:53]", resolvers);
+    assertEquals("[/8.8.4.4:53, /1.1.1.1:53]", resolvers);
   }
 }

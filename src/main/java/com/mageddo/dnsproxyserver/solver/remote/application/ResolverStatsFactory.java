@@ -27,12 +27,13 @@ public class ResolverStatsFactory {
   public List<Resolver> findResolversWithNonOpenCircuit() {
     return this.find()
       .stream()
+      .filter(ResolverStats::isValidToUse)
       .map(ResolverStats::getResolver)
       .toList()
       ;
   }
 
   public ResolverStats find(Resolver resolver) {
-    return ResolverMapper.toResolverStats(resolver, this.circuitBreakerService.getCircuitStatus(resolver.getAddress()));
+    return ResolverMapper.toResolverStats(resolver, this.circuitBreakerService.findCircuitStatus(resolver.getAddress()));
   }
 }

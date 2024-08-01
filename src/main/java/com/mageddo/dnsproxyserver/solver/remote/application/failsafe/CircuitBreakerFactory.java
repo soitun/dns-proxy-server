@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
+import com.mageddo.circuitbreaker.failsafe.CircuitStatusRefresh;
 import com.mageddo.commons.circuitbreaker.CircuitCheckException;
 import com.mageddo.commons.lang.tuple.Pair;
 import com.mageddo.dnsproxyserver.config.application.ConfigService;
@@ -56,6 +57,7 @@ public class CircuitBreakerFactory {
       .withDelay(config.getTestDelay())
       .onClose(build(CircuitStatus.CLOSED, address))
       .onOpen(build(CircuitStatus.OPEN, address))
+      .onHalfOpen(it -> log.trace("status=halfOpen, server={}", address))
       .build();
   }
 
@@ -123,8 +125,10 @@ public class CircuitBreakerFactory {
       .toList();
   }
 
-  public CircuitStatus getStatus(InetSocketAddress remoteAddress) {
-    return CircuitBreakerStateMapper.fromFailSafeCircuitBreaker(this.circuitBreakerMap.get(remoteAddress));
+  public CircuitStatus findStatus(InetSocketAddress remoteAddress) {
+    final var circuit = this.circuitBreakerMap.get(remoteAddress);
+    CircuitStatusRefresh.refresh(circuit);
+    return CircuitBreakerStateMapper.fromFailSafeCircuitBreaker(circuit);
   }
 
   private Stats toStats(InetSocketAddress remoteAddr) {
