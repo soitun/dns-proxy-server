@@ -1,3 +1,6 @@
+## 3.25.6
+* Refactoring SolverRemote module to implement circuit optimization #526
+
 ## 3.25.5
 * Change the caching strategy to minimize the locks and prevent deadlocks #522
 

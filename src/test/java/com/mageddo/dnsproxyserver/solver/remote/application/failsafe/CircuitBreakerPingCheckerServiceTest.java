@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.solver.remote.application;
+package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
 import com.mageddo.dnsproxyserver.solver.remote.Result;
 import com.mageddo.net.SocketUtils;
@@ -20,11 +20,11 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-class CircuitBreakerCheckerServiceTest {
+class CircuitBreakerPingCheckerServiceTest {
 
   @Spy
   @InjectMocks
-  CircuitBreakerCheckerService service;
+  CircuitBreakerPingCheckerService service;
 
   @Test
   void mustReturnTrueWhenPingGetSuccess() {

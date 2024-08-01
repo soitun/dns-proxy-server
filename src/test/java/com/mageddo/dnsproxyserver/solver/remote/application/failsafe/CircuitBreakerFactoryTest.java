@@ -1,4 +1,4 @@
-package com.mageddo.dnsproxyserver.solver.remote.application;
+package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
 import com.mageddo.commons.circuitbreaker.CircuitCheckException;
 import com.mageddo.commons.concurrent.Threads;
