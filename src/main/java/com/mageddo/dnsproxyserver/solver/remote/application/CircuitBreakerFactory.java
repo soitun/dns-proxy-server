@@ -7,17 +7,21 @@ import com.mageddo.dnsproxyserver.solver.remote.Result;
 import com.mageddo.dnsproxyserver.solver.remote.dataprovider.SolverConsistencyGuaranteeDAO;
 import com.mageddo.dnsproxyserver.solver.remote.mapper.CircuitBreakerStateMapper;
 import dev.failsafe.CircuitBreaker;
+import dev.failsafe.Failsafe;
 import dev.failsafe.event.CircuitBreakerStateChangedEvent;
 import dev.failsafe.event.EventListener;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 @Slf4j
 @Singleton
@@ -29,7 +33,14 @@ public class CircuitBreakerFactory {
   private final CircuitBreakerCheckerService circuitBreakerCheckerService;
   private final SolverConsistencyGuaranteeDAO solverConsistencyGuaranteeDAO;
 
-  public CircuitBreaker<Result> createCircuitBreakerFor(InetSocketAddress address) {
+  public Result check(InetSocketAddress remoteAddress, Supplier<Result> sup) {
+    final var circuitBreaker = this.createOrGetCircuitBreaker(remoteAddress);
+    return Failsafe
+      .with(circuitBreaker)
+      .get((ctx) -> sup.get());
+  }
+
+  CircuitBreaker<Result> createOrGetCircuitBreaker(InetSocketAddress address) {
     final var config = this.findCircuitBreakerConfig();
     return this.circuitBreakerMap.computeIfAbsent(address, addr -> buildCircuitBreaker(addr, config));
   }
@@ -44,19 +55,32 @@ public class CircuitBreakerFactory {
       .withDelay(config.getTestDelay())
       .onClose(build("CLOSED", address))
       .onOpen(build("OPEN", address))
-      .onHalfOpen(build("HALF_OPEN", address))
       .build();
   }
 
   EventListener<CircuitBreakerStateChangedEvent> build(String actualStateName, InetSocketAddress address) {
     return event -> {
       final var previousStateName = CircuitBreakerStateMapper.toStateNameFrom(event);
-      this.solverConsistencyGuaranteeDAO.flushCachesFromCircuitBreakerStateChange();
+      if (isHalfOpenToOpen(previousStateName, actualStateName)) {
+        log.trace("status=ignoredTransition, from={}, to={}", previousStateName, actualStateName);
+        return;
+      }
+      log.trace(
+        "status=beforeFlushCaches, address={}, previous={}, actual={}", address, previousStateName, actualStateName
+      );
+      this.flushCache();
       log.debug(
-        "status=clearedCache, address={}, previousStateName={}, actualStateName={}",
-        address, previousStateName, actualStateName
+        "status=clearedCache, address={}, previous={}, actual={}", address, previousStateName, actualStateName
       );
     };
+  }
+
+  private static boolean isHalfOpenToOpen(String previousStateName, String actualStateName) {
+    return "HALF_OPEN".equals(previousStateName) && "OPEN".equals(actualStateName);
+  }
+
+  void flushCache() {
+    this.solverConsistencyGuaranteeDAO.flushCachesFromCircuitBreakerStateChange();
   }
 
   com.mageddo.dnsproxyserver.config.CircuitBreaker findCircuitBreakerConfig() {
@@ -87,7 +111,33 @@ public class CircuitBreakerFactory {
     return this.circuitBreakerCheckerService.safeCheck(entry.getKey(), entry.getValue());
   }
 
-  public void reset(){
+  public void reset() {
     this.circuitBreakerMap.clear();
   }
+
+  public List<Stats> stats() {
+    return this.circuitBreakerMap.keySet()
+      .stream()
+      .map(this::toStats)
+      .toList();
+  }
+
+  private Stats toStats(InetSocketAddress remoteAddr) {
+    final var circuitBreaker = this.circuitBreakerMap.get(remoteAddr);
+    final var state = circuitBreaker.getState().name();
+    return Stats.of(remoteAddr.toString(), state);
+  }
+
+
+  @Value
+  public static class Stats {
+
+    private String remoteServerAddress;
+    private String state;
+
+    public static Stats of(String remoteServerAddress, String state) {
+      return new Stats(remoteServerAddress, state);
+    }
+  }
+
 }

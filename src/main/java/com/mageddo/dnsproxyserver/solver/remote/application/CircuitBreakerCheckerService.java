@@ -43,6 +43,10 @@ public class CircuitBreakerCheckerService {
       });
   }
 
+  /**
+   * Note: Ping isn't being effective for DPS circuit breaker usage.
+   * @see https://github.com/mageddo/dns-proxy-server/issues/526#issuecomment-2261421618
+   */
   boolean ping(InetSocketAddress server) {
     return Networks.ping(server, SolverRemote.PING_TIMEOUT_IN_MS);
   }
