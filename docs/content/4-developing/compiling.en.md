@@ -25,8 +25,15 @@ $ java -jar dns-proxy-server-*-all.jar
 
 ### Native Image
 
-```shell
-$ ./gradlew clean build compTest shadowJar nativeCompile
+Generated possible necessary metadata
+```bash
+./gradlew clean -Pagent compTest
+./gradlew metadataCopy
+```
+
+Generate the binary
+```bash
+$ ./gradlew -x check clean build nativeIntTest nativeImageJar nativeCompile
 $ ./build/native/nativeCompile/dns-proxy-server
 ```
 

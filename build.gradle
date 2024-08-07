@@ -84,7 +84,7 @@ dependencies {
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.10.+")
   testImplementation('org.mockito:mockito-junit-jupiter:5.12.+')
-  testImplementation ('org.hamcrest:hamcrest:3.0')
+  testImplementation('org.hamcrest:hamcrest:3.0')
   testImplementation('io.rest-assured:rest-assured:5.5.0')
 
 }
@@ -192,6 +192,14 @@ shadowJar {
 }
 
 graalvmNative {
+  agent {
+    defaultMode = "standard"
+    metadataCopy {
+      inputTaskNames.add("compTest")
+      outputDirectories.add("src/main/resources/META-INF/native-image/graal-auto-generated/")
+      mergeWithExisting = true
+    }
+  }
   binaries {
     main {
       javaLauncher = javaToolchains.launcherFor {
@@ -227,10 +235,11 @@ release {
 
 }
 
-def dontCreateTagsAsTheCdWill(){
+def dontCreateTagsAsTheCdWill() {
   preTagCommit.enabled = false
   createReleaseTag.enabled = false
 }
+
 dontCreateTagsAsTheCdWill()
 
 tasks.register("updateNewVersion") {
