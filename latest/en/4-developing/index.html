@@ -12,20 +12,20 @@
     <title>Developing :: DNS Proxy Server</title>
 
     
-    <link href="/dns-proxy-server/latest/css/nucleus.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hybrid.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/auto-complete.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/theme.css?1722995735" rel="stylesheet">
-    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1722995735" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/nucleus.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/fontawesome-all.min.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hybrid.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/featherlight.min.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/perfect-scrollbar.min.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/auto-complete.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/atom-one-dark-reasonable.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/theme.css?1722996068" rel="stylesheet">
+    <link href="/dns-proxy-server/latest/css/hugo-theme.css?1722996068" rel="stylesheet">
     
-      <link href="/dns-proxy-server/latest/css/theme-mine.css?1722995735" rel="stylesheet">
+      <link href="/dns-proxy-server/latest/css/theme-mine.css?1722996068" rel="stylesheet">
     
 
-    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1722995735"></script>
+    <script src="/dns-proxy-server/latest/js/jquery-3.3.1.min.js?1722996068"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
@@ -53,14 +53,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1722995735"></script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1722995735"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/lunr.min.js?1722996068"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/auto-complete.js?1722996068"></script>
 <script type="text/javascript">
     
         var baseurl = "http:\/\/mageddo.github.io\/dns-proxy-server\/latest\/en";
     
 </script>
-<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1722995735"></script>
+<script type="text/javascript" src="/dns-proxy-server/latest/js/search.js?1722996068"></script>
 
     
   </div>
@@ -1056,6 +1056,12 @@
 <li><a href="#front-end-app-optional">Front end app (optional)</a></li>
 </ul></li>
 <li><a href="#docker-developing">Docker Developing</a></li>
+<li><a href="#automated-tests">Automated Tests</a>
+<ul>
+<li><a href="#unit-tests">Unit Tests</a></li>
+<li><a href="#comp-tests">Comp Tests</a></li>
+<li><a href="#int-tests">Int Tests</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -1118,6 +1124,37 @@ $ docker-compose -f docker-compose-dev.yml up backend
 <pre><code class="language-bash">$ ./gradlew clean build shadowJar -i -x check
 $ docker-compose -f docker-compose-dev.yml run --rm -it backend bash
 $ java -jar dns-proxy-server-*-all.jar
+</code></pre>
+
+<h2 id="automated-tests">Automated Tests</h2>
+
+<h3 id="unit-tests">Unit Tests</h3>
+
+<p>Verify the functionality of individual components or units of code, typically functions or methods,
+to ensure they work as expected.</p>
+
+<h3 id="comp-tests">Comp Tests</h3>
+
+<p>Verify the functionality of entire flows but can mock some parts, example is an endpoint
+which changes some setting at config file, etc.</p>
+
+<h3 id="int-tests">Int Tests</h3>
+
+<p>Are like Comp Test but used to test native-image compiling, for that reason they
+can&rsquo;t mock using frameworks like Mockito, this kind of test need to evict mocks and when do,
+use flags instead of stubs/mocks.</p>
+
+<p>Tests ending with <code>IntTest.java</code> can be run within the native image binary to check if
+the native-image compilation produces a working binary version.</p>
+
+<p>Run Int Tests within the Native Image</p>
+
+<pre><code class="language-bash">$ ./gradlew clean nativeIntTest
+</code></pre>
+
+<p>Run Int Tests within the jar version</p>
+
+<pre><code class="language-bash">$ ./gradlew clean intTest
 </code></pre>
 
 
@@ -1701,20 +1738,20 @@ $ java -jar dns-proxy-server-*-all.jar
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1722995735"></script>
+    <script src="/dns-proxy-server/latest/js/clipboard.min.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.min.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/perfect-scrollbar.jquery.min.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/jquery.sticky.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/featherlight.min.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/html5shiv-printshiv.min.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/highlight.pack.js?1722996068"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/learn.js?1722995735"></script>
-    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1722995735"></script>
+    <script src="/dns-proxy-server/latest/js/modernizr.custom-3.6.0.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/learn.js?1722996068"></script>
+    <script src="/dns-proxy-server/latest/js/hugo-learn.js?1722996068"></script>
 
-    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1722995735" type="text/css" rel="stylesheet" />
-    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1722995735"></script>
+    <link href="/dns-proxy-server/latest/mermaid/mermaid.css?1722996068" type="text/css" rel="stylesheet" />
+    <script src="/dns-proxy-server/latest/mermaid/mermaid.js?1722996068"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
