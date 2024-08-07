@@ -19,7 +19,9 @@
       <description> Requirements See the requirements.
 Building from Source Build the frontend files (optional)
 ./builder.bash build-frontend  Build and run the program
-Jar file $ ./gradlew clean build compTest shadowJar -i $ java -jar dns-proxy-server-*-all.jar  Native Image $ ./gradlew clean build compTest shadowJar nativeCompile $ ./build/native/nativeCompile/dns-proxy-server  </description>
+Jar file $ ./gradlew clean build compTest shadowJar -i $ java -jar dns-proxy-server-*-all.jar  Native Image Generated possible necessary metadata
+./gradlew clean -Pagent compTest ./gradlew metadataCopy  Generate the binary
+$ ./gradlew -x check clean build nativeIntTest nativeImageJar nativeCompile $ ./build/native/nativeCompile/dns-proxy-server  </description>
     </item>
     
     <item>

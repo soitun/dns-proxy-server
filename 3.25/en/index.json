@@ -102,7 +102,7 @@
 	"title": "Compiling from source",
 	"tags": [],
 	"description": "",
-	"content": " Requirements See the requirements.\nBuilding from Source Build the frontend files (optional)\n./builder.bash build-frontend  Build and run the program\nJar file $ ./gradlew clean build compTest shadowJar -i $ java -jar dns-proxy-server-*-all.jar  Native Image $ ./gradlew clean build compTest shadowJar nativeCompile $ ./build/native/nativeCompile/dns-proxy-server  "
+	"content": " Requirements See the requirements.\nBuilding from Source Build the frontend files (optional)\n./builder.bash build-frontend  Build and run the program\nJar file $ ./gradlew clean build compTest shadowJar -i $ java -jar dns-proxy-server-*-all.jar  Native Image Generated possible necessary metadata\n./gradlew clean -Pagent compTest ./gradlew metadataCopy  Generate the binary\n$ ./gradlew -x check clean build nativeIntTest nativeImageJar nativeCompile $ ./build/native/nativeCompile/dns-proxy-server  "
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.25/en/2-features/docker-solving/",
@@ -214,7 +214,7 @@
 	"title": "Credits",
 	"tags": [],
 	"description": "",
-	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 858 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @SimJoSt 1 commits \n @ThisIsQasim 1 commits \n @dependabot[bot] 1 commits \n\n"
+	"content": " Contributors Thanks to them  for making Open Source Software a better place !\n.ghContributors{ display:flex; flex-flow: wrap; align-content: flex-start }\n.ghContributors \u0026gt; div{ width: 50% ; display: inline-flex; margin-bottom: 5px; } .ghContributors \u0026gt; div label{ padding-left: 4px ; } .ghContributors \u0026gt; div span{ font-size: x-small; padding-left: 4px ; }\n  @mageddo 864 commits \n @josielrocha 9 commits \n @mrubli 3 commits \n @addshore 3 commits \n @AJenbo 1 commits \n @dvarrazzo 1 commits \n @imartinezortiz 1 commits \n @SimJoSt 1 commits \n @ThisIsQasim 1 commits \n @dependabot[bot] 1 commits \n\n"
 },
 {
 	"uri": "http://mageddo.github.io/dns-proxy-server/3.25/en/2-features/docker-different-networks-solving/",
