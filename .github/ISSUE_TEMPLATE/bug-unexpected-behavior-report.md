@@ -1,8 +1,8 @@
 ---
 name: Bug/Unexpected Behavior Report
 about: Create a report to help DPS improve
-title: ''
-labels: ''
+title: 'Bug: '
+labels: 'bug-report'
 assignees: ''
 
 ---

@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea to a new feature or enhancement for the DPS project
-title: 'Feature Request: '
-labels: 'feature-request'
+name: Discussion
+about: Any other content that doesn't fit in the other templates
+title: ''
+labels: 'discussion'
 assignees: ''
 
 ---
