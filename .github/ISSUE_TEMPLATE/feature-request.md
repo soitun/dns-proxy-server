@@ -7,13 +7,14 @@ assignees: ''
 
 ---
 
-## Summary
+## Summary & Motivation
 
-> A short description of what it is. (Required)
+> A short description of what is it and why it's important to be considered. (Required)
 
 Example:
 
 > Provide a solver which can solve from previously configured DNS records.
+> It's will be useful because people can use DPS for static DNS entries instead of use /etc/hosts or something like.
 
 ## Goals
 
@@ -29,14 +30,6 @@ Example
 
 Example
 > * Not to implement a full and complex DNS server
-
-## Motivation
-
-> Why it's a feature to be considered? (Required)
-
-Example:
-
-> People can use DPS for static DNS entries instead of use /etc/hosts or something like.
 
 ## Description
 
