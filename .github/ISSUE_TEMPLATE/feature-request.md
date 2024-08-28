@@ -45,3 +45,18 @@ Example
 > ### DNS Records 
 > * It will have support to A, AAAA and CNAME entries.
 > * Also, TTL by record will be supported
+
+## Alternatives
+
+> What can be done while the feature is not implemented yet and/or what were the other considered solutions? (Optional)
+
+Example
+
+> /etc/hosts can be used for A and AAAA records.
+
+## Risks and Assumptions
+
+> (Optional)
+
+Example
+> There was no risk identified.
