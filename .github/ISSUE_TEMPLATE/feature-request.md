@@ -1,22 +1,47 @@
 ---
 name: Feature request
-about: Suggest an idea for DPS project
-title: ''
-labels: ''
+about: Suggest an idea to a new feature or enhancement for the DPS project
+title: 'Feature Request: '
+labels: 'feature-request'
 assignees: ''
 
 ---
 
-## What is Happening
+## Summary & Motivation
 
-What is the actual behavior and lacks which without that feature, and what's the fallback (if there is one)
-while this feature is not implemented yet.
+> A short description of what is it and why it's important to be considered. (Required)
 
-## What is Expected
+Example:
 
-Please describe the wanted behavior with details of how it could work.
+> Provide a solver which can solve from previously configured DNS records.
+> It's will be useful because people can use DPS for static DNS entries instead of use /etc/hosts or something like.
 
+## Goals
 
-## Changes (Optional)
+> What is supposed to do in short. (Optional)
 
-Steps to implement the desired feature.
+Example
+
+> A simple, static DNS server
+
+## Non-Goals
+
+> What people would think it is supposed to do, but it is not? (Optional)
+
+Example
+> * Not to implement a full and complex DNS server
+
+## Description
+
+> Explain the feature details and how it would work, usecases, examples, snippets of code,
+> inputs and outputs, etc. (Required)
+
+Example
+
+> ### Storage
+>
+> DNS records will be stored at the existing DPS config file.
+>
+> ### DNS Records 
+> * It will have support to A, AAAA and CNAME entries.
+> * Also, TTL by record will be supported
