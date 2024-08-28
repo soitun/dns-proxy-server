@@ -9,7 +9,7 @@ assignees: ''
 
 ## Summary
 
-> A short description of what it is
+> A short description of what it is. (Required)
 
 Example:
 
@@ -17,7 +17,7 @@ Example:
 
 ## Goals
 
-> What is supposed to do in short.
+> What is supposed to do in short. (Optional)
 
 Example
 
@@ -25,14 +25,14 @@ Example
 
 ## Non-Goals
 
-> What people would think it is supposed to do, but it is not?
+> What people would think it is supposed to do, but it is not? (Optional)
 
 Example
 > * Not to implement a full and complex DNS server
 
 ## Motivation
 
-> Why it's a feature to be considered?
+> Why it's a feature to be considered? (Required)
 
 Example:
 
@@ -40,7 +40,8 @@ Example:
 
 ## Description
 
-> Explain the feature details and how it would work, usecases, examples, snippets of code, inputs and outputs, etc.
+> Explain the feature details and how it would work, usecases, examples, snippets of code,
+> inputs and outputs, etc. (Required)
 
 Example
 
