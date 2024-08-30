@@ -8,7 +8,7 @@ import java.time.Duration;
 
 @Value
 @Builder
-public class CircuitBreaker {
+public class StaticThresholdCircuitBreakerStrategy implements CircuitBreakerStrategy {
 
   /**
    * See {@link dev.failsafe.CircuitBreakerBuilder#withFailureThreshold(int, int)}
@@ -26,7 +26,12 @@ public class CircuitBreaker {
    */
   private Duration testDelay;
 
-  public static CircuitBreaker empty() {
-    return CircuitBreaker.builder().build();
+  public static StaticThresholdCircuitBreakerStrategy empty() {
+    return StaticThresholdCircuitBreakerStrategy.builder().build();
+  }
+
+  @Override
+  public Name type() {
+    return Name.STATIC_THRESHOLD;
   }
 }
