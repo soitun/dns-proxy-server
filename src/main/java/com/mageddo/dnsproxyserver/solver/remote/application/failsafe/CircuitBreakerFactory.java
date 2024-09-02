@@ -1,13 +1,15 @@
 package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
 import com.mageddo.commons.lang.tuple.Pair;
-import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategy;
+import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
+import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.application.ConfigService;
 import com.mageddo.dnsproxyserver.solver.remote.CircuitStatus;
 import com.mageddo.dnsproxyserver.solver.remote.Result;
 import com.mageddo.dnsproxyserver.solver.remote.application.FailsafeCircuitBreakerFactory;
 import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegate;
-import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegateFailsafe;
+import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegateNonResilient;
+import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegateStaticThresholdFailsafe;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -37,18 +39,30 @@ public class CircuitBreakerFactory {
   }
 
   public CircuitBreakerDelegate findCircuitBreaker(InetSocketAddress address) {
-    final var config = this.findCircuitBreakerConfig();
-    return this.circuitBreakerMap.computeIfAbsent(
-      address,
-      addr -> new CircuitBreakerDelegateFailsafe(this.failsafeCircuitBreakerFactory.build(addr, config))
-    );
+    final var strategy = this.findCircuitBreakerHotLoad(address);
+    return this.circuitBreakerMap.computeIfAbsent(address, addr -> strategy);
   }
 
-  StaticThresholdCircuitBreakerStrategy findCircuitBreakerConfig() {
-    // fixme #533 this could not work every time, check it
-    return (StaticThresholdCircuitBreakerStrategy) this.configService.findCurrentConfig()
-      .getSolverRemote()
-      .getCircuitBreaker();
+  CircuitBreakerDelegate findCircuitBreakerHotLoad(InetSocketAddress address) {
+    final var config = this.findCircuitBreakerConfig();
+    return switch (config.name()) {
+      case STATIC_THRESHOLD -> this.buildStaticThresholdFailSafeCircuitBreaker(address, config);
+      case NON_RESILIENT -> new CircuitBreakerDelegateNonResilient();
+      default -> throw new UnsupportedOperationException();
+    };
+  }
+
+  private CircuitBreakerDelegateStaticThresholdFailsafe buildStaticThresholdFailSafeCircuitBreaker(
+    InetSocketAddress address, CircuitBreakerStrategyConfig config
+  ) {
+    return new CircuitBreakerDelegateStaticThresholdFailsafe(this.failsafeCircuitBreakerFactory.build(
+      address,
+      (StaticThresholdCircuitBreakerStrategyConfig) config
+    ));
+  }
+
+  CircuitBreakerStrategyConfig findCircuitBreakerConfig() {
+    return this.configService.findCurrentConfigCircuitBreaker();
   }
 
   public Pair<Integer, Integer> checkCreatedCircuits() {
