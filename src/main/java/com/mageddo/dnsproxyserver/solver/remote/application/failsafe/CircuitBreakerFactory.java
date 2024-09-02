@@ -1,18 +1,13 @@
 package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
-import com.mageddo.circuitbreaker.failsafe.CircuitStatusRefresh;
-import com.mageddo.commons.circuitbreaker.CircuitCheckException;
 import com.mageddo.commons.lang.tuple.Pair;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategy;
 import com.mageddo.dnsproxyserver.config.application.ConfigService;
 import com.mageddo.dnsproxyserver.solver.remote.CircuitStatus;
 import com.mageddo.dnsproxyserver.solver.remote.Result;
-import com.mageddo.dnsproxyserver.solver.remote.dataprovider.SolverConsistencyGuaranteeDAO;
-import com.mageddo.dnsproxyserver.solver.remote.mapper.CircuitBreakerStateMapper;
-import dev.failsafe.CircuitBreaker;
-import dev.failsafe.Failsafe;
-import dev.failsafe.event.CircuitBreakerStateChangedEvent;
-import dev.failsafe.event.EventListener;
+import com.mageddo.dnsproxyserver.solver.remote.application.FailsafeCircuitBreakerFactory;
+import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegate;
+import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegateFailsafe;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -31,60 +26,22 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class CircuitBreakerFactory {
 
-  private final Map<InetSocketAddress, CircuitBreaker<Result>> circuitBreakerMap = new ConcurrentHashMap<>();
+  private final Map<InetSocketAddress, CircuitBreakerDelegate> circuitBreakerMap = new ConcurrentHashMap<>();
   private final ConfigService configService;
   private final CircuitBreakerPingCheckerService circuitBreakerCheckerService;
-  private final SolverConsistencyGuaranteeDAO solverConsistencyGuaranteeDAO;
+  private final FailsafeCircuitBreakerFactory failsafeCircuitBreakerFactory;
 
   public Result check(InetSocketAddress remoteAddress, Supplier<Result> sup) {
-    final var circuitBreaker = this.createOrGetCircuitBreaker(remoteAddress);
-    return Failsafe
-      .with(circuitBreaker)
-      .get((ctx) -> sup.get());
+    final var circuitBreaker = this.findCircuitBreaker(remoteAddress);
+    return circuitBreaker.execute(sup);
   }
 
-  CircuitBreaker<Result> createOrGetCircuitBreaker(InetSocketAddress address) {
+  public CircuitBreakerDelegate findCircuitBreaker(InetSocketAddress address) {
     final var config = this.findCircuitBreakerConfig();
-    return this.circuitBreakerMap.computeIfAbsent(address, addr -> buildCircuitBreaker(addr, config));
-  }
-
-  CircuitBreaker<Result> buildCircuitBreaker(
-    InetSocketAddress address, StaticThresholdCircuitBreakerStrategy config
-  ) {
-    return CircuitBreaker.<Result>builder()
-      .handle(CircuitCheckException.class)
-      .withFailureThreshold(config.getFailureThreshold(), config.getFailureThresholdCapacity())
-      .withSuccessThreshold(config.getSuccessThreshold())
-      .withDelay(config.getTestDelay())
-      .onClose(build(CircuitStatus.CLOSED, address))
-      .onOpen(build(CircuitStatus.OPEN, address))
-      .onHalfOpen(it -> log.trace("status=halfOpen, server={}", address))
-      .build();
-  }
-
-  EventListener<CircuitBreakerStateChangedEvent> build(CircuitStatus actualStateName, InetSocketAddress address) {
-    return event -> {
-      final var previousStateName = CircuitBreakerStateMapper.toStateNameFrom(event);
-      if (isHalfOpenToOpen(previousStateName, actualStateName)) {
-        log.trace("status=ignoredTransition, from={}, to={}", previousStateName, actualStateName);
-        return;
-      }
-      log.trace(
-        "status=beforeFlushCaches, address={}, previous={}, actual={}", address, previousStateName, actualStateName
-      );
-      this.flushCache();
-      log.debug(
-        "status=clearedCache, address={}, previous={}, actual={}", address, previousStateName, actualStateName
-      );
-    };
-  }
-
-  private static boolean isHalfOpenToOpen(CircuitStatus previousStateName, CircuitStatus actualStateName) {
-    return CircuitStatus.HALF_OPEN.equals(previousStateName) && CircuitStatus.OPEN.equals(actualStateName);
-  }
-
-  void flushCache() {
-    this.solverConsistencyGuaranteeDAO.flushCachesFromCircuitBreakerStateChange();
+    return this.circuitBreakerMap.computeIfAbsent(
+      address,
+      addr -> new CircuitBreakerDelegateFailsafe(this.failsafeCircuitBreakerFactory.build(addr, config))
+    );
   }
 
   StaticThresholdCircuitBreakerStrategy findCircuitBreakerConfig() {
@@ -112,7 +69,7 @@ public class CircuitBreakerFactory {
     return Pair.of(successes, errors);
   }
 
-  boolean circuitBreakerSafeCheck(Map.Entry<InetSocketAddress, CircuitBreaker<Result>> entry) {
+  boolean circuitBreakerSafeCheck(Map.Entry<InetSocketAddress, CircuitBreakerDelegate> entry) {
     return this.circuitBreakerCheckerService.safeCheck(entry.getKey(), entry.getValue());
   }
 
@@ -128,17 +85,15 @@ public class CircuitBreakerFactory {
   }
 
   public CircuitStatus findStatus(InetSocketAddress remoteAddress) {
-    final var circuit = this.circuitBreakerMap.get(remoteAddress);
-    CircuitStatusRefresh.refresh(circuit);
-    return CircuitBreakerStateMapper.fromFailSafeCircuitBreaker(circuit);
+    return this.circuitBreakerMap.get(remoteAddress)
+      .findStatus();
   }
 
   private Stats toStats(InetSocketAddress remoteAddr) {
     final var circuitBreaker = this.circuitBreakerMap.get(remoteAddr);
-    final var state = circuitBreaker.getState().name();
+    final var state = circuitBreaker.findStatus().name();
     return Stats.of(remoteAddr.toString(), state);
   }
-
 
   @Value
   public static class Stats {
