@@ -20,6 +20,7 @@ public class App {
   private final String[] args;
   private Config config;
   private ConfigFlag flags;
+  private Context context;
 
   public App(String[] args) {
     this.args = args;
@@ -51,9 +52,11 @@ public class App {
 
     this.checkExitCommands();
 
-    this.config = this.findConfig(args);
+    this.config = this.findConfig(this.args);
 
     this.setupLogs();
+
+    log.trace("pid={}", ProcessHandle.current().pid());
 
     this.startContext();
 
@@ -79,11 +82,9 @@ public class App {
   }
 
   void startContext() {
-    final var context = Context.create();
-
-    // start webserver
-    // start dns server
-    context.start();
+    Context.create()
+      .start()
+    ;
   }
 
   void checkExitCommands() {

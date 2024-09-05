@@ -229,7 +229,7 @@ graalvmNative {
 
     configureEach {
       if(it.name == "intTest"){
-      println "> configuring for: ${it.getName()}"
+        println "> configuring for: ${it.getName()}"
         buildArgs.add("-Ob")
       }
     }
