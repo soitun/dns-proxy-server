@@ -3,6 +3,7 @@ package com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application;
 import com.mageddo.commons.circuitbreaker.CircuitIsOpenException;
 import com.mageddo.dnsproxyserver.solver.remote.CircuitStatus;
 import com.mageddo.dnsproxyserver.solver.remote.Result;
+import com.mageddo.dnsproxyserver.solver.remote.mapper.Resilience4jStatusMapper;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 
@@ -27,6 +28,6 @@ public class CircuitBreakerDelegateCanaryRateThreshold implements CircuitBreaker
 
   @Override
   public CircuitStatus findStatus() {
-    return null;
+    return Resilience4jStatusMapper.toCircuitStatus(this.circuitBreaker.getState());
   }
 }
