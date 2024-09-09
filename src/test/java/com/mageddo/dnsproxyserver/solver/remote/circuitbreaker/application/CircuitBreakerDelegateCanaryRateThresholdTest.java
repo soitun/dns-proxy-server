@@ -98,7 +98,8 @@ class CircuitBreakerDelegateCanaryRateThresholdTest {
     assertEquals(CircuitStatus.HALF_OPEN, this.delegate.findStatus());
   }
 
-  @Disabled // FIXME #533 make test pass
+  @Disabled // FIXME #533 make test pass, jogar logica do background para o CircuitBreakerDelegateSelfObservableCanaryRateThreshold
+  //                que sera um delegate para o CircuitBreakerDelegateCanaryRateThreshold
   @Test
   void mustNotHalfOpenCircuitAfterHealthCheckRunAndGetNoSuccess() {
 
