@@ -6,6 +6,7 @@ import com.mageddo.dnsproxyserver.solver.remote.CircuitStatus;
 import com.mageddo.dnsproxyserver.solver.remote.Result;
 import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegate;
 import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.HealthChecker;
+import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.statetransitor.StateTransitor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
@@ -45,8 +46,8 @@ public class CircuitBreakerDelegateSelfObservable implements CircuitBreakerDeleg
   }
 
   @Override
-  public void transitionToHalfOpenState() {
-    this.delegate.transitionToHalfOpenState();
+  public StateTransitor stateTransitor() {
+    return this.delegate.stateTransitor();
   }
 
   private void startOpenCircuitHealthCheckWorker() {
@@ -66,15 +67,16 @@ public class CircuitBreakerDelegateSelfObservable implements CircuitBreakerDeleg
 
   private void healthCheckWhenInOpenState() {
     final var status = this.findStatus();
-    log.trace("status=checking, status={}", status);
-    if (!CircuitStatus.isOpen(status)) {
-      log.trace("status=notOpenStatus, status={}", status);
+    final var notInOpenStatus = !CircuitStatus.isOpen(status);
+    log.trace("status=checking, statusBefore={}, notInOpenStatus={}, circuit={}", status, notInOpenStatus, this);
+    if (notInOpenStatus) {
       return;
     }
-    final var success = this.isHealthy();
-    if (success) {
+    final var healthy = this.isHealthy();
+    log.trace("healthy={}, circuit={}", healthy, this);
+    if (healthy) {
       this.transitionToHalfOpenState();
-      log.debug("status=halfOpenStatus, circuitBreaker={}", this);
+      log.debug("status=halfOpenStatus, circuit={}", this);
     }
   }
 
@@ -85,6 +87,11 @@ public class CircuitBreakerDelegateSelfObservable implements CircuitBreakerDeleg
   @Override
   public void close() throws Exception {
     this.open = false;
+  }
+
+  @Override
+  public String toString() {
+    return this.delegate.toString();
   }
 
 }

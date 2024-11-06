@@ -1,7 +1,6 @@
 package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
 import com.mageddo.commons.lang.tuple.Pair;
-import com.mageddo.dnsproxyserver.config.CanaryRateThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.application.ConfigService;
@@ -14,6 +13,7 @@ import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.Circu
 import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.CircuitBreakerDelegateStaticThresholdFailsafe;
 import com.mageddo.dnsproxyserver.solver.remote.mapper.ResolverMapper;
 import com.mageddo.net.IpAddr;
+import com.mageddo.net.IpAddrs;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 @Slf4j
 @Singleton
@@ -67,8 +68,7 @@ public class CircuitBreakerFactory {
   }
 
   CircuitBreakerDelegate buildCanaryRateThreshold(CircuitBreakerStrategyConfig config, InetSocketAddress address) {
-//    return this.canaryThresholdFactory.build(config, IpAddrs.from(address));
-    return this.canaryThresholdFactory.build((CanaryRateThresholdCircuitBreakerStrategyConfig) config);
+    return this.canaryThresholdFactory.build(config, IpAddrs.from(address));
   }
 
   private CircuitBreakerDelegateStaticThresholdFailsafe buildStaticThresholdFailSafeCircuitBreaker(
