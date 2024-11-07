@@ -42,6 +42,10 @@ Example
 >
 > DNS records will be stored at the existing DPS config file.
 >
-> ### DNS Records 
+> ### DNS Records
 > * It will have support to A, AAAA and CNAME entries.
 > * Also, TTL by record will be supported
+
+## Alternatives
+
+> What people would think it is supposed to do, but it is not? (Optional)
