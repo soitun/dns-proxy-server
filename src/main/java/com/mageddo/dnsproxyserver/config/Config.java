@@ -71,6 +71,8 @@ public class Config {
 
   private Boolean dockerSolverHostMachineFallbackActive;
 
+  private SolverStub solverStub;
+
   private SolverRemote solverRemote;
 
   @NonNull
@@ -98,6 +100,14 @@ public class Config {
       return null;
     }
     return this.solverRemote.getCircuitBreaker();
+  }
+
+  @JsonIgnore
+  public String getSolverStubDomainName() {
+    if (this.solverStub == null) {
+      return null;
+    }
+    return this.solverStub.getDomainName();
   }
 
   public enum Source {

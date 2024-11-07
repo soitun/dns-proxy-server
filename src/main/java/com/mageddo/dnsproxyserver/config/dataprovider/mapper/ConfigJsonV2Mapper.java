@@ -4,6 +4,7 @@ import com.mageddo.dnsproxyserver.config.CanaryRateThresholdCircuitBreakerStrate
 import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.SolverRemote;
+import com.mageddo.dnsproxyserver.config.SolverStub;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigJson;
 import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigJsonV2;
@@ -38,12 +39,23 @@ public class ConfigJsonV2Mapper {
       .dockerSolverHostMachineFallbackActive(json.getDockerSolverHostMachineFallbackActive())
       .configPath(configFileAbsolutePath)
       .solverRemote(toSolverRemote(json))
+      .solverStub(toSolverStub(json.getSolverStub()))
       .source(Config.Source.JSON)
       .build();
   }
 
+  private static SolverStub toSolverStub(ConfigJsonV2.SolverStub solverStub) {
+    if (solverStub == null) {
+      return null;
+    }
+    return SolverStub
+      .builder()
+      .domainName(solverStub.getDomainName())
+      .build();
+  }
+
   static SolverRemote toSolverRemote(ConfigJson json) {
-    if(nothingIsSet(json)){
+    if (nothingIsSet(json)) {
       return null;
     } else if (isPossibleToBuildComplete(json)) {
       return buildCompleteSolverRemote(json, json.getSolverRemoteCircuitBreaker());
@@ -76,9 +88,10 @@ public class ConfigJsonV2Mapper {
 
   private static CircuitBreakerStrategyConfig mapCircuitBreaker(ConfigJsonV2.CircuitBreaker circuitBreaker) {
     log.debug("circuitBreakerConfigStrategy={}", circuitBreaker.strategy());
-    return switch (circuitBreaker.strategy()){
+    return switch (circuitBreaker.strategy()) {
       case STATIC_THRESHOLD -> mapFromStaticCircuitBreaker((StaticThresholdCircuitBreaker) circuitBreaker);
-      case CANARY_RATE_THRESHOLD -> mapFromCanaryRateThresholdCircuitBreaker((CanaryRateThresholdCircuitBreaker) circuitBreaker);
+      case CANARY_RATE_THRESHOLD ->
+        mapFromCanaryRateThresholdCircuitBreaker((CanaryRateThresholdCircuitBreaker) circuitBreaker);
       default -> throw new UnsupportedOperationException("Unrecognized circuit breaker: " + circuitBreaker.strategy());
     };
   }

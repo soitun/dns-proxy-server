@@ -3,6 +3,7 @@ package com.mageddo.dnsproxyserver.solver.stub;
 import com.mageddo.dns.utils.Messages;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.ConfigEntryTypes;
+import com.mageddo.dnsproxyserver.config.application.Configs;
 import com.mageddo.dnsproxyserver.solver.Response;
 import com.mageddo.dnsproxyserver.solver.ResponseMapper;
 import com.mageddo.dnsproxyserver.solver.Solver;
@@ -36,12 +37,12 @@ public class SolverStub implements Solver {
     }
 
     final var hostname = Messages.findQuestionHostname(query);
-    if (!hostname.endsWith(DOMAIN_NAME)) {
+    if (!hostname.endsWith(this.findDomainName())) {
       log.debug("status=hostnameDoesntMatchRequiredDomain, hostname={}", hostname);
       return null;
     }
 
-    final var foundIp = HostnameIpExtractor.safeExtract(hostname, DOMAIN_NAME);
+    final var foundIp = HostnameIpExtractor.safeExtract(hostname, this.findDomainName());
     if (foundIp == null) {
       log.debug("status=notSolved, hostname={}", hostname);
       return null;
@@ -52,5 +53,11 @@ public class SolverStub implements Solver {
     }
     log.debug("status=solved, host={}, ip={}", hostname, foundIp);
     return ResponseMapper.toDefaultSuccessAnswer(query, foundIp, questionType.toVersion());
+  }
+
+  String findDomainName() {
+    return Configs.getInstance()
+      .getSolverStub()
+      .getDomainName();
   }
 }

@@ -3,17 +3,15 @@ package com.mageddo.dnsproxyserver.config.dataprovider.mapper;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.SolverRemote;
 import com.mageddo.dnsproxyserver.config.SolverStub;
-import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigFlag;
+import com.mageddo.dnsproxyserver.config.dataprovider.vo.ConfigEnv;
 import com.mageddo.dnsproxyserver.utils.Booleans;
-import com.mageddo.utils.Files;
 
-public class ConfigFlagMapper {
-  public static Config toConfig(ConfigFlag config) {
+public class ConfigEnvMapper {
+  public static Config toConfig(ConfigEnv config) {
     return Config.builder()
-      .configPath(Files.pathOf(config.getConfigFilePath()))
       .registerContainerNames(config.getRegisterContainerNames())
       .domain(config.getDomain())
-      .logFile(config.getLogToFile())
+      .logFile(config.getLogFile())
       .logLevel(ConfigFieldsValuesMapper.mapLogLevelFrom(config.getLogLevel()))
       .dockerHost(config.getDockerHost())
       .hostMachineHostname(config.getHostMachineHostname())
@@ -22,9 +20,7 @@ public class ConfigFlagMapper {
       .dockerSolverHostMachineFallbackActive(config.getDockerSolverHostMachineFallbackActive())
       .resolvConfOverrideNameServers(config.getResolvConfOverrideNameServers())
       .mustConfigureDpsNetwork(config.getDpsNetwork())
-      .webServerPort(config.getWebServerPort())
-      .dnsServerPort(config.getDnsServerPort())
-      .defaultDns(config.getDefaultDns())
+      .resolvConfPaths(config.getResolvConfPath())
       .solverRemote(SolverRemote
         .builder()
         .active(Booleans.reverseWhenNotNull(config.getNoRemoteServers()))
@@ -32,10 +28,10 @@ public class ConfigFlagMapper {
       )
       .solverStub(SolverStub
         .builder()
-        .domainName(config.getStubSolverDomainName())
+        .domainName(config.getSolverStubDomainName())
         .build()
       )
-      .source(Config.Source.FLAG)
+      .source(Config.Source.ENV)
       .build();
   }
 }
