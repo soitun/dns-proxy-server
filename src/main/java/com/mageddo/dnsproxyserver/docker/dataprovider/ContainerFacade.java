@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface ContainerFacade {
 
@@ -12,4 +13,8 @@ public interface ContainerFacade {
   List<Container> findActiveContainers();
 
   InspectContainerResponse inspect(String id);
+
+  InspectContainerResponse safeInspect(String id);
+
+  Stream<InspectContainerResponse> inspectFilteringValidContainers(List<Container> containers);
 }
