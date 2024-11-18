@@ -22,31 +22,57 @@ Checkout the [full list of features][4] with examples
 ### Basic running it 
 
 You can run DPS as native binary downloading the latest [binaries releases][2] 
-or via docker looking at [Dockerhub images][3].
+or via docker looking at [Dockerhub images][3]. See [complete running it][5] documentation for running on 
+Mac, Windows, Docker, etc.
 
 Basic running it on Linux or Mac
+
 ```bash
-sudo ./dns-proxy-server
+sudo ./dns-proxy-server --server-port 5555
 ```
 
-Then you can solve from pre-configured entries (conf/config.json): 
-```bash
-$ ping dps-sample.dev
-PING dps-sample.dev (192.168.0.254) 56(84) bytes of data.
-```
-
-Also solve Docker containers:
+Solving docker containers:
 ```bash
 $ docker run --rm --hostname nginx.dev nginx
 
-$ ping nginx.dev
-PING nginx.dev (172.17.0.4) 56(84) bytes of data.
-64 bytes from 172.17.0.4 (172.17.0.4): icmp_seq=1 ttl=64 time=0.043 ms
-64 bytes from 172.17.0.4 (172.17.0.4): icmp_seq=2 ttl=64 time=0.022 ms
+$ nslookup -po=5555 nginx.dev 127.0.0.1
+172.17.0.3
 ```
 
-See [complete running it][5] documentation for running on Mac, Windows, Docker, etc.
-also check the [samples][9] to learn by pratice.
+Solving from pre-configured entries (conf/config.json):
+```bash
+$ nslookup -po=5555 dps-sample.dev 127.0.0.1
+192.168.0.254
+```
+
+Solving from Internet
+```bash
+$ nslookup -po=5555 google.com 127.0.0.1
+142.250.79.174
+```
+
+Solving stub hostnames like nip.io or sslip.io
+```bash
+$ nslookup -po=5555 machine-1.192.168.0.1.stub 127.0.0.1
+192.168.0.1
+```
+
+Solving host machine IP
+```bash
+$ nslookup -po=5555 host.docker 127.0.0.1
+172.22.230.67
+```
+
+Solving all subdomains to a specific docker container
+
+```bash
+$ docker run --rm --hostname .nginx.dev nginx
+
+$ nslookup -po=5555 site1.nginx.dev 127.0.0.1
+172.17.0.3
+```
+
+Check more [samples][9] to learn by practice.
 
 ### Documents
 * [Full documentation](http://mageddo.github.io/dns-proxy-server/)
