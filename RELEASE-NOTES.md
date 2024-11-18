@@ -1,3 +1,6 @@
+## 3.32.3
+* Ignoring containers which fails to inspect. #599
+
 ## 3.32.2
 * Exposing Stub Solver domain config, see the docs. #545
 
@@ -31,7 +34,7 @@
 
 ## 3.30.0
 * Module to beans which need to initialize on app startup, different of StartupEvent,
- Eager are not coupled to DPS logic.
+  Eager are not coupled to DPS logic.
 
 ## 3.29.0
 * Implementing an IntTest which can validate the happy path of all DPS solvers,
