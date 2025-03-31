@@ -10,17 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.apache.commons.lang3.Validate;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,28 +28,28 @@ import static com.mageddo.commons.lang.Objects.mapOrNull;
 @Builder(toBuilder = true, builderClassName = "ConfigBuilder")
 public class Config {
 
-  private String version;
+  String version;
 
-  private Server server;
+  Server server;
 
-  private DefaultDns defaultDns;
+  DefaultDns defaultDns;
 
-  private Log log;
+  Log log;
 
-  private Path configPath;
+  Path configPath;
 
-  private SolverStub solverStub;
+  SolverStub solverStub;
 
-  private SolverRemote solverRemote;
+  SolverRemote solverRemote;
 
-  private SolverDocker solverDocker;
+  SolverDocker solverDocker;
 
-  private SolverSystem solverSystem;
+  SolverSystem solverSystem;
 
-  private SolverLocal solverLocal;
+  SolverLocal solverLocal;
 
   @NonNull
-  private Source source;
+  Source source;
 
   @JsonIgnore
   public Boolean isDefaultDnsActive() {
@@ -88,7 +83,6 @@ public class Config {
     return this.defaultDns.resolvConf;
   }
 
-  @Nonnull
   @JsonIgnore
   public List<IpAddr> getRemoteDnsServers() {
     if (this.solverRemote == null) {

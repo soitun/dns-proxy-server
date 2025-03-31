@@ -2,7 +2,7 @@ package com.mageddo.dnsproxyserver.config.application;
 
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.LogLevel;
-import com.mageddo.dnsproxyserver.config.dataprovider.ConfigDAOCmdArgs;
+import com.mageddo.dnsproxyserver.config.provider.cmdargs.ConfigDAOCmdArgs;
 import com.mageddo.dnsproxyserver.config.di.Context;
 import dagger.sheath.junit.DaggerTest;
 import lombok.SneakyThrows;
@@ -42,7 +42,7 @@ class ConfigServiceCompTest {
     final var names = this.service.findConfigNames();
 
     // assert
-    assertEquals("[ConfigDAOEnv, ConfigDAOJson, ConfigDAOCmdArgs]", names.toString());
+    assertEquals("[ConfigDAOLegacyEnv, ConfigDAOJson, ConfigDAOCmdArgs]", names.toString());
   }
 
   @Test
