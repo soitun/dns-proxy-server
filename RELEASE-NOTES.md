@@ -1,3 +1,8 @@
+## 3.33.0
+* Dependency Update: Upgraded Docker Java client library from 3.3.4 to 3.7.0 for latest features, bug fixes, and security updates.
+  - Updated `docker-java-core` and `docker-java-transport-httpclient5` to version 3.7.0.
+  - Updated Docker Remote API version from 1.24 to 1.44 (Docker Engine 29.x+) for modern Docker feature support.
+
 ## 3.32.7
 * Bugfix: Fixing domain env variable setting. #628
 
