@@ -1,8 +1,18 @@
 package com.mageddo.dnsproxyserver.di;
 
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
 import com.mageddo.di.CDIImpl;
 import com.mageddo.di.Eager;
-import com.mageddo.dnsproxyserver.config.di.module.ModuleConfigDAO;
+import com.mageddo.dnsproxyserver.config.configurer.ModuleConfigDAO;
+import com.mageddo.dnsproxyserver.config.configurer.ModuleV2ConfigDAO;
+import com.mageddo.dnsproxyserver.config.configurer.ModuleV3ConfigDAO;
 import com.mageddo.dnsproxyserver.di.module.ModuleDao;
 import com.mageddo.dnsproxyserver.di.module.ModuleDockerClient;
 import com.mageddo.dnsproxyserver.di.module.ModuleEager;
@@ -18,30 +28,29 @@ import com.mageddo.dnsproxyserver.solver.Solver;
 import com.mageddo.dnsproxyserver.solver.docker.application.ContainerSolvingService;
 import com.mageddo.dnsproxyserver.solver.docker.dataprovider.DockerDAO;
 import com.mageddo.dnsproxyserver.solver.remote.configurator.SolverRemoteModule;
-import dagger.Component;
-import jdk.jfr.Name;
+import com.mageddo.dnsproxyserver.version.configurer.dagger.ModuleVersionConfigurer;
+
 import org.apache.commons.lang3.Validate;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Set;
+import dagger.Component;
+import jdk.jfr.Name;
 
 @Singleton
 @Component(modules = {
-  ModuleMain.class,
-  ModuleDao.class,
-  ModuleDockerClient.class,
-  QuarkusConfig.class,
-  ModuleHttpMapper.class,
-  ModuleSolver.class,
-  ModuleStartup.class,
-  ModuleMap.class,
-  ModuleConfigDAO.class,
-  SolverRemoteModule.class,
-  ModuleEager.class
+    ModuleMain.class,
+    ModuleDao.class,
+    ModuleDockerClient.class,
+    QuarkusConfig.class,
+    ModuleHttpMapper.class,
+    ModuleSolver.class,
+    ModuleStartup.class,
+    ModuleMap.class,
+    ModuleConfigDAO.class,
+    ModuleV2ConfigDAO.class,
+    ModuleV3ConfigDAO.class,
+    ModuleVersionConfigurer.class,
+    SolverRemoteModule.class,
+    ModuleEager.class
 })
 public interface Context {
 
@@ -49,7 +58,7 @@ public interface Context {
     final var context = DaggerContext.create();
     CDI.setCDIProvider(() -> new CDIImpl(context));
     context.eagerBeans()
-      .forEach(Eager::run)
+        .forEach(Eager::run)
     ;
     return context;
   }
@@ -61,7 +70,8 @@ public interface Context {
   Set<Eager> eagerBeans();
 
   default void start() {
-    this.starter().start();
+    this.starter()
+        .start();
   }
 
   default <T> T get(Class<T> clazz) {
@@ -82,6 +92,7 @@ public interface Context {
   Map<Class<?>, Provider<Object>> bindings();
 
   default void stop() {
-    this.starter().stop();
+    this.starter()
+        .stop();
   }
 }

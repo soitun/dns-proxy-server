@@ -1,9 +1,17 @@
 package com.mageddo.dnsproxyserver.solver.remote.application.failsafe;
 
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import com.mageddo.commons.lang.tuple.Pair;
 import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
+import com.mageddo.dnsproxyserver.config.ConfigService;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
-import com.mageddo.dnsproxyserver.config.application.ConfigService;
 import com.mageddo.dnsproxyserver.solver.remote.CircuitStatus;
 import com.mageddo.dnsproxyserver.solver.remote.Result;
 import com.mageddo.dnsproxyserver.solver.remote.application.FailsafeCircuitBreakerFactory;
@@ -14,22 +22,16 @@ import com.mageddo.dnsproxyserver.solver.remote.circuitbreaker.application.Circu
 import com.mageddo.dnsproxyserver.solver.remote.mapper.ResolverMapper;
 import com.mageddo.net.IpAddr;
 import com.mageddo.net.IpAddrs;
+
+import org.apache.commons.lang3.time.StopWatch;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.StopWatch;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 /**
  * fixme #533 Move failsafe.CircuitBreakerFactory  to another package, this is not specific for failsafe
  */
@@ -81,7 +83,7 @@ public class CircuitBreakerFactory {
   }
 
   CircuitBreakerStrategyConfig findCircuitBreakerConfig() {
-    return this.configService.findCurrentConfigCircuitBreaker();
+    return this.configService.findCircuitBreaker();
   }
 
   public Pair<Integer, Integer> checkCreatedCircuits() {
