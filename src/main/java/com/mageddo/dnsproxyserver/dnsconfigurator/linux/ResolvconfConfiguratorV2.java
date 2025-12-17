@@ -26,8 +26,11 @@ public class ResolvconfConfiguratorV2 {
     process(confFile, addr, true);
   }
 
-  public static void process(final Path confFile, final IpAddr addr,
-      final boolean overrideNameServers) {
+  public static void process(
+      final Path confFile,
+      final IpAddr addr,
+      final boolean overrideNameServers
+  ) {
 
     Dns.validateIsDefaultPort(addr);
 
@@ -52,38 +55,46 @@ public class ResolvconfConfiguratorV2 {
   // Build outputs
   // -------------------------------------------------------------------------
 
+  /**
+   * overrideNameServers=true:
+   * - write dps-entries after header comments
+   * - create dps-comments with ALL existing active/commented nameservers (dedup), excluding dps server
+   * - preserve any non-nameserver lines (comments/options/search/etc.)
+   * - do NOT emit inline "# ... # dps-comment" (tests expect only blocks)
+   */
   private static String buildOverrideOutput(
       final String dpsNameserverHost,
       final CleanedContent cleaned
   ) {
-    final var nameserversToComment =
-        collectNameserversToComment(dpsNameserverHost, cleaned);
+    final var nameserversToComment = collectNameserversToComment(dpsNameserverHost, cleaned);
 
-    final var out = new StringBuilder();
+    final var lines = cleaned.originalLines();
+    final var insertionIndex = indexAfterHeaderComments(lines);
 
-    append(out, BEGIN_ENTRIES);
-    append(out, nameserverLine(dpsNameserverHost));
-    append(out, END_ENTRIES);
+    final var prefix = new ArrayList<>(lines.subList(0, insertionIndex));
+    final var suffix = removeActiveNameserverLines(lines.subList(insertionIndex, lines.size()));
 
-    if (nameserversToComment.isEmpty()) {
-      return out.toString();
+    final var outLines = new ArrayList<String>();
+    outLines.addAll(prefix);
+
+    outLines.add(BEGIN_ENTRIES);
+    outLines.add(nameserverLine(dpsNameserverHost));
+    outLines.add(END_ENTRIES);
+
+    if (!nameserversToComment.isEmpty()) {
+      outLines.add(BEGIN_COMMENTS);
+      for (final var ns : nameserversToComment) {
+        outLines.add(commentedNameserverLine(ns));
+      }
+      outLines.add(END_COMMENTS);
     }
 
-    append(out, "");
-    append(out, BEGIN_COMMENTS);
+    // preserve remaining config (options/search/etc.) after the blocks
+    outLines.addAll(suffix);
 
-    for (final var ns : nameserversToComment) {
-      append(out, commentedNameserverLine(ns));
-    }
-
-    append(out, END_COMMENTS);
-
-    return out.toString();
-  }
-
-  private static void append(final StringBuilder out, final String value) {
-    out.append(value)
-        .append(LINE_BREAK);
+    normalizeBlankLinesAroundDpsMarkers(outLines);
+    trimTrailingBlankLines(outLines);
+    return joinLines(outLines) + LINE_BREAK;
   }
 
   private static String buildNonOverrideOutput(
@@ -92,19 +103,29 @@ public class ResolvconfConfiguratorV2 {
 
     final var lines = cleaned.originalLines();
     final var insertionIndex = indexAfterHeaderComments(lines);
-    final var out = new ArrayList<>(lines.subList(0, insertionIndex));
 
-    ensureBlankLine(out);
-    out.add(BEGIN_ENTRIES);
-    out.add(nameserverLine(dpsNameserverHost));
-    out.add(END_ENTRIES);
-    out.add("");
+    final var outLines = new ArrayList<String>(lines.subList(0, insertionIndex));
 
-    final var remainderStart = skipBlankLines(lines, insertionIndex);
-    out.addAll(lines.subList(remainderStart, lines.size()));
+    outLines.add(BEGIN_ENTRIES);
+    outLines.add(nameserverLine(dpsNameserverHost));
+    outLines.add(END_ENTRIES);
 
-    trimTrailingBlankLines(out);
-    return joinLines(out) + LINE_BREAK;
+    outLines.addAll(lines.subList(insertionIndex, lines.size()));
+
+    normalizeBlankLinesAroundDpsMarkers(outLines);
+    trimTrailingBlankLines(outLines);
+    return joinLines(outLines) + LINE_BREAK;
+  }
+
+  private static List<String> removeActiveNameserverLines(final List<String> lines) {
+    final var out = new ArrayList<String>();
+    for (final var line : lines) {
+      if (extractActiveNameserver(line) != null) {
+        continue;
+      }
+      out.add(line);
+    }
+    return out;
   }
 
   private static List<String> collectNameserversToComment(
@@ -112,14 +133,19 @@ public class ResolvconfConfiguratorV2 {
   ) {
     final var nameservers = new LinkedHashSet<String>();
 
-    // inline "# ... # dps-comment" captured during cleanup
+    // candidates from inline "# ... # dps-comment" and from previous dps-comments blocks
     nameservers.addAll(cleaned.inlineCommentCandidates());
 
-    // remaining active nameservers in the file
     for (final var line : cleaned.originalLines()) {
-      final var ns = extractActiveNameserver(line);
-      if (ns != null) {
-        nameservers.add(ns);
+      final var active = extractActiveNameserver(line);
+      if (active != null) {
+        nameservers.add(active);
+        continue;
+      }
+
+      final var commented = extractCommentedNameserver(line);
+      if (commented != null) {
+        nameservers.add(commented);
       }
     }
 
@@ -130,8 +156,7 @@ public class ResolvconfConfiguratorV2 {
   private static int indexAfterHeaderComments(final List<String> lines) {
     int i = 0;
     while (i < lines.size()) {
-      final var trimmed = lines.get(i)
-          .trim();
+      final var trimmed = lines.get(i).trim();
       if (!trimmed.startsWith("#")) {
         break;
       }
@@ -143,23 +168,83 @@ public class ResolvconfConfiguratorV2 {
     return i;
   }
 
-  private static int skipBlankLines(final List<String> lines, final int startIndex) {
-    int i = startIndex;
-    while (i < lines.size() && lines.get(i)
-        .isBlank()) {
-      i++;
-    }
-    return i;
-  }
-
-  private static void ensureBlankLine(final List<String> lines) {
+  /**
+   * Regra: Antes de todo BEGIN e depois de todo END terá exatamente 1 linha em branco,
+   * exceto se BEGIN for a 1ª linha do arquivo ou END for a última linha do arquivo.
+   *
+   * Também remove duplicações de linhas em branco nesses pontos.
+   */
+  private static void normalizeBlankLinesAroundDpsMarkers(final List<String> lines) {
     if (lines.isEmpty()) {
       return;
     }
-    if (!lines.getLast()
-        .isBlank()) {
-      lines.add("");
+
+    // 1) normalize "before BEGIN"
+    for (int i = 0; i < lines.size(); i++) {
+      if (!isBeginMarker(lines.get(i))) {
+        continue;
+      }
+      if (i == 0) {
+        continue; // start of file
+      }
+
+      // collapse blanks immediately before BEGIN to exactly one
+      var j = i - 1;
+      while (j >= 0 && lines.get(j).isBlank()) {
+        lines.remove(j);
+        i--;
+        j--;
+      }
+
+      // ensure one blank line before BEGIN (unless start)
+      if (i > 0 && !lines.get(i - 1).isBlank()) {
+        lines.add(i, "");
+        i++;
+      }
     }
+
+    // 2) normalize "after END"
+    for (int i = 0; i < lines.size(); i++) {
+      if (!isEndMarker(lines.get(i))) {
+        continue;
+      }
+      if (i == lines.size() - 1) {
+        continue; // end of file
+      }
+
+      // remove all blanks immediately after END
+      while (i + 1 < lines.size() && lines.get(i + 1).isBlank()) {
+        lines.remove(i + 1);
+      }
+
+      // ensure one blank after END if it's not end-of-file
+      if (i + 1 < lines.size()) {
+        lines.add(i + 1, "");
+      }
+    }
+
+    // 3) final cleanup: remove leading blanks and collapse multiple consecutive blanks globally
+    trimLeadingBlankLines(lines);
+    collapseConsecutiveBlankLines(lines);
+  }
+
+  private static void collapseConsecutiveBlankLines(final List<String> lines) {
+    for (int i = 1; i < lines.size(); i++) {
+      if (lines.get(i).isBlank() && lines.get(i - 1).isBlank()) {
+        lines.remove(i);
+        i--;
+      }
+    }
+  }
+
+  private static boolean isBeginMarker(final String line) {
+    final var trimmed = line.trim();
+    return trimmed.equals(BEGIN_ENTRIES) || trimmed.equals(BEGIN_COMMENTS);
+  }
+
+  private static boolean isEndMarker(final String line) {
+    final var trimmed = line.trim();
+    return trimmed.equals(END_ENTRIES) || trimmed.equals(END_COMMENTS);
   }
 
   // -------------------------------------------------------------------------
@@ -170,7 +255,7 @@ public class ResolvconfConfiguratorV2 {
     final var lines = splitLines(normalizedContent);
 
     final var cleaned = new ArrayList<String>();
-    final var inlineCommentCandidates = new LinkedHashSet<String>();
+    final var commentCandidates = new LinkedHashSet<String>();
 
     boolean insideEntriesBlock = false;
     boolean insideCommentsBlock = false;
@@ -195,8 +280,18 @@ public class ResolvconfConfiguratorV2 {
         continue;
       }
 
-      // drop managed blocks completely (both entries and comments)
-      if (insideEntriesBlock || insideCommentsBlock) {
+      // Collect nameservers from previous dps-comments blocks (idempotency)
+      if (insideCommentsBlock) {
+        final var uncommented = uncommentNameserverIfPresent(line); // "# nameserver X" -> "nameserver X"
+        final var ns = uncommented == null ? null : extractActiveNameserver(uncommented);
+        if (ns != null) {
+          commentCandidates.add(ns);
+        }
+        continue;
+      }
+
+      // drop managed entries block completely
+      if (insideEntriesBlock) {
         continue;
       }
 
@@ -210,7 +305,7 @@ public class ResolvconfConfiguratorV2 {
         final var restored = restoreInlineDpsComment(line);
         final var ns = restored == null ? null : extractActiveNameserver(restored);
         if (ns != null) {
-          inlineCommentCandidates.add(ns);
+          commentCandidates.add(ns);
         }
         continue;
       }
@@ -221,7 +316,7 @@ public class ResolvconfConfiguratorV2 {
     trimLeadingBlankLines(cleaned);
     trimTrailingBlankLines(cleaned);
 
-    return new CleanedContent(cleaned, new ArrayList<>(inlineCommentCandidates));
+    return new CleanedContent(cleaned, new ArrayList<>(commentCandidates));
   }
 
   private static String restoreFromContent(final String normalizedContent) {
@@ -230,6 +325,9 @@ public class ResolvconfConfiguratorV2 {
 
     boolean insideEntriesBlock = false;
     boolean insideCommentsBlock = false;
+
+    // nameservers read from the dps-comments block; emitted when block ends
+    final var nameserversFromBlock = new ArrayList<String>();
 
     for (final var line : lines) {
       final var trimmed = line.trim();
@@ -244,10 +342,19 @@ public class ResolvconfConfiguratorV2 {
       }
       if (trimmed.equals(BEGIN_COMMENTS)) {
         insideCommentsBlock = true;
+        nameserversFromBlock.clear();
         continue;
       }
       if (trimmed.equals(END_COMMENTS)) {
         insideCommentsBlock = false;
+
+        // emit restored nameservers exactly where the block was
+        final var seen = new LinkedHashSet<String>();
+        for (final var ns : nameserversFromBlock) {
+          if (seen.add(ns)) {
+            restored.add(nameserverLine(ns));
+          }
+        }
         continue;
       }
 
@@ -256,9 +363,10 @@ public class ResolvconfConfiguratorV2 {
       }
 
       if (insideCommentsBlock) {
-        final var restoredLine = uncommentNameserverIfPresent(line);
-        if (restoredLine != null && !restoredLine.isBlank()) {
-          restored.add(restoredLine);
+        final var uncommented = uncommentNameserverIfPresent(line); // "# nameserver X" -> "nameserver X"
+        final var ns = uncommented == null ? null : extractActiveNameserver(uncommented);
+        if (ns != null) {
+          nameserversFromBlock.add(ns);
         }
         continue;
       }
@@ -275,11 +383,15 @@ public class ResolvconfConfiguratorV2 {
         continue;
       }
 
-      if (!line.isBlank()) {
-        restored.add(line);
+      // IMPORTANT: tests expect blank lines removed on restore
+      if (line.isBlank()) {
+        continue;
       }
+
+      restored.add(line);
     }
 
+    trimTrailingBlankLines(restored);
     return joinLines(restored) + LINE_BREAK;
   }
 
@@ -300,24 +412,30 @@ public class ResolvconfConfiguratorV2 {
     return parts.length >= 2 ? parts[1].trim() : null;
   }
 
+  private static String extractCommentedNameserver(final String line) {
+    final var trimmed = line.trim();
+    if (!trimmed.startsWith("#")) {
+      return null;
+    }
+    final var uncommented = trimmed.substring(1).trim(); // remove '#'
+    return extractActiveNameserver(uncommented); // "nameserver X"
+  }
+
   private static String uncommentNameserverIfPresent(final String line) {
     var trimmed = line.trim();
     if (!trimmed.startsWith("#")) {
       return null;
     }
-    trimmed = trimmed.substring(1)
-        .trim();
+    trimmed = trimmed.substring(1).trim();
     return trimmed.startsWith("nameserver") ? trimmed : null;
   }
 
   private static String restoreInlineDpsComment(final String line) {
     // "# nameserver 8.8.8.8 # dps-comment" -> "nameserver 8.8.8.8"
-    final var withoutSuffix = line.replace(DPS_COMMENT_SUFFIX, "")
-        .trim();
+    final var withoutSuffix = line.replace(DPS_COMMENT_SUFFIX, "").trim();
     var trimmed = withoutSuffix.trim();
     if (trimmed.startsWith("#")) {
-      trimmed = trimmed.substring(1)
-          .trim();
+      trimmed = trimmed.substring(1).trim();
     }
     return trimmed;
   }
@@ -377,8 +495,7 @@ public class ResolvconfConfiguratorV2 {
   }
 
   private static String normalizeNewlines(final String s) {
-    return s.replace("\r\n", LINE_BREAK)
-        .replace("\r", LINE_BREAK);
+    return s.replace("\r\n", LINE_BREAK).replace("\r", LINE_BREAK);
   }
 
   private static List<String> splitLines(final String normalizedContent) {
@@ -403,15 +520,13 @@ public class ResolvconfConfiguratorV2 {
   }
 
   private static void trimLeadingBlankLines(final List<String> lines) {
-    while (!lines.isEmpty() && lines.getFirst()
-        .isBlank()) {
+    while (!lines.isEmpty() && lines.getFirst().isBlank()) {
       lines.removeFirst();
     }
   }
 
   private static void trimTrailingBlankLines(final List<String> lines) {
-    while (!lines.isEmpty() && lines.getLast()
-        .isBlank()) {
+    while (!lines.isEmpty() && lines.getLast().isBlank()) {
       lines.removeLast();
     }
   }

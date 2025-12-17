@@ -34,7 +34,6 @@ class ResolvconfConfiguratorV2Test {
 
   }
 
-
   @Test
   void mustCleanUpDpsCommentsAndEntriesBeforeApply(@TempDir Path tmpDir) throws Exception {
 
@@ -55,7 +54,8 @@ class ResolvconfConfiguratorV2Test {
             # nameserver 8.8.4.4 # dps-comment
 
             nameserver 8.8.8.8
-        """);
+        """
+    );
 
     // act
     ResolvconfConfiguratorV2.process(resolvFile, ip);
@@ -68,6 +68,7 @@ class ResolvconfConfiguratorV2Test {
             # END dps-entries
 
             # BEGIN dps-comments
+            # nameserver 5.5.5.5
             # nameserver 8.8.8.8
             # nameserver 8.8.4.4
             # END dps-comments
@@ -258,6 +259,73 @@ class ResolvconfConfiguratorV2Test {
             # nameserver 8.8.8.8
             nameserver 8.8.4.4
             """,
+        Files.readString(resolvFile)
+    );
+  }
+
+  @Test
+  void mustPreserveOriginalSettingsAndCommentsAfterRestore(
+      @TempDir Path tmpDir
+  ) throws Exception {
+
+    // arrange
+    final var resolvFile = tmpDir.resolve("resolv.conf");
+    final var ip = IpAddrTemplates.local();
+
+    final var original = ResolvConfTemplates.defaultSystemResolvedConf();
+    Files.writeString(resolvFile, original);
+
+    // act
+    ResolvconfConfiguratorV2.process(resolvFile, ip, true);
+    ResolvconfConfiguratorV2.restore(resolvFile);
+
+    // assert
+    assertEquals(original, Files.readString(resolvFile));
+  }
+
+  @Test
+  void mustPreserveOriginalSettingsAndComments(
+      @TempDir Path tmpDir
+  ) throws Exception {
+
+    // arrange
+    final var resolvFile = tmpDir.resolve("resolv.conf");
+    final var ip = IpAddrTemplates.local();
+
+    final var original = ResolvConfTemplates.defaultSystemResolvedConf();
+    Files.writeString(resolvFile, original);
+
+    // act
+    final var overrideNameServers = true;
+    ResolvconfConfiguratorV2.process(resolvFile, ip, overrideNameServers);
+    ResolvconfConfiguratorV2.process(resolvFile, ip, overrideNameServers);
+
+    // assert
+    assertEquals(
+        ResolvConfTemplates.defaultSystemResolvedConfDpsChanged(),
+        Files.readString(resolvFile)
+    );
+  }
+
+  @Test
+  void mustPreserveOriginalSettingsAndCommentsWhenContainsDpsV1(
+      @TempDir Path tmpDir
+  ) throws Exception {
+
+    // arrange
+    final var resolvFile = tmpDir.resolve("resolv.conf");
+    final var ip = IpAddrTemplates.local();
+
+    final var original = ResolvConfTemplates.defaultSystemResolvedConfWithDpsV1();
+    Files.writeString(resolvFile, original);
+
+    // act
+    final var overrideNameServers = true;
+    ResolvconfConfiguratorV2.process(resolvFile, ip, overrideNameServers);
+
+    // assert
+    assertEquals(
+        ResolvConfTemplates.defaultSystemResolvedConfDpsChanged(),
         Files.readString(resolvFile)
     );
   }
