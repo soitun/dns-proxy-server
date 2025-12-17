@@ -1,10 +1,11 @@
 package testing.templates;
 
-import com.mageddo.net.SocketUtils;
-import lombok.SneakyThrows;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import com.mageddo.net.SocketUtils;
+
+import lombok.SneakyThrows;
 
 public class ConfigJsonFileTemplates {
 
