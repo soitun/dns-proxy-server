@@ -24,8 +24,7 @@ class ResolvconfConfiguratorTest {
     ResolvconfConfigurator.process(resolvFile, IpAddrTemplates.local());
 
     // assert
-    assertEquals(
-        """
+    assertEquals("""
             nameserver 10.10.0.1 # dps-entry
             """,
         Files.readString(resolvFile)
