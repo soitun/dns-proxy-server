@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.mageddo.commons.lang.ValueResolver;
 import com.mageddo.dnsproxyserver.config.CanaryRateThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.dnsproxyserver.config.Config.DefaultDns;
 import com.mageddo.dnsproxyserver.config.Config.Env;
+import com.mageddo.dnsproxyserver.config.Config.SolverDocker;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.validator.ConfigValidator;
+import com.mageddo.dnsproxyserver.solver.docker.Network;
 import com.mageddo.dnsproxyserver.utils.Numbers;
 import com.mageddo.dnsproxyserver.version.VersionDAO;
 import com.mageddo.dnsserver.SimpleServer;
@@ -139,12 +142,14 @@ public class ConfigMapper {
   }
 
   private Config mapFrom0(List<Config> configs) {
+
     final var config = Config.builder()
         .server(Config.Server
             .builder()
             .webServerPort(Numbers.firstPositive(mapField(Config::getWebServerPort, configs)))
             .dnsServerPort(Numbers.firstPositive(mapField(Config::getDnsServerPort, configs)))
-            .serverProtocol(firstNonNullRequiring(mapField(Config::getServerProtocol, configs)))
+            .serverProtocol(firstNonNullRequiring(mapField(
+                Config::getServerProtocol, configs)))
             .dnsServerNoEntriesResponseCode(
                 firstNonNullRequiring(mapField(Config::getNoEntriesResponseCode, configs))
             )
@@ -163,10 +168,13 @@ public class ConfigMapper {
             .resolvConf(DefaultDns.ResolvConf
                 .builder()
                 .paths(
-                    firstNonNullRequiring(mapField(Config::getDefaultDnsResolvConfPaths, configs)))
+                    firstNonNullRequiring(mapField(Config::getDefaultDnsResolvConfPaths, configs))
+                )
                 .overrideNameServers(firstNonNullRequiring(
-                    mapField(Config::isResolvConfOverrideNameServersActive, configs)))
-                .build())
+                    mapField(Config::isResolvConfOverrideNameServersActive, configs))
+                )
+                .build()
+            )
             .build()
         )
         .solverRemote(Config.SolverRemote
@@ -175,7 +183,8 @@ public class ConfigMapper {
             .circuitBreaker(firstNonNullRequiring(
                 mapField(Config::getSolverRemoteCircuitBreakerStrategy, configs)
             ))
-            .dnsServers(firstNonEmptyListRequiring(mapField(Config::getRemoteDnsServers, configs)))
+            .dnsServers(firstNonEmptyListRequiring(mapField(
+                Config::getRemoteDnsServers, configs)))
             .build()
         )
         .solverStub(Config.SolverStub
@@ -183,21 +192,47 @@ public class ConfigMapper {
             .domainName(firstNonNullRequiring(mapField(Config::getSolverStubDomainName, configs)))
             .build()
         )
-        .solverDocker(Config.SolverDocker
+        .solverDocker(SolverDocker
             .builder()
             .dockerDaemonUri(firstNonNullRequiring(mapField(Config::getDockerDaemonUri, configs)))
             .registerContainerNames(
-                firstNonNullRequiring(mapField(Config::getRegisterContainerNames, configs)))
+                firstNonNullRequiring(mapField(Config::getRegisterContainerNames, configs))
+            )
             .domain(firstNonNullRequiring(mapField(Config::getDockerDomain, configs)))
             .hostMachineFallback(firstNonNullRequiring(
-                mapField(Config::getDockerSolverHostMachineFallbackActive, configs)))
-            .dpsNetwork(firstNonNullRequiring(mapField(Config::getDockerSolverDpsNetwork, configs)))
+                mapField(Config::getDockerSolverHostMachineFallbackActive, configs)
+            ))
+            .dpsNetwork(
+                SolverDocker.DpsNetwork.builder()
+                    .name(ValueResolver.findFirst(
+                        configs,
+                        Config::getDockerSolverDpsNetwork,
+                        SolverDocker.DpsNetwork::getName
+                    ))
+                    .autoCreate(ValueResolver.findFirst(
+                        configs,
+                        Config::getDockerSolverDpsNetwork,
+                        SolverDocker.DpsNetwork::getAutoCreate
+                    ))
+                    .autoConnect(ValueResolver.findFirst(
+                        configs,
+                        Config::getDockerSolverDpsNetwork,
+                        SolverDocker.DpsNetwork::getAutoConnect
+                    ))
+                    .configs(ValueResolver.findFirst(
+                        configs,
+                        Config::getDockerSolverDpsNetwork,
+                        SolverDocker.DpsNetwork::getConfigs
+                    ))
+                    .build()
+            )
             .build()
         )
         .solverSystem(Config.SolverSystem
             .builder()
             .hostMachineHostname(
-                firstNonNullRequiring(mapField(Config::getHostMachineHostname, configs)))
+                firstNonNullRequiring(mapField(Config::getHostMachineHostname, configs))
+            )
             .build()
         )
         .solverLocal(Config.SolverLocal
@@ -240,9 +275,26 @@ public class ConfigMapper {
             .domainName("stub")
             .build()
         )
-        .solverDocker(Config.SolverDocker
+        .solverDocker(SolverDocker
             .builder()
             .dockerDaemonUri(buildDefaultDockerHost())
+            .dpsNetwork(SolverDocker.DpsNetwork.builder()
+                .autoConnect(false)
+                .autoCreate(false)
+                .name(Network.Name.DPS.lowerCaseName())
+                .configs(List.of(
+                    SolverDocker.DpsNetwork.NetworkConfig.builder()
+                        .subNet("172.157.0.0/16")
+                        .ipRange("172.157.5.0/24")
+                        .gateway("172.157.5.1")
+                        .build(),
+                    SolverDocker.DpsNetwork.NetworkConfig.builder()
+                        .subNet("fc00:5c6f:db50::/64")
+                        .gateway("fc00:5c6f:db50::1")
+                        .build()
+                ))
+                .build()
+            )
             .build()
         )
         .solverLocal(Config.SolverLocal.builder()

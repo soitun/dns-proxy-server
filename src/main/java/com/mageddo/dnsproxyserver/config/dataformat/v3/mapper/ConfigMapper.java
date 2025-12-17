@@ -1,11 +1,16 @@
 package com.mageddo.dnsproxyserver.config.dataformat.v3.mapper;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
+import com.mageddo.commons.Collections;
 import com.mageddo.dnsproxyserver.config.CanaryRateThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.Config;
+import com.mageddo.dnsproxyserver.config.Config.Entry;
+import com.mageddo.dnsproxyserver.config.Config.Log;
+import com.mageddo.dnsproxyserver.config.Config.SolverDocker.DpsNetwork;
 import com.mageddo.dnsproxyserver.config.NonResilientCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
 import com.mageddo.dnsproxyserver.config.dataformat.v3.ConfigV3;
@@ -99,16 +104,15 @@ public class ConfigMapper {
       return null;
     }
 
+    final var resolvConf = d.getResolvConf();
     return Config.DefaultDns.builder()
         .active(d.getActive())
         .resolvConf(
-            d.getResolvConf() == null
+            resolvConf == null
                 ? null
                 : Config.DefaultDns.ResolvConf.builder()
-                .paths(d.getResolvConf()
-                    .getPaths())
-                .overrideNameServers(d.getResolvConf()
-                    .getOverrideNameServers())
+                .paths(resolvConf.getPaths())
+                .overrideNameServers(resolvConf.getOverrideNameServers())
                 .build()
         )
         .build();
@@ -119,40 +123,39 @@ public class ConfigMapper {
       return null;
     }
 
+    final var resolvConf = d.getResolvConf();
     return new ConfigV3.DefaultDns()
         .setActive(d.getActive())
         .setResolvConf(
-            d.getResolvConf() == null
+            resolvConf == null
                 ? null
                 : new ConfigV3.ResolvConf()
-                .setPaths(d.getResolvConf()
-                    .getPaths())
-                .setOverrideNameServers(d.getResolvConf()
-                    .getOverrideNameServers())
+                .setPaths(resolvConf.getPaths())
+                .setOverrideNameServers(resolvConf.getOverrideNameServers())
         );
   }
 
   /* ================= LOG ================= */
 
-  private static Config.Log mapLog(final ConfigV3.Log l) {
+  private static Log mapLog(final ConfigV3.Log l) {
     if (l == null) {
       return null;
     }
 
-    return Config.Log.builder()
-        .level(l.getLevel() != null ? Config.Log.Level.valueOf(l.getLevel()) : null)
+    return Log.builder()
+        .level(l.getLevel() != null ? Log.Level.valueOf(l.getLevel()) : null)
         .file(l.getFile())
         .build();
   }
 
-  private static ConfigV3.Log mapLogV3(final Config.Log l) {
+  private static ConfigV3.Log mapLogV3(final Log l) {
     if (l == null) {
       return null;
     }
 
+    final var level = l.getLevel();
     return new ConfigV3.Log()
-        .setLevel(l.getLevel() != null ? l.getLevel()
-            .name() : null)
+        .setLevel(level != null ? level.name() : null)
         .setFile(l.getFile());
   }
 
@@ -163,21 +166,15 @@ public class ConfigMapper {
       return null;
     }
 
+    final var remote = s.getRemote();
     return Config.SolverRemote.builder()
-        .active(s.getRemote()
-            .getActive())
+        .active(remote.getActive())
         .dnsServers(
-            s.getRemote()
-                .getDnsServers() == null
+            remote.getDnsServers() == null
                 ? emptyList()
-                : s.getRemote()
-                .getDnsServers()
-                .stream()
-                .map(IpAddr::of)
-                .collect(toList())
+                : Collections.map(remote.getDnsServers(), IpAddr::of)
         )
-        .circuitBreaker(mapCircuitBreakerToDomain(s.getRemote()
-            .getCircuitBreaker()))
+        .circuitBreaker(mapCircuitBreakerToDomain(remote.getCircuitBreaker()))
         .build();
   }
 
@@ -185,34 +182,44 @@ public class ConfigMapper {
     if (s == null || s.getDocker() == null) {
       return null;
     }
-
+    final var docker = s.getDocker();
     return Config.SolverDocker.builder()
-        .registerContainerNames(s.getDocker()
-            .getRegisterContainerNames())
-        .domain(s.getDocker()
-            .getDomain())
-        .hostMachineFallback(s.getDocker()
-            .getHostMachineFallback())
-        .dockerDaemonUri(
-            s.getDocker()
-                .getDockerDaemonUri() != null
-                ? URI.create(s.getDocker()
-                .getDockerDaemonUri())
-                : null
+        .registerContainerNames(docker.getRegisterContainerNames())
+        .domain(docker.getDomain())
+        .hostMachineFallback(docker.getHostMachineFallback())
+        .dockerDaemonUri(docker.getDockerDaemonUri() != null
+            ? URI.create(docker.getDockerDaemonUri())
+            : null
         )
-        .dpsNetwork(
-            s.getDocker()
-                .getDpsNetwork() == null
-                ? null
-                : Config.SolverDocker.DpsNetwork.builder()
-                .autoCreate(s.getDocker()
-                    .getDpsNetwork()
-                    .getAutoCreate())
-                .autoConnect(s.getDocker()
-                    .getDpsNetwork()
-                    .getAutoConnect())
-                .build()
-        )
+        .dpsNetwork(mapDomainDpsNetwork(s))
+        .build();
+  }
+
+  private static DpsNetwork mapDomainDpsNetwork(ConfigV3.Solver s) {
+    final var dpsNetwork = s.getDocker()
+        .getDpsNetwork();
+    if (dpsNetwork == null) {
+      return null;
+    }
+    return DpsNetwork.builder()
+        .name(dpsNetwork.getName())
+        .autoCreate(dpsNetwork.getAutoCreate())
+        .autoConnect(dpsNetwork.getAutoConnect())
+        .configs(mapDomainDpsNetworkConfigs(dpsNetwork.getConfigs()))
+        .build();
+  }
+
+  private static List<DpsNetwork.NetworkConfig> mapDomainDpsNetworkConfigs(
+      List<ConfigV3.DpsNetwork.Config> configs
+  ) {
+    return Collections.map(configs, ConfigMapper::mapDomainDpsNetworkConfig);
+  }
+
+  static DpsNetwork.NetworkConfig mapDomainDpsNetworkConfig(ConfigV3.DpsNetwork.Config config) {
+    return DpsNetwork.NetworkConfig.builder()
+        .gateway(config.getGateway())
+        .ipRange(config.getIpRange())
+        .subNet(config.getSubNet())
         .build();
   }
 
@@ -220,19 +227,12 @@ public class ConfigMapper {
     if (s == null || s.getLocal() == null) {
       return null;
     }
-
+    final var local = s.getLocal();
     return Config.SolverLocal.builder()
-        .activeEnv(s.getLocal()
-            .getActiveEnv())
-        .envs(
-            s.getLocal()
-                .getEnvs() == null
-                ? emptyList()
-                : s.getLocal()
-                .getEnvs()
-                .stream()
-                .map(ConfigMapper::mapEnv)
-                .collect(toList())
+        .activeEnv(local.getActiveEnv())
+        .envs(local.getEnvs() == null
+            ? emptyList()
+            : Collections.map(local.getEnvs(), ConfigMapper::mapEnv)
         )
         .build();
   }
@@ -242,18 +242,15 @@ public class ConfigMapper {
         e.getName(),
         e.getHostnames() == null
             ? emptyList()
-            : e.getHostnames()
-            .stream()
-            .map(ConfigMapper::mapEntry)
-            .collect(toList())
+            : Collections.map(e.getHostnames(), ConfigMapper::mapEntry)
     );
   }
 
-  private static Config.Entry mapEntry(final ConfigV3.Hostname h) {
-    return Config.Entry.builder()
+  private static Entry mapEntry(final ConfigV3.Hostname h) {
+    return Entry.builder()
         .hostname(h.getHostname())
         .ttl(h.getTtl())
-        .type(Config.Entry.Type.valueOf(h.getType()))
+        .type(Entry.Type.valueOf(h.getType()))
         .target(h.getTarget())
         .ip(h.getIp() != null ? IP.of(h.getIp()) : null)
         .build();
@@ -287,32 +284,29 @@ public class ConfigMapper {
     if (config.getSolverRemote() != null) {
       solver.setRemote(new ConfigV3.Remote()
           .setActive(config.isSolverRemoteActive())
-          .setDnsServers(
-              config.getRemoteDnsServers()
-                  .stream()
-                  .map(IpAddr::toString)
-                  .collect(toList())
-          )
+          .setDnsServers(Collections.map(config.getRemoteDnsServers(), IpAddr::toString))
           .setCircuitBreaker(mapCircuitBreakerToV3(config.getSolverRemoteCircuitBreakerStrategy()))
       );
     }
 
     if (config.getSolverDocker() != null) {
+      final var dpsNetwork = config.getDockerSolverDpsNetwork();
       solver.setDocker(new ConfigV3.Docker()
-              .setDomain(config.getDockerDomain())
-              .setRegisterContainerNames(config.getRegisterContainerNames())
-              .setHostMachineFallback(config.getDockerSolverHostMachineFallbackActive())
-              .setDockerDaemonUri(Objects.toString(config.getDockerDaemonUri(), null))
-              .setDpsNetwork(
-                  config.getDockerSolverDpsNetwork() == null
-                      ? null
-                      : new ConfigV3.DpsNetwork()
-//                      .setName(config.getDockerSolverDpsNetwork().getName())
-                      .setAutoCreate(config.getDockerSolverDpsNetwork()
-                          .getAutoCreate())
-                      .setAutoConnect(config.getDockerSolverDpsNetwork()
-                          .getAutoConnect())
-              )
+          .setDomain(config.getDockerDomain())
+          .setRegisterContainerNames(config.getRegisterContainerNames())
+          .setHostMachineFallback(config.getDockerSolverHostMachineFallbackActive())
+          .setDockerDaemonUri(Objects.toString(config.getDockerDaemonUri(), null))
+          .setDpsNetwork(
+              dpsNetwork == null
+                  ? null
+                  : new ConfigV3.DpsNetwork()
+                  .setName(dpsNetwork.getName())
+                  .setAutoCreate(dpsNetwork.getAutoCreate())
+                  .setAutoConnect(dpsNetwork.getAutoConnect())
+                  .setConfigs(
+                      Collections.map(dpsNetwork.getConfigs(), ConfigMapper::mapDpsNetworkConfigV3)
+                  )
+          )
       );
     }
 
@@ -329,17 +323,7 @@ public class ConfigMapper {
                       .setHostnames(
                           env.getEntries() == null
                               ? emptyList()
-                              : env.getEntries()
-                              .stream()
-                              .map(entry -> new ConfigV3.Hostname()
-                                  .setHostname(entry.getHostname())
-                                  .setType(entry.getType()
-                                      .name())
-                                  .setIp(entry.getIpAsText())
-                                  .setTarget(entry.getTarget())
-                                  .setTtl(entry.getTtl())
-                              )
-                              .collect(toList())
+                              : Collections.map(env.getEntries(), ConfigMapper::mapEntryV3)
                       )
                   )
                   .collect(toList())
@@ -350,7 +334,8 @@ public class ConfigMapper {
     if (config.getSolverStub() != null) {
       solver.setStub(new ConfigV3.Stub()
           .setDomainName(config.getSolverStub()
-              .getDomainName())
+              .getDomainName()
+          )
       );
     }
 
@@ -362,6 +347,24 @@ public class ConfigMapper {
 
     return solver;
   }
+
+  private static ConfigV3.Hostname mapEntryV3(Entry entry) {
+    return new ConfigV3.Hostname()
+        .setHostname(entry.getHostname())
+        .setType(entry.getType()
+            .name())
+        .setIp(entry.getIpAsText())
+        .setTarget(entry.getTarget())
+        .setTtl(entry.getTtl());
+  }
+
+  static ConfigV3.DpsNetwork.Config mapDpsNetworkConfigV3(DpsNetwork.NetworkConfig config) {
+    return new ConfigV3.DpsNetwork.Config()
+        .setSubNet(config.getSubNet())
+        .setIpRange(config.getIpRange())
+        .setGateway(config.getGateway());
+  }
+
 
   /* ================= CIRCUIT BREAKER ================= */
 

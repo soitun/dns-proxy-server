@@ -505,8 +505,18 @@ public class Config {
     @Builder
     public static class DpsNetwork {
 
+      String name;
       Boolean autoCreate;
       Boolean autoConnect;
+      List<NetworkConfig> configs;
+
+      @Value
+      @Builder
+      public static class NetworkConfig {
+        String subNet;
+        String ipRange;
+        String gateway;
+      }
 
       public boolean shouldAutoConnect() {
         return BooleanUtils.isTrue(this.autoConnect);
