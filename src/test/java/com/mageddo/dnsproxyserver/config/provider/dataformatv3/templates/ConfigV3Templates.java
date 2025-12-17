@@ -25,7 +25,11 @@ public class ConfigV3Templates {
           - 8.8.8.8
           - 4.4.4.4:53
           circuitBreaker:
-            name: STATIC_THRESHOLD
+              failureThreshold: null
+              failureThresholdCapacity: null
+              successThreshold: null
+              testDelay: null
+              type: STATIC_THRESHOLD
         docker:
           registerContainerNames: false
           domain: docker
@@ -44,6 +48,7 @@ public class ConfigV3Templates {
             hostnames:
             - type: A
               hostname: github.com
+              target:
               ip: 192.168.0.1
               ttl: 255
         stub:
@@ -84,7 +89,11 @@ public class ConfigV3Templates {
               "8.8.8.8", "4.4.4.4:53"
             ],
             "circuitBreaker": {
-              "name": "STATIC_THRESHOLD"
+              "failureThreshold" : null,
+              "failureThresholdCapacity" : null,
+              "successThreshold" : null,
+              "testDelay" : null,
+              "type": "STATIC_THRESHOLD"
             }
           },
           "docker": {
@@ -110,6 +119,7 @@ public class ConfigV3Templates {
                   {
                     "type": "A",
                     "hostname": "github.com",
+                    "target": null,
                     "ip": "192.168.0.1",
                     "ttl": 255
                   }

@@ -1,24 +1,29 @@
 package com.mageddo.dnsproxyserver.config;
 
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mageddo.dnsproxyserver.config.dataformat.v2.ConfigV2Service;
 import com.mageddo.dnsserver.SimpleServer;
 import com.mageddo.net.IP;
 import com.mageddo.net.IpAddr;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.apache.commons.lang3.Validate;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.mageddo.commons.lang.Objects.mapOrNull;
 
@@ -37,6 +42,7 @@ public class Config {
 
   Log log;
 
+  @Deprecated(forRemoval = true)
   Path configPath;
 
   SolverStub solverStub;
@@ -77,7 +83,7 @@ public class Config {
   }
 
   @JsonIgnore
-  private DefaultDns.ResolvConf getDefaultDnsResolvConf() {
+  DefaultDns.ResolvConf getDefaultDnsResolvConf() {
     if (this.defaultDns == null) {
       return null;
     }
@@ -134,6 +140,9 @@ public class Config {
 
   @JsonIgnore
   public SolverDocker.DpsNetwork getDockerSolverDpsNetwork() {
+    if (this.solverDocker == null) {
+      return null;
+    }
     return this.solverDocker.getDpsNetwork();
   }
 
@@ -181,7 +190,7 @@ public class Config {
   }
 
   @JsonIgnore
-  public LogLevel getLogLevel() {
+  public Log.Level getLogLevel() {
     if (this.log == null) {
       return null;
     }
@@ -199,12 +208,11 @@ public class Config {
   @JsonIgnore
   public List<Env> getEnvs() {
     if (this.solverLocal == null) {
-      return null;
+      return Collections.emptyList();
     }
     return this.solverLocal.getEnvs();
   }
 
-  @JsonIgnore
   public String getActiveEnv() {
     if (this.solverLocal == null) {
       return null;
@@ -216,14 +224,14 @@ public class Config {
   @Builder(toBuilder = true)
   public static class DefaultDns {
 
-    private Boolean active;
-    private ResolvConf resolvConf;
+    Boolean active;
+    ResolvConf resolvConf;
 
     @Value
     @Builder(toBuilder = true)
     public static class ResolvConf {
-      private String paths;
-      private Boolean overrideNameServers;
+      String paths;
+      Boolean overrideNameServers;
     }
   }
 
@@ -233,17 +241,6 @@ public class Config {
       return null;
     }
     return this.solverRemote.getActive();
-  }
-
-  public void resetConfigFile() {
-    if (this.getConfigPath() == null) {
-      throw new IllegalStateException("config file is null");
-    }
-    try {
-      Files.deleteIfExists(this.getConfigPath());
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
   }
 
   @JsonIgnore
@@ -264,6 +261,8 @@ public class Config {
 
   public enum Source {
     JSON,
+    YAML,
+    FILE,
     FLAG,
     DEFAULT,
     MERGED,
@@ -278,12 +277,18 @@ public class Config {
   }
 
   @Value
+  @Builder(toBuilder = true)
   public static class Env {
 
     public static final String DEFAULT_ENV = "";
 
-    private String name;
-    private List<Entry> entries;
+    String name;
+
+    List<Entry> entries;
+
+    public List<Entry> getHostnames() {
+      return this.entries;
+    }
 
     public static Env empty(String name) {
       return of(name, Collections.emptyList());
@@ -315,26 +320,26 @@ public class Config {
   public static class Entry {
 
     @NonNull
-    private Long id;
+    Long id;
 
     @NonNull
-    private String hostname;
+    String hostname;
 
     /**
      * Used when {@link #type} in {@link Type#AAAA} , {@link Type#A}
      */
-    private IP ip;
+    IP ip;
 
     /**
      * Target hostname when {@link #type} = {@link Type#CNAME}
      */
-    private String target;
+    String target;
 
     @NonNull
-    private Integer ttl;
+    Integer ttl;
 
     @NonNull
-    private Config.Entry.Type type;
+    Config.Entry.Type type;
 
     public String requireTextIp() {
       Validate.isTrue(this.type.isAddressSolving() && this.ip != null, "IP is required");
@@ -354,6 +359,7 @@ public class Config {
       }
     }
 
+    // TODO move to a separate mapper
     @RequiredArgsConstructor
     public enum Type {
 
@@ -365,7 +371,7 @@ public class Config {
       /**
        * See {@link org.xbill.DNS.Type}
        */
-      private final int type;
+      final int type;
 
       public boolean isNot(Type... types) {
         return ConfigEntryTypes.isNot(this.type, types);
@@ -381,7 +387,8 @@ public class Config {
       }
 
       public static Set<Type> asSet() {
-        return Stream.of(values()).collect(Collectors.toSet());
+        return Stream.of(values())
+            .collect(Collectors.toSet());
       }
 
       public static boolean contains(Type type) {
@@ -409,5 +416,151 @@ public class Config {
   public static class ConfigBuilder {
 
 
+  }
+
+  @Value
+  @Builder
+  public static class Log {
+    Level level;
+    String file;
+
+    public enum Level {
+
+      ERROR,
+      WARNING("WARN"),
+      INFO,
+      DEBUG,
+      TRACE,
+      ;
+
+      final String slf4jName;
+
+      Level() {
+        this.slf4jName = null;
+      }
+
+      Level(String slf4jName) {
+        this.slf4jName = slf4jName;
+      }
+
+      public String getSlf4jName() {
+        return StringUtils.firstNonBlank(this.slf4jName, this.name());
+      }
+
+      @Override
+      public String toString() {
+        return this.name();
+      }
+
+      public ch.qos.logback.classic.Level toLogbackLevel() {
+        return ch.qos.logback.classic.Level.convertAnSLF4JLevel(
+            org.slf4j.event.Level.valueOf(this.getSlf4jName())
+        );
+      }
+    }
+  }
+
+  @Value
+  @Builder
+  public static class Server {
+
+    Integer webServerPort;
+
+    Integer dnsServerPort;
+    Integer dnsServerNoEntriesResponseCode;
+
+    SimpleServer.Protocol serverProtocol;
+
+  }
+
+  @Value
+  @Builder(toBuilder = true)
+  public static class SolverDocker {
+
+    URI dockerDaemonUri;
+    Boolean registerContainerNames;
+    String domain;
+    DpsNetwork dpsNetwork;
+    Boolean hostMachineFallback;
+
+    public boolean shouldUseHostMachineFallback() {
+      return BooleanUtils.toBoolean(hostMachineFallback);
+    }
+
+    public boolean shouldAutoCreateDpsNetwork() {
+      if (this.dpsNetwork == null) {
+        return false;
+      }
+      return this.dpsNetwork.shouldAutoCreate();
+    }
+
+    public boolean shouldAutoConnect() {
+      if (this.dpsNetwork == null) {
+        return false;
+      }
+      return this.dpsNetwork.shouldAutoConnect();
+    }
+
+    @Value
+    @Builder
+    public static class DpsNetwork {
+
+      Boolean autoCreate;
+      Boolean autoConnect;
+
+      public boolean shouldAutoConnect() {
+        return BooleanUtils.isTrue(this.autoConnect);
+      }
+
+      public boolean shouldAutoCreate() {
+        return BooleanUtils.isTrue(this.autoCreate);
+      }
+    }
+  }
+
+  @Value
+  @Builder(toBuilder = true)
+  public static class SolverLocal {
+
+    String activeEnv;
+
+    List<Env> envs;
+
+    public List<Env> getEnvs() {
+      return ObjectUtils.firstNonNull(this.envs, Collections.emptyList());
+    }
+
+    @JsonIgnore
+    public Env getFirst() {
+      if (this.envs == null || this.envs.isEmpty()) {
+        return null;
+      }
+      return this.envs.getFirst();
+    }
+  }
+
+  @Value
+  @Builder
+  public static class SolverRemote {
+
+    Boolean active;
+
+    CircuitBreakerStrategyConfig circuitBreaker;
+
+    @Builder.Default
+    List<IpAddr> dnsServers = new ArrayList<>();
+
+  }
+
+  @Value
+  @Builder
+  public static class SolverStub {
+    String domainName;
+  }
+
+  @Value
+  @Builder
+  public static class SolverSystem {
+    String hostMachineHostname;
   }
 }

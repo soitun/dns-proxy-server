@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.mageddo.dnsproxyserver.config.Config;
-import com.mageddo.dnsproxyserver.config.LogLevel;
 import com.mageddo.dnsproxyserver.config.configurer.di.Context;
 import com.mageddo.dnsproxyserver.config.dataformat.v2.cmdargs.ConfigDAOCmdArgs;
 
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
 import dagger.sheath.junit.DaggerTest;
 import lombok.SneakyThrows;
 
-import static com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig.Name.CANARY_RATE_THRESHOLD;
+import static com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig.Type.CANARY_RATE_THRESHOLD;
 import static com.mageddo.utils.TestUtils.readAndSortJson;
 import static com.mageddo.utils.TestUtils.readAndSortJsonExcluding;
 import static com.mageddo.utils.TestUtils.readAsStream;
@@ -33,7 +32,9 @@ class ConfigV2ServiceCompTest {
   };
 
   @Test
-  void mustParseDefaultConfigsAndCreateJsonConfigFile(@TempDir Path tmpDir) {
+  void mustParseDefaultConfigsAndNotCreateJsonConfigFileUntilItIsChanged(
+      @TempDir Path tmpDir
+  ) {
 
     // arrange
     final var jsonConfigFile = tmpDir.resolve("tmpfile.json");
@@ -43,12 +44,12 @@ class ConfigV2ServiceCompTest {
     // act
     final var config = Configs.getContext()
       .configService()
-      .findCurrentConfig()
+      .find()
       ;
 
     // assert
     assertFalse(config.getRegisterContainerNames());
-    assertTrue(Files.exists(jsonConfigFile));
+    assertFalse(Files.exists(jsonConfigFile));
   }
 
 
@@ -60,11 +61,11 @@ class ConfigV2ServiceCompTest {
     // act
     final var config = Configs.getContext()
       .configService()
-      .findCurrentConfig()
+      .find()
       ;
 
     // assert
-    assertEquals(LogLevel.WARNING, config.getLogLevel());
+    assertEquals(Config.Log.Level.WARNING, config.getLogLevel());
   }
 
   @Test
@@ -75,7 +76,7 @@ class ConfigV2ServiceCompTest {
     // act
     final var config = Configs.getContext()
       .configService()
-      .findCurrentConfig()
+      .find()
       ;
 
     // assert
@@ -91,11 +92,11 @@ class ConfigV2ServiceCompTest {
     // act
     final var config = Configs.getContext()
       .configService()
-      .findCurrentConfig()
+      .find()
       ;
 
     // assert
-    assertEquals(CANARY_RATE_THRESHOLD, config.getSolverRemoteCircuitBreakerStrategy().name());
+    assertEquals(CANARY_RATE_THRESHOLD, config.getSolverRemoteCircuitBreakerStrategy().getType());
   }
 
   static void assertParsedConfig(Config config, String expectedFilePath) {

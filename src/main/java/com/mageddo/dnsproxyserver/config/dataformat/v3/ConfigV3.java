@@ -1,125 +1,204 @@
 package com.mageddo.dnsproxyserver.config.dataformat.v3;
 
-import lombok.Data;
-
+import java.time.Duration;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.DurationDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
+import com.mageddo.dnsproxyserver.config.CircuitBreakerStrategyConfig;
+
+import com.mageddo.dnsproxyserver.config.dataformat.v3.jackson.CircuitBreakerConverter;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
+
 @Data
+@Accessors(chain = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConfigV3 {
 
-  public int version;
-  public Server server;
-  public Solver solver;
-  public DefaultDns defaultDns;
-  public Log log;
+  int version;
+  Server server;
+  Solver solver;
+  DefaultDns defaultDns;
+  Log log;
+
 
   @Data
-  public static class CircuitBreaker {
-    public String name;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class StaticThreshold implements CircuitBreakerStrategyConfig {
+
+    private Integer failureThreshold;
+    private Integer failureThresholdCapacity;
+    private Integer successThreshold;
+
+    @JsonSerialize(using = DurationSerializer.class)
+    @JsonDeserialize(using = DurationDeserializer.class)
+    private Duration testDelay;
+
+    @Override
+    public CircuitBreakerStrategyConfig.Type getType() {
+      return CircuitBreakerStrategyConfig.Type.STATIC_THRESHOLD;
+    }
   }
 
   @Data
-  public static class DefaultDns {
-    public Boolean active;
-    public ResolvConf resolvConf;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class CanaryRateThreshold implements CircuitBreakerStrategyConfig {
+
+    private float failureRateThreshold;
+    private int minimumNumberOfCalls;
+    private int permittedNumberOfCallsInHalfOpenState;
+
+    @Override
+    public CircuitBreakerStrategyConfig.Type getType() {
+      return CircuitBreakerStrategyConfig.Type.CANARY_RATE_THRESHOLD;
+    }
   }
 
   @Data
-  public static class Dns {
-    public Integer port;
-    public Integer noEntriesResponseCode;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class DefaultDns {
+    Boolean active;
+    ResolvConf resolvConf;
   }
 
   @Data
-  public static class Docker {
-    public Boolean registerContainerNames;
-    public String domain;
-    public Boolean hostMachineFallback;
-    public DpsNetwork dpsNetwork;
-    //    public Networks networks;
-    public String dockerDaemonUri;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Dns {
+    Integer port;
+    Integer noEntriesResponseCode;
   }
 
   @Data
-  public static class DpsNetwork {
-    public String name;
-    public Boolean autoCreate;
-    public Boolean autoConnect;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Docker {
+    Boolean registerContainerNames;
+    String domain;
+    Boolean hostMachineFallback;
+    DpsNetwork dpsNetwork;
+    //    Networks networks;
+    String dockerDaemonUri;
   }
 
   @Data
-  public static class Env {
-    public String name;
-    public List<Hostname> hostnames;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class DpsNetwork {
+    String name;
+    Boolean autoCreate;
+    Boolean autoConnect;
   }
 
   @Data
-  public static class Hostname {
-    public String type;
-    public String hostname;
-    public String ip;
-    public Integer ttl;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Env {
+    String name;
+    List<Hostname> hostnames;
   }
 
   @Data
-  public static class Local {
-    public String activeEnv;
-    public List<Env> envs;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Hostname {
+    String type;
+    String hostname;
+    String target;
+    String ip;
+    Integer ttl;
   }
 
   @Data
-  public static class Log {
-    public String level;
-    public String file;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Local {
+    String activeEnv;
+    List<Env> envs;
   }
 
   @Data
-  public static class Networks {
-    public List<String> preferredNetworkNames;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Log {
+    String level;
+    String file;
   }
 
   @Data
-  public static class Remote {
-    public Boolean active;
-    public List<String> dnsServers;
-    public CircuitBreaker circuitBreaker;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Networks {
+    List<String> preferredNetworkNames;
   }
 
   @Data
-  public static class ResolvConf {
-    public String paths;
-    public Boolean overrideNameServers;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Remote {
+    Boolean active;
+    List<String> dnsServers;
+
+    @JsonDeserialize(using = CircuitBreakerConverter.Deserializer.class)
+    CircuitBreakerStrategyConfig circuitBreaker;
   }
 
   @Data
-  public static class Server {
-    public Dns dns;
-    public Web web;
-    public String protocol;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class ResolvConf {
+    String paths;
+    Boolean overrideNameServers;
   }
 
   @Data
-  public static class Solver {
-    public Remote remote;
-    public Docker docker;
-    public System system;
-    public Local local;
-    public Stub stub;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Server {
+    Dns dns;
+    Web web;
+    String protocol;
   }
 
   @Data
-  public static class Stub {
-    public String domainName;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Solver {
+    Remote remote;
+    Docker docker;
+    System system;
+    Local local;
+    Stub stub;
   }
 
   @Data
-  public static class System {
-    public String hostMachineHostname;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Stub {
+    String domainName;
   }
 
   @Data
-  public static class Web {
-    public Integer port;
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class System {
+    String hostMachineHostname;
+  }
+
+  @Data
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class Web {
+    Integer port;
   }
 
 

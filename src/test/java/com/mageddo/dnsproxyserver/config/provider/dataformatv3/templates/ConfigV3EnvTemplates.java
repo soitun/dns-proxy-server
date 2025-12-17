@@ -18,7 +18,11 @@ public final class ConfigV3EnvTemplates {
     env.put("DPS_SOLVER__REMOTE__ACTIVE", "true");
     env.put("DPS_SOLVER__REMOTE__DNS_SERVERS_0", "8.8.8.8");
     env.put("DPS_SOLVER__REMOTE__DNS_SERVERS_1", "4.4.4.4:53");
-    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__NAME", "STATIC_THRESHOLD");
+    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__TYPE", "STATIC_THRESHOLD");
+    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__FAILURE_THRESHOLD", null);
+    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__FAILURE_THRESHOLD_CAPACITY", null);
+    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__SUCCESS_THRESHOLD", null);
+    env.put("DPS_SOLVER__REMOTE__CIRCUIT_BREAKER__TEST_DELAY", null);
     env.put("DPS_SOLVER__DOCKER__REGISTER_CONTAINER_NAMES", "false");
     env.put("DPS_SOLVER__DOCKER__DOMAIN", "docker");
     env.put("DPS_SOLVER__DOCKER__HOST_MACHINE_FALLBACK", "true");
@@ -30,6 +34,7 @@ public final class ConfigV3EnvTemplates {
     env.put("DPS_SOLVER__LOCAL__ACTIVE_ENV", "");
     env.put("DPS_SOLVER__LOCAL__ENVS_0__NAME", "");
     env.put("DPS_SOLVER__LOCAL__ENVS_0__HOSTNAMES_0__TYPE", "A");
+    env.put("DPS_SOLVER__LOCAL__ENVS_0__HOSTNAMES_0__TARGET", null);
     env.put("DPS_SOLVER__LOCAL__ENVS_0__HOSTNAMES_0__HOSTNAME", "github.com");
     env.put("DPS_SOLVER__LOCAL__ENVS_0__HOSTNAMES_0__IP", "192.168.0.1");
     env.put("DPS_SOLVER__LOCAL__ENVS_0__HOSTNAMES_0__TTL", "255");

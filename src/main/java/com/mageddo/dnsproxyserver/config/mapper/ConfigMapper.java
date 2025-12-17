@@ -5,30 +5,29 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.mageddo.dnsproxyserver.config.Config;
-import com.mageddo.dnsproxyserver.config.Log;
-import com.mageddo.dnsproxyserver.config.Server;
-import com.mageddo.dnsproxyserver.config.SolverDocker;
-import com.mageddo.dnsproxyserver.config.SolverLocal;
-import com.mageddo.dnsproxyserver.config.SolverRemote;
-import com.mageddo.dnsproxyserver.config.SolverStub;
-import com.mageddo.dnsproxyserver.config.SolverSystem;
+import com.mageddo.dnsproxyserver.config.Config.DefaultDns;
+import com.mageddo.dnsproxyserver.config.Config.Env;
 import com.mageddo.dnsproxyserver.config.StaticThresholdCircuitBreakerStrategyConfig;
-import com.mageddo.dnsproxyserver.version.VersionDAO;
 import com.mageddo.dnsproxyserver.config.validator.ConfigValidator;
 import com.mageddo.dnsproxyserver.utils.Numbers;
+import com.mageddo.dnsproxyserver.version.VersionDAO;
 import com.mageddo.dnsserver.SimpleServer;
+import com.mageddo.net.IP;
 import com.mageddo.net.IpAddr;
 
 import org.apache.commons.lang3.SystemUtils;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.mageddo.commons.Collections.keyBy;
 import static com.mageddo.dnsproxyserver.utils.ListOfObjectUtils.mapField;
+import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonEmptyList;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonEmptyListRequiring;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNull;
 import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring;
@@ -37,7 +36,99 @@ import static com.mageddo.dnsproxyserver.utils.ObjectUtils.firstNonNullRequiring
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class ConfigMapper {
 
+  public static final String RESOLV_CONF_DEFAULT_PATHS = "/host/etc/systemd/resolved.conf,"
+      + "/host/etc/resolv.conf,/etc/systemd/resolved.conf,/etc/resolv.conf";
   private final VersionDAO versionDAO;
+
+  public static Config add(Config config, Env def) {
+    final var envs = new ArrayList<>(config.getEnvs());
+    envs.add(def);
+    return config.toBuilder()
+        .solverLocal(config.getSolverLocal()
+            .toBuilder()
+            .envs(envs)
+            .build())
+        .build();
+  }
+
+  public static Config replace(Config config, String envKey, Config.Entry entry) {
+
+    final var store = keyBy(config.getEnvs(), Env::getName);
+    store.computeIfPresent(envKey, (key, env) -> replaceEntry(env, entry));
+    store.computeIfAbsent(envKey, __ -> Env.of(envKey, List.of(entry)));
+
+    return config.toBuilder()
+        .solverLocal(config.getSolverLocal()
+            .toBuilder()
+            .envs(new ArrayList<>(store.values()))
+            .build())
+        .build();
+  }
+
+  private static Env replaceEntry(Env env, Config.Entry entry) {
+    return env.toBuilder()
+        .entries(replaceEntry(env.getEntries(), entry))
+        .build();
+  }
+
+  private static List<Config.Entry> replaceEntry(
+      List<Config.Entry> entries, Config.Entry entry
+  ) {
+    final var store = keyBy(entries, Config.Entry::getId);
+    store.put(entry.getId(), entry);
+    return new ArrayList<>(store.values());
+  }
+
+  public static Config add(Config config, String env) {
+    return add(config, Env.of(env, Collections.emptyList()));
+  }
+
+  public static Config remove(Config config, String envKey, String hostname) {
+
+    final var envs = removeHostName(config, envKey, hostname);
+    if (envs == null) {
+      return null;
+    }
+    return config.toBuilder()
+        .solverLocal(config.getSolverLocal()
+            .toBuilder()
+            .envs(envs)
+            .build()
+        )
+        .build();
+  }
+
+  static List<Env> removeHostName(
+      Config config, String envKey, String hostname
+  ) {
+    final var envsStore = keyBy(config.getEnvs(), Env::getName);
+    if (!envsStore.containsKey(envKey)) {
+      return null;
+    }
+    final var env = envsStore.get(envKey);
+    final var entryStore = env.getEntries()
+        .stream()
+        .collect(Collectors.groupingBy(
+            Config.Entry::getHostname,
+            Collectors.reducing((a, b) -> a)
+        ));
+
+    if (!entryStore.containsKey(hostname)) {
+      return null;
+    }
+    entryStore.remove(hostname);
+    final var updatedEnv = env.toBuilder()
+        .entries(entryStore.values()
+            .stream()
+            .map(it -> it.orElse(null))
+            .toList()
+        )
+        .build();
+
+    envsStore.put(envKey, updatedEnv);
+
+    return new ArrayList<>(envsStore.values());
+  }
 
   public Config mapFrom(List<Config> configs) {
     final var configsWithDefault = new ArrayList<>(configs);
@@ -47,106 +138,143 @@ public class ConfigMapper {
 
   private Config mapFrom0(List<Config> configs) {
     final var config = Config.builder()
-      .server(Server
-        .builder()
-        .webServerPort(Numbers.firstPositive(mapField(Config::getWebServerPort, configs)))
-        .dnsServerPort(Numbers.firstPositive(mapField(Config::getDnsServerPort, configs)))
-        .serverProtocol(firstNonNullRequiring(mapField(Config::getServerProtocol, configs)))
-        .dnsServerNoEntriesResponseCode(firstNonNullRequiring(mapField(Config::getNoEntriesResponseCode, configs)))
-        .build()
-      )
-      .version(this.versionDAO.findVersion())
-      .log(Log
-        .builder()
-        .level(firstNonNullRequiring(mapField(Config::getLogLevel, configs)))
-        .file(firstNonNullRequiring(mapField(Config::getLogFile, configs)))
-        .build()
-      )
-      .configPath(firstNonNullRequiring(mapField(Config::getConfigPath, configs)))
-      .defaultDns(Config.DefaultDns
-        .builder()
-        .active(firstNonNullRequiring(mapField(Config::isDefaultDnsActive, configs)))
-        .resolvConf(Config.DefaultDns.ResolvConf
-          .builder()
-          .paths(firstNonNullRequiring(mapField(Config::getDefaultDnsResolvConfPaths, configs)))
-          .overrideNameServers(firstNonNullRequiring(mapField(Config::isResolvConfOverrideNameServersActive, configs)))
-          .build())
-        .build()
-      )
-      .solverRemote(SolverRemote
-        .builder()
-        .active(firstNonNullRequiring(mapField(Config::isSolverRemoteActive, configs)))
-        .circuitBreaker(firstNonNullRequiring(mapField(Config::getSolverRemoteCircuitBreakerStrategy, configs)))
-        .dnsServers(firstNonEmptyListRequiring(mapField(Config::getRemoteDnsServers, configs)))
-        .build()
-      )
-      .solverStub(SolverStub
-        .builder()
-        .domainName(firstNonNullRequiring(mapField(Config::getSolverStubDomainName, configs)))
-        .build()
-      )
-      .solverDocker(SolverDocker
-        .builder()
-        .dockerDaemonUri(firstNonNullRequiring(mapField(Config::getDockerDaemonUri, configs)))
-        .registerContainerNames(firstNonNullRequiring(mapField(Config::getRegisterContainerNames, configs)))
-        .domain(firstNonNullRequiring(mapField(Config::getDockerDomain, configs)))
-        .hostMachineFallback(firstNonNullRequiring(mapField(Config::getDockerSolverHostMachineFallbackActive, configs)))
-        .dpsNetwork(firstNonNullRequiring(mapField(Config::getDockerSolverDpsNetwork, configs)))
-        .build()
-      )
-      .solverSystem(SolverSystem
-        .builder()
-        .hostMachineHostname(firstNonNullRequiring(mapField(Config::getHostMachineHostname, configs)))
-        .build()
-      )
-      .solverLocal(SolverLocal
-        .builder()
-        .activeEnv(firstNonNull(mapField(Config::getActiveEnv, configs)))
-        .envs(firstNonNull(mapField(Config::getEnvs, configs)))
-        .build()
-      )
-      .source(Config.Source.MERGED)
-      .build();
+        .server(Config.Server
+            .builder()
+            .webServerPort(Numbers.firstPositive(mapField(Config::getWebServerPort, configs)))
+            .dnsServerPort(Numbers.firstPositive(mapField(Config::getDnsServerPort, configs)))
+            .serverProtocol(firstNonNullRequiring(mapField(Config::getServerProtocol, configs)))
+            .dnsServerNoEntriesResponseCode(
+                firstNonNullRequiring(mapField(Config::getNoEntriesResponseCode, configs))
+            )
+            .build()
+        )
+        .version(this.versionDAO.findVersion())
+        .log(Config.Log
+            .builder()
+            .level(firstNonNullRequiring(mapField(Config::getLogLevel, configs)))
+            .file(firstNonNullRequiring(mapField(Config::getLogFile, configs)))
+            .build()
+        )
+        .defaultDns(DefaultDns
+            .builder()
+            .active(firstNonNullRequiring(mapField(Config::isDefaultDnsActive, configs)))
+            .resolvConf(DefaultDns.ResolvConf
+                .builder()
+                .paths(
+                    firstNonNullRequiring(mapField(Config::getDefaultDnsResolvConfPaths, configs)))
+                .overrideNameServers(firstNonNullRequiring(
+                    mapField(Config::isResolvConfOverrideNameServersActive, configs)))
+                .build())
+            .build()
+        )
+        .solverRemote(Config.SolverRemote
+            .builder()
+            .active(firstNonNullRequiring(mapField(Config::isSolverRemoteActive, configs)))
+            .circuitBreaker(firstNonNullRequiring(
+                mapField(Config::getSolverRemoteCircuitBreakerStrategy, configs)
+            ))
+            .dnsServers(firstNonEmptyListRequiring(mapField(Config::getRemoteDnsServers, configs)))
+            .build()
+        )
+        .solverStub(Config.SolverStub
+            .builder()
+            .domainName(firstNonNullRequiring(mapField(Config::getSolverStubDomainName, configs)))
+            .build()
+        )
+        .solverDocker(Config.SolverDocker
+            .builder()
+            .dockerDaemonUri(firstNonNullRequiring(mapField(Config::getDockerDaemonUri, configs)))
+            .registerContainerNames(
+                firstNonNullRequiring(mapField(Config::getRegisterContainerNames, configs)))
+            .domain(firstNonNullRequiring(mapField(Config::getDockerDomain, configs)))
+            .hostMachineFallback(firstNonNullRequiring(
+                mapField(Config::getDockerSolverHostMachineFallbackActive, configs)))
+            .dpsNetwork(firstNonNullRequiring(mapField(Config::getDockerSolverDpsNetwork, configs)))
+            .build()
+        )
+        .solverSystem(Config.SolverSystem
+            .builder()
+            .hostMachineHostname(
+                firstNonNullRequiring(mapField(Config::getHostMachineHostname, configs)))
+            .build()
+        )
+        .solverLocal(Config.SolverLocal
+            .builder()
+            .activeEnv(firstNonNull(mapField(Config::getActiveEnv, configs)))
+            .envs(firstNonEmptyList(mapField(Config::getEnvs, configs)))
+            .build()
+        )
+        .source(Config.Source.MERGED)
+        .build();
     ConfigValidator.validate(config);
     return config;
   }
 
-  private static Config buildDefault() {
+  static Config buildDefault() {
     return Config
-      .builder()
-      .server(Server
         .builder()
-        .serverProtocol(SimpleServer.Protocol.UDP_TCP)
-        .build()
-      )
-      .solverRemote(SolverRemote
+        .server(Config.Server
+            .builder()
+            .serverProtocol(SimpleServer.Protocol.UDP_TCP)
+            .build()
+        )
+        .defaultDns(DefaultDns.builder()
+            .active(true)
+            .resolvConf(DefaultDns.ResolvConf.builder()
+                .paths(RESOLV_CONF_DEFAULT_PATHS)
+                .overrideNameServers(true)
+                .build()
+            )
+            .build()
+        )
+        .solverRemote(Config.SolverRemote
+            .builder()
+            .active(true)
+            .circuitBreaker(defaultCircuitBreaker())
+            .dnsServers(Collections.singletonList(IpAddr.of("8.8.8.8:53")))
+            .build()
+        )
+        .solverStub(Config.SolverStub.builder()
+            .domainName("stub")
+            .build()
+        )
+        .solverDocker(Config.SolverDocker
+            .builder()
+            .dockerDaemonUri(buildDefaultDockerHost())
+            .build()
+        )
+        .solverLocal(Config.SolverLocal.builder()
+            .activeEnv(Env.DEFAULT_ENV)
+            .envs(List.of(defaultEnv()))
+            .build()
+        )
+        .source(Config.Source.DEFAULT)
+        .build();
+  }
+
+  static Env defaultEnv() {
+    return Env.of(Env.DEFAULT_ENV, List.of(aSampleEntry()));
+  }
+
+  static Config.Entry aSampleEntry() {
+    return Config.Entry
         .builder()
-        .active(true)
-        .circuitBreaker(defaultCircuitBreaker())
-        .dnsServers(Collections.singletonList(IpAddr.of("8.8.8.8:53")))
-        .build()
-      )
-      .solverStub(SolverStub.builder()
-        .domainName("stub")
-        .build()
-      )
-      .solverDocker(SolverDocker
-        .builder()
-        .dockerDaemonUri(buildDefaultDockerHost())
-        .build()
-      )
-      .source(Config.Source.DEFAULT)
-      .build();
+        .type(Config.Entry.Type.A)
+        .hostname("dps-sample.dev")
+        .ip(IP.of("192.168.0.254"))
+        .ttl(30)
+        .id(1L)
+        .build();
   }
 
   public static StaticThresholdCircuitBreakerStrategyConfig defaultCircuitBreaker() {
     return StaticThresholdCircuitBreakerStrategyConfig
-      .builder()
-      .failureThreshold(3)
-      .failureThresholdCapacity(10)
-      .successThreshold(5)
-      .testDelay(Duration.ofSeconds(20))
-      .build();
+        .builder()
+        .failureThreshold(3)
+        .failureThresholdCapacity(10)
+        .successThreshold(5)
+        .testDelay(Duration.ofSeconds(20))
+        .build();
   }
 
   private static URI buildDefaultDockerHost() {
