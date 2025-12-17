@@ -220,6 +220,13 @@ public class Config {
     return this.solverLocal.getActiveEnv();
   }
 
+  public SolverDocker.Networks getDockerSolverNetworks() {
+    if (this.solverDocker == null) {
+      return null;
+    }
+    return this.solverDocker.networks;
+  }
+
   @Value
   @Builder(toBuilder = true)
   public static class DefaultDns {
@@ -483,6 +490,8 @@ public class Config {
     DpsNetwork dpsNetwork;
     Boolean hostMachineFallback;
 
+    Networks networks;
+
     public boolean shouldUseHostMachineFallback() {
       return BooleanUtils.toBoolean(hostMachineFallback);
     }
@@ -499,6 +508,23 @@ public class Config {
         return false;
       }
       return this.dpsNetwork.shouldAutoConnect();
+    }
+
+    @Value
+    @Builder
+    public static class Networks {
+
+      Preferred preferred;
+
+      @Value
+      @Builder
+      public static class Preferred {
+
+        boolean overrideDefault;
+
+        List<String> names;
+
+      }
     }
 
     @Value

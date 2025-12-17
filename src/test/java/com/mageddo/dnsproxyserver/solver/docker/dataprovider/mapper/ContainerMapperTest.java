@@ -1,11 +1,13 @@
 package com.mageddo.dnsproxyserver.solver.docker.dataprovider.mapper;
 
+import com.mageddo.dnsproxyserver.config.templates.DockerSolverPreferredNetworksTemplates;
 import com.mageddo.net.IP;
 
 import org.junit.jupiter.api.Test;
 
 import testing.templates.docker.InspectContainerResponseTemplates;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static testing.templates.docker.InspectContainerResponseTemplates.ngixWithDefaultBridgeNetworkOnly;
@@ -40,6 +42,74 @@ class ContainerMapperTest {
     assertNotNull(container);
     assertEquals("[172.17.0.4]", String.valueOf(container.getIps()));
     assertEquals("[shibata, dps, bridge]", String.valueOf(container.getPreferredNetworkNames()));
+
+  }
+
+  @Test
+  void mustPreferSpecifiedNetworks() {
+
+    // arrange
+    final var inspect = ngixWithDefaultBridgeNetworkOnly();
+    final var preferred = DockerSolverPreferredNetworksTemplates.batataPreferredNetwork();
+
+    // act
+    final var container = ContainerMapper.of(inspect, preferred);
+
+    // assert
+    assertNotNull(container);
+    assertThat(container.getPreferredNetworkNames()).containsExactly(
+        "shibata", "batata", "dps", "bridge"
+    );
+
+  }
+
+  @Test
+  void mustReplaceBySpecifiedNetworksRespectingPrincipal() {
+    // arrange
+    final var inspect = ngixWithDefaultBridgeNetworkOnly();
+    final var preferred = DockerSolverPreferredNetworksTemplates.batataPreferredNetworkOverride();
+
+    // act
+    final var container = ContainerMapper.of(inspect, preferred);
+
+    // assert
+    assertNotNull(container);
+    assertThat(container.getPreferredNetworkNames())
+        .containsExactly("shibata", "batata");
+
+  }
+
+  @Test
+  void mustReplaceSpecifiedNetworkNames() {
+    // arrange
+    final var inspect = ngixWithIpv6DefaultBridgeNetworkOnly();
+    final var preferred = DockerSolverPreferredNetworksTemplates.batataPreferredNetworkOverride();
+
+    // act
+    final var container = ContainerMapper.of(inspect, preferred);
+
+    // assert
+    assertNotNull(container);
+
+    assertThat(container.getPreferredNetworkNames())
+        .containsExactly("batata");
+
+  }
+
+  @Test
+  void mustPrependSpecifiedNetworkNames() {
+    // arrange
+    final var inspect = ngixWithIpv6DefaultBridgeNetworkOnly();
+    final var preferred = DockerSolverPreferredNetworksTemplates.batataPreferredNetwork();
+
+    // act
+    final var container = ContainerMapper.of(inspect, preferred);
+
+    // assert
+    assertNotNull(container);
+
+    assertThat(container.getPreferredNetworkNames())
+        .containsExactly("batata", "dps", "bridge");
 
   }
 

@@ -1,5 +1,6 @@
 package com.mageddo.dnsproxyserver.solver.docker.dataprovider.mapper;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.stream.Stream;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ContainerNetwork;
+import com.mageddo.dnsproxyserver.config.Config.SolverDocker;
+import com.mageddo.dnsproxyserver.config.application.Configs;
 import com.mageddo.dnsproxyserver.docker.application.Labels;
 import com.mageddo.dnsproxyserver.solver.docker.Container;
 import com.mageddo.dnsproxyserver.solver.docker.Network;
@@ -23,8 +26,14 @@ public class ContainerMapper {
   public static final String DEFAULT_NETWORK_LABEL = "dps.network";
 
   public static Container of(InspectContainerResponse inspect) {
+    return of(inspect, findPreferred());
+  }
+
+  public static Container of(
+      InspectContainerResponse inspect, SolverDocker.Networks.Preferred preferred
+  ) {
     final var foundNetworks = buildNetworks(inspect);
-    final var possibleNetworksNames = buildNetworkNames(inspect);
+    final var possibleNetworksNames = buildNetworkNames(inspect, preferred);
     return Container
         .builder()
         .id(inspect.getId())
@@ -66,14 +75,60 @@ public class ContainerMapper {
         ;
   }
 
-  static Set<String> buildNetworkNames(InspectContainerResponse c) {
+  static Set<String> buildNetworkNames(
+      InspectContainerResponse c, SolverDocker.Networks.Preferred preferred
+  ) {
+    if (preferred.isOverrideDefault() && preferred.getNames() != null) {
+      return mapPrincipalNetworkWith(c, preferred.getNames());
+    }
+    if (preferred.getNames() == null) {
+      return buildDefaultWithPrincipal(c);
+    }
+    return mapPrincipalNetworkWith(c, preferred.getNames(), buildDefault());
+  }
+
+  @SafeVarargs
+  private static Set<String> mapPrincipalNetworkWith(
+      InspectContainerResponse c, Collection<String>... namesCollections
+  ) {
+    final var set = new LinkedHashSet<String>();
+    final var principal = mapPrincipalNetworkName(c);
+    if (StringUtils.isNotBlank(principal)) {
+      set.add(principal);
+    }
+    for (var names : namesCollections) {
+      set.addAll(names);
+    }
+    return set;
+  }
+
+  private static LinkedHashSet<String> buildDefault() {
+    return buildDefault(null);
+  }
+
+  private static LinkedHashSet<String> buildDefaultWithPrincipal(InspectContainerResponse c) {
+    return buildDefault(mapPrincipalNetworkName(c));
+  }
+
+  private static String mapPrincipalNetworkName(InspectContainerResponse c) {
+    return Labels.findLabelValue(c.getConfig(), DEFAULT_NETWORK_LABEL);
+  }
+
+  private static LinkedHashSet<String> buildDefault(String principalNetworkName) {
     return Stream.of(
-            Labels.findLabelValue(c.getConfig(), DEFAULT_NETWORK_LABEL),
+            principalNetworkName,
             Network.Name.DPS.lowerCaseName(),
             Network.Name.BRIDGE.lowerCaseName()
         )
         .filter(Objects::nonNull)
         .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  private static SolverDocker.Networks.Preferred findPreferred() {
+    return Configs.getInstance()
+        .getSolverDocker()
+        .getNetworks()
+        .getPreferred();
   }
 
   static IP buildDefaultIp(InspectContainerResponse c, IP.Version version) {
