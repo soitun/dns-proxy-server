@@ -13,11 +13,11 @@ public class ConfigV3Templates {
         version: 3
         server:
           dns:
+            protocol: UDP_TCP
             port: 53
             noEntriesResponseCode: 3
           web:
             port: 5380
-          protocol: UDP_TCP
         solver:
           remote:
             active: true
@@ -84,10 +84,10 @@ public class ConfigV3Templates {
           },
           "server" : {
             "dns" : {
+              "protocol" : "UDP_TCP",
               "noEntriesResponseCode" : 3,
               "port" : 53
             },
-            "protocol" : "UDP_TCP",
             "web" : {
               "port" : 5380
             }
@@ -145,13 +145,13 @@ public class ConfigV3Templates {
           "version": 3,
           "server": {
             "dns": {
+              "protocol": "UDP_TCP",
               "port": 53,
               "noEntriesResponseCode": 3
             },
             "web": {
               "port": 5380
-            },
-            "protocol": "UDP_TCP"
+            }
           },
           "solver": {
             "remote": {

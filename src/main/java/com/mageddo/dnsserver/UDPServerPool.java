@@ -1,5 +1,6 @@
 package com.mageddo.dnsserver;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -25,18 +26,18 @@ public class UDPServerPool {
   private final RequestHandler requestHandler;
   private List<UDPServer> servers = new ArrayList<>();
 
-  public void start(int port) {
-    final var addresses = this.buildAddressesToBind(port);
+  public void start(InetAddress addr, int port) {
+    final var addresses = this.buildAddressesToBind(port, addr);
     this.servers = Collections.map(
         addresses,
         address -> new UDPServer(address, this.requestHandler)
     );
     this.servers.forEach(UDPServer::start);
-    log.info("Starting UDP server, addresses={}", this.toString(addresses));
+    log.info("status=starting, addresses={}", this.toString(addresses));
   }
 
-  private List<InetSocketAddress> buildAddressesToBind(int port) {
-    final var bindIp = Ips.from(Ips.getAnyLocalIpv6Address());
+  private List<InetSocketAddress> buildAddressesToBind(int port, InetAddress addr) {
+    final var bindIp = Ips.from(addr);
     return this.buildAddressesToBind(bindIp, port);
   }
 
