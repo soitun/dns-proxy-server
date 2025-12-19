@@ -4,9 +4,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.mageddo.graalvm.ImageInfo;
+import com.mageddo.graalvm.ProcessProperties;
+
 import org.apache.commons.lang3.ObjectUtils;
-import org.graalvm.nativeimage.ImageInfo;
-import org.graalvm.nativeimage.ProcessProperties;
 
 import lombok.SneakyThrows;
 
@@ -33,8 +34,7 @@ public class Runtime {
 
   public static Path getRunningDir() {
     if (ImageInfo.inImageRuntimeCode()) {
-      return Paths.get(ProcessProperties.getExecutableName())
-          .getParent();
+      return ProcessProperties.getRunningPath();
     }
     final var path = getRunningPath();
     if (isJar(path)) {
