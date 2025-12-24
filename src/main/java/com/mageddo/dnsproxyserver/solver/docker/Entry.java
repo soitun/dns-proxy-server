@@ -16,4 +16,16 @@ public class Entry {
   public String getIpText() {
     return this.ip != null ? this.ip.toText() : null;
   }
+
+  public boolean isHostNameNotMatched() {
+    return !this.hostnameMatched;
+  }
+
+  public boolean hasNotIP() {
+    return this.ip == null;
+  }
+
+  public boolean hasIp() {
+    return this.ip != null;
+  }
 }
