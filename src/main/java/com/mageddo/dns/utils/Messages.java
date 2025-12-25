@@ -1,6 +1,9 @@
 package com.mageddo.dns.utils;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 import com.mageddo.commons.lang.Objects;
@@ -39,6 +42,11 @@ public class Messages {
   public static Message authoritative(Message m) {
     setFlag(m, Flags.AA);
     return m;
+  }
+
+  private static Name findQuestionName(Message m) {
+    return m.getQuestion()
+        .getName();
   }
 
   public static String simplePrint(Response res) {
@@ -115,7 +123,7 @@ public class Messages {
   }
 
   public static Message aAnswer(Message query, String ip, long ttl) {
-    final var res = withNoErrorResponse(query.clone());
+    final var res = withNoErrorResponse(copy(query));
     if (StringUtils.isBlank(ip)) {
       return res;
     }
@@ -182,7 +190,7 @@ public class Messages {
    * @return a clone with the combination.
    */
   public static Message combine(Message source, Message target) {
-    final var clone = clone(target);
+    final var clone = copy(target);
     for (int i = 1; i < 4; i++) {
       final var section = source.getSection(i);
       for (final var record : section) {
@@ -298,7 +306,7 @@ public class Messages {
     return res;
   }
 
-  static Message clone(Message msg) {
+  public static Message copy(Message msg) {
     if (msg == null) {
       return null;
     }
@@ -308,6 +316,12 @@ public class Messages {
   public static Message setFlag(Message m, int flag) {
     m.getHeader()
         .setFlag(flag);
+    return m;
+  }
+
+  public static Message unsetFlag(Message m, int flag) {
+    m.getHeader()
+        .unsetFlag(flag);
     return m;
   }
 
@@ -322,7 +336,6 @@ public class Messages {
         .toVersion();
     return HostnameQuery.of(host, version);
   }
-
 
   public static boolean isSuccess(Message res) {
     return res.getRcode() == Rcode.NOERROR;
@@ -340,11 +353,25 @@ public class Messages {
     return withResponseCode(query.clone(), Rcode.NOERROR);
   }
 
+  public static Message of(byte[] m) {
+    try {
+      return new Message(m);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public static Message unsetAuthoritative(Message m) {
+    return unsetFlag(m, Flags.AA);
+  }
+
   public static Message authoritativeAnswer(Message query, String ip, IP.Version version) {
     return authoritative(answer(query, ip, version));
   }
 
-  public static Message authoritativeAnswer(Message query, String ip, IP.Version version, long ttl) {
+  public static Message authoritativeAnswer(
+      Message query, String ip, IP.Version version, long ttl
+  ) {
     return authoritative(answer(query, ip, version, ttl));
   }
 
@@ -354,5 +381,18 @@ public class Messages {
 
   public static boolean isRecursionAvailable(Message m) {
     return hasFlag(m, Flags.RA);
+  }
+
+  public static int getId(Message m) {
+    return m.getHeader()
+        .getID();
+  }
+
+  public static Message notSupportedHttps(Message m) {
+    return authoritative(withNoErrorResponse(copy(m)));
+  }
+
+  public static List<Record> getAnswers(Message m) {
+    return m.getSection(Section.ANSWER);
   }
 }

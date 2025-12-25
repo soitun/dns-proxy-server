@@ -81,6 +81,13 @@ public class ConfigV3 {
   @Data
   @Accessors(chain = true)
   @FieldDefaults(level = AccessLevel.PRIVATE)
+  static public class DoH {
+    Integer port;
+  }
+
+  @Data
+  @Accessors(chain = true)
+  @FieldDefaults(level = AccessLevel.PRIVATE)
   static public class Docker {
     Boolean registerContainerNames;
     String domain;
@@ -191,6 +198,7 @@ public class ConfigV3 {
   static public class Server {
     String host;
     Dns dns;
+    DoH doh;
     Web web;
   }
 

@@ -236,6 +236,13 @@ public class Config {
     return this.server.dns;
   }
 
+  public Server.DoH getDohServer() {
+    if (this.server == null) {
+      return null;
+    }
+    return this.server.doh;
+  }
+
   @Value
   @Builder(toBuilder = true)
   public static class DefaultDns {
@@ -382,6 +389,7 @@ public class Config {
       A(org.xbill.DNS.Type.A),
       CNAME(org.xbill.DNS.Type.CNAME),
       AAAA(org.xbill.DNS.Type.AAAA),
+      HTTPS(org.xbill.DNS.Type.HTTPS),
       ;
 
       /**
@@ -419,12 +427,17 @@ public class Config {
         return switch (this) {
           case A -> IP.Version.IPV4;
           case AAAA -> IP.Version.IPV6;
+          case HTTPS -> null;
           default -> throw new IllegalStateException("Unexpected value: " + this);
         };
       }
 
       public boolean isAddressSolving() {
         return ConfigEntryTypes.is(this, Config.Entry.Type.A, Config.Entry.Type.AAAA);
+      }
+
+      public boolean isHttps() {
+        return this == HTTPS;
       }
     }
   }
@@ -481,6 +494,7 @@ public class Config {
   public static class Server {
     String host;
     Dns dns;
+    DoH doh;
     Integer webServerPort;
 
     @Value
@@ -489,6 +503,21 @@ public class Config {
       Protocol protocol;
       Integer port;
       Integer noEntriesResponseCode;
+    }
+
+    @Value
+    @Builder
+    public static class DoH {
+
+      Integer port;
+
+      public boolean isActive() {
+        return this.port != null;
+      }
+
+      public boolean isNotActive() {
+        return !this.isActive();
+      }
     }
   }
 
