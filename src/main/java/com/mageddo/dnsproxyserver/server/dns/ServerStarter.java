@@ -1,6 +1,7 @@
 package com.mageddo.dnsproxyserver.server.dns;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,7 +41,7 @@ public class ServerStarter {
 
   void startDohWhenNeedled(Server.DoH doh, InetAddress address) {
     if (doh != null && doh.isActive()) {
-      this.doHServer.start(address, doh.getPort());
+      this.doHServer.start(new InetSocketAddress(address, doh.getPort()));
     }
   }
 
