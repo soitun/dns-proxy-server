@@ -2,7 +2,7 @@ package com.mageddo.dnsproxyserver.server.dns;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -10,20 +10,23 @@ import javax.inject.Singleton;
 import com.mageddo.commons.lang.Objects;
 import com.mageddo.dns.utils.Messages;
 import com.mageddo.dnsproxyserver.config.application.Configs;
-import com.mageddo.dnsproxyserver.solver.CacheName;
-import com.mageddo.dnsproxyserver.solver.CacheName.Name;
+import com.mageddo.dnsproxyserver.solver.NamedResponse;
 import com.mageddo.dnsproxyserver.solver.Response;
 import com.mageddo.dnsproxyserver.solver.Solver;
-import com.mageddo.dnsproxyserver.solver.SolverCache;
 import com.mageddo.dnsproxyserver.solver.SolverProvider;
+import com.mageddo.dnsproxyserver.solver.cache.CacheName;
+import com.mageddo.dnsproxyserver.solver.cache.CacheName.Name;
+import com.mageddo.dnsproxyserver.solver.cache.SolverCache;
 import com.mageddo.dnsserver.RequestHandler;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.xbill.DNS.Message;
 
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.mageddo.dns.utils.Messages.simplePrint;
@@ -51,11 +54,13 @@ public class RequestHandlerDefault implements RequestHandler {
 
   @Override
   public Message handle(Message query, String kind) {
-    final var queryStr = simplePrint(query);
     final var stopWatch = StopWatch.createStarted();
-    log.debug("status=solveReq, kind={}, query={}", kind, queryStr);
+    if (log.isTraceEnabled()) {
+      final var queryStr = simplePrint(query);
+      log.trace("status=solving, kind={}, query={}", kind, queryStr);
+    }
     try {
-      return this.solveCaching(query, kind, stopWatch, queryStr);
+      return this.solveCaching(query, kind, stopWatch);
     } catch (Exception e) {
       log.warn(
           "status=solverFailed, totalTime={}, eClass={}, msg={}",
@@ -65,62 +70,85 @@ public class RequestHandlerDefault implements RequestHandler {
     }
   }
 
-  Message solveCaching(Message query, String kind, StopWatch stopWatch, String queryStr) {
-    final var res = Optional
-        .ofNullable(this.cache.handle(query, this::solveFixingCacheTTL))
-        .orElseGet(() -> this.buildDefaultRes(query));
-    log.debug("status=solveRes, kind={}, time={}, res={}, req={}", kind, stopWatch.getTime(),
-        simplePrint(res), queryStr
+  Message solveCaching(Message query, String kind, StopWatch stopWatch) {
+    final var value = this.cache.handle(query, this::solveWithFixedCacheTTL);
+    if (value == null) {
+      final var msg = this.buildDefaultRes(query);
+      log.debug(
+          "status=defaultAnswer, kind={}, totalTime={}, res={}",
+          kind, stopWatch.getTime(), simplePrint(msg)
+      );
+      return msg;
+    }
+    log.debug(
+        "status=solved, entrypoint={}, hotload={}, solver={}, totalTime={}, ttl={}, answers={}, res={}",
+        kind, value.isHotload(),
+        value.getSolver(),
+        stopWatch.getTime(),
+        value.getTTLAsSeconds(),
+        value.countAnswers(),
+        simplePrint(value.getMessage())
     );
-    return res;
+    return value.getMessage();
   }
 
-  Response solveFixingCacheTTL(Message reqMsg) {
-    return Objects.mapOrNull(this.solve(reqMsg), res -> res.withTTL(DEFAULT_GLOBAL_CACHE_DURATION));
+  NamedResponse solveWithFixedCacheTTL(Message req) {
+    return Objects.mapOrNull(
+        this.solve(req),
+        res -> res.withTTL(DEFAULT_GLOBAL_CACHE_DURATION)
+    );
   }
 
-  Response solve(Message reqMsg) {
+  NamedResponse solve(Message req) {
     final var timeSummary = new ArrayList<>();
     try {
       final var stopWatch = StopWatch.createStarted();
-      final var solvers = this.solverProvider.getSolvers();
+      final var solvers = this.getSolvers();
       for (final var solver : solvers) {
-        final var triple = this.solveAndSummarizeHandlingError(reqMsg, solver, stopWatch);
-        timeSummary.add(Pair.of(triple.getLeft(), triple.getMiddle()));
-        if (triple.getRight() != null) {
-          return triple.getRight();
+        final var res = this.solveTracking(req, solver, stopWatch);
+        timeSummary.add(Pair.of(res.getSolverName(), res.getSolverTime()));
+        if (res.hasResponse()) {
+          return NamedResponse.of(res.getResponse(), solver.name());
         }
       }
     } finally {
       if (log.isDebugEnabled()) {
-        log.debug("status=solveSummary, summary={}", timeSummary);
+        log.debug("req={} timesSummary={}", Messages.simplePrint(req), timeSummary);
       }
     }
     return null;
   }
 
-  Triple<String, Long, Response> solveAndSummarizeHandlingError(Message reqMsg, Solver solver,
-      StopWatch stopWatch) {
-    final var solverName = solver.name();
+  TrackedResponse solveTracking(
+      Message req, Solver solver, StopWatch stopWatch
+  ) {
     try {
-      return this.solveAndSummarize(reqMsg, solver, stopWatch);
+      return this.solveTracking0(req, solver, stopWatch);
     } catch (Exception e) {
+      final var solverName = solver.name();
+      final var solverTime = stopWatch.getTime() - stopWatch.getSplitTime();
       log.warn(
-          "status=solverFailed, currentSolverTime={}, totalTime={}, solver={}, query={}, "
+          "status=failed, solverTime={}, totalTime={}, solver={}, query={}, "
               + "eClass={}, msg={}",
-          stopWatch.getTime() - stopWatch.getSplitTime(), stopWatch.getTime(), solverName,
-          simplePrint(reqMsg), ClassUtils.getSimpleName(e), e.getMessage(), e
+          solverTime, stopWatch.getTime(), solverName,
+          simplePrint(req), ClassUtils.getSimpleName(e), e.getMessage(), e
       );
-      return null;
+      return TrackedResponse.builder()
+          .solverName(solverName)
+          .solverTime(solverTime)
+          .build();
     }
   }
 
-  Triple<String, Long, Response> solveAndSummarize(Message reqMsg, Solver solver,
-      StopWatch stopWatch) {
+  TrackedResponse solveTracking0(
+      Message reqMsg, Solver solver, StopWatch stopWatch
+  ) {
     stopWatch.split();
     final var solverName = solver.name();
     final var reqStr = simplePrint(reqMsg);
-    log.trace("status=trySolve, solver={}, req={}", solverName, reqStr);
+    if (log.isTraceEnabled()) {
+      log.trace("status=trySolve, solver={}, req={}", solverName, reqStr);
+    }
     final var res = solver.handle(reqMsg);
     final var solverTime = stopWatch.getTime() - stopWatch.getSplitTime();
     if (res == null) {
@@ -128,17 +156,47 @@ public class RequestHandlerDefault implements RequestHandler {
           "status=notSolved, currentSolverTime={}, totalTime={}, solver={}, req={}",
           solverTime, stopWatch.getTime(), solverName, reqStr
       );
-      return Triple.of(solverName, solverTime, null);
+      return TrackedResponse.builder()
+          .solverName(solverName)
+          .solverTime(solverTime)
+          .build();
     }
-    log.debug(
-        "status=solved, res={}, solver={}, answers={}, currentSolverTime={}, totalTime={}",
-        simplePrint(res), solverName, res.countAnswers(), solverTime, stopWatch.getTime()
-    );
-    return Triple.of(solverName, solverTime, res);
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "status=solved, res={}, solver={}, answers={}, currentSolverTime={}, totalTime={}",
+          simplePrint(res), solverName, res.countAnswers(), solverTime, stopWatch.getTime()
+      );
+    }
+    return TrackedResponse.builder()
+        .solverName(solverName)
+        .solverTime(solverTime)
+        .response(res)
+        .build();
   }
 
-  public Message buildDefaultRes(Message reqMsg) {
+  List<Solver> getSolvers() {
+    return this.solverProvider.getSolvers();
+  }
+
+  Message buildDefaultRes(Message reqMsg) {
     // if all failed and returned null, then return as can't find
     return Messages.withResponseCode(reqMsg, this.noEntriesRCode);
+  }
+
+  @Value
+  @Builder
+  static class TrackedResponse {
+
+    @NonNull
+    Long solverTime;
+
+    @NonNull
+    String solverName;
+
+    Response response;
+
+    public boolean hasResponse() {
+      return this.response != null;
+    }
   }
 }

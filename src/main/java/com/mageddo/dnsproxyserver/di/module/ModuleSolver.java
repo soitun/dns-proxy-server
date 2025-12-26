@@ -6,14 +6,14 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Singleton;
 
 import com.mageddo.di.InstanceImpl;
-import com.mageddo.dnsproxyserver.solver.CacheName;
-import com.mageddo.dnsproxyserver.solver.CacheName.Name;
+import com.mageddo.dnsproxyserver.solver.cache.CacheName;
+import com.mageddo.dnsproxyserver.solver.cache.CacheName.Name;
 import com.mageddo.dnsproxyserver.solver.Solver;
-import com.mageddo.dnsproxyserver.solver.SolverCache;
-import com.mageddo.dnsproxyserver.solver.SolverCachedRemote;
-import com.mageddo.dnsproxyserver.solver.SolverDocker;
+import com.mageddo.dnsproxyserver.solver.cache.SolverCache;
+import com.mageddo.dnsproxyserver.solver.remote.SolverCachedRemote;
+import com.mageddo.dnsproxyserver.solver.docker.SolverDocker;
 import com.mageddo.dnsproxyserver.solver.SolverLocalDB;
-import com.mageddo.dnsproxyserver.solver.SolverSystem;
+import com.mageddo.dnsproxyserver.solver.system.SolverSystem;
 import com.mageddo.dnsproxyserver.solver.stub.SolverStub;
 
 import dagger.Module;

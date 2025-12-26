@@ -12,9 +12,9 @@ import com.mageddo.dnsproxyserver.config.Config.Entry;
 import com.mageddo.dnsproxyserver.solver.HostnameQuery;
 import com.mageddo.dnsproxyserver.solver.Response;
 import com.mageddo.dnsproxyserver.utils.Ips;
-import com.mageddo.net.IP;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
@@ -58,7 +58,7 @@ public class Messages {
       return null;
     }
     try {
-      final var answer = findFirstAnswerRecord(reqOrRes);
+      final var answer = getFirstAnswer(reqOrRes);
       final var rcode = reqOrRes.getRcode();
       if (answer != null) {
         return String.format("rc=%d, res=%s", rcode, simplePrint(answer));
@@ -135,12 +135,8 @@ public class Messages {
   }
 
   public static String findFirstAnswerRecordStr(Message msg) {
-    final var v = findFirstAnswerRecord(msg);
+    final var v = getFirstAnswer(msg);
     return v == null ? null : v.toString();
-  }
-
-  public static Record findFirstAnswerRecord(Message msg) {
-    return getFirstRecord(msg, Section.ANSWER);
   }
 
   public static Record findFirstAuthorityRecord(Message msg) {
@@ -152,7 +148,7 @@ public class Messages {
     if (section.isEmpty()) {
       return null;
     }
-    return section.get(0);
+    return section.getFirst();
   }
 
   public static Message aQuestion(String host) {
@@ -214,7 +210,7 @@ public class Messages {
 
   public static Duration findTTL(Message m) {
     final var answer = Optional
-        .ofNullable(Messages.findFirstAnswerRecord(m))
+        .ofNullable(Messages.getFirstAnswer(m))
         .orElseGet(() -> Messages.findFirstAuthorityRecord(m));
     if (answer == null) {
       return Duration.ZERO;
@@ -239,7 +235,7 @@ public class Messages {
 
   @SneakyThrows
   public static Message cnameResponse(Message query, Integer ttl, String hostname) {
-    final var res = withNoErrorResponse(query.clone());
+    final var res = withNoErrorResponse(copy(query));
     final var answer = new CNAMERecord(
         res.getQuestion()
             .getName(),
@@ -273,15 +269,17 @@ public class Messages {
     return Messages.aAnswer(query, ip);
   }
 
-  public static Message answer(Message query, String ip, IP.Version version) {
-    return answer(query, ip, version, DEFAULT_TTL);
+  public static Message answer(Message query, String ip, Entry.Type type) {
+    return answer(query, ip, type, DEFAULT_TTL);
   }
 
-  public static Message answer(Message query, String ip, IP.Version version, long ttl) {
-    if (version.isIpv6()) {
-      return Messages.quadAnswer(query, ip, ttl);
-    }
-    return Messages.aAnswer(query, ip, ttl);
+  public static Message answer(Message query, String ip, Entry.Type type, long ttl) {
+    Validate.notNull(type, "type must not be null, query=%s", toHostnameQuery(query));
+    return switch (type) {
+      case A -> Messages.aAnswer(query, ip, ttl);
+      case AAAA -> Messages.quadAnswer(query, ip, ttl);
+      default -> throw new UnsupportedOperationException(String.valueOf(type));
+    };
   }
 
   static Message withNoErrorResponse(Message res) {
@@ -342,7 +340,7 @@ public class Messages {
   }
 
   public static String findAnswerRawIP(Message res) {
-    return findFirstAnswerRecord(res).rdataToString();
+    return getFirstAnswer(res).rdataToString();
   }
 
   public static boolean isNxDomain(Message m) {
@@ -365,14 +363,14 @@ public class Messages {
     return unsetFlag(m, Flags.AA);
   }
 
-  public static Message authoritativeAnswer(Message query, String ip, IP.Version version) {
-    return authoritative(answer(query, ip, version));
+  public static Message authoritativeAnswer(Message query, String ip, Entry.Type type) {
+    return authoritative(answer(query, ip, type));
   }
 
   public static Message authoritativeAnswer(
-      Message query, String ip, IP.Version version, long ttl
+      Message query, String ip, Entry.Type type, long ttl
   ) {
-    return authoritative(answer(query, ip, version, ttl));
+    return authoritative(answer(query, ip, type, ttl));
   }
 
   public static boolean isAuthoritative(Message m) {
@@ -394,5 +392,22 @@ public class Messages {
 
   public static List<Record> getAnswers(Message m) {
     return m.getSection(Section.ANSWER);
+  }
+
+  public static long getFirstAnswerTTL(Response res) {
+    return getFirstAnswerTTL(res.getMessage());
+  }
+
+  public static long getFirstAnswerTTL(Message message) {
+    return Objects.mapOrNull(getFirstAnswer(message), Record::getTTL);
+  }
+
+  public static Record getFirstAnswer(Message message) {
+    return getFirstRecord(message, Section.ANSWER);
+  }
+
+  public static Duration getFirstAnswerTTLDuration(Response response) {
+    final var ttl = getFirstAnswerTTL(response);
+    return Objects.mapOrNull(ttl, Duration::ofSeconds);
   }
 }

@@ -16,23 +16,31 @@ import lombok.Value;
 @Builder(toBuilder = true)
 public class Response {
 
+  public static final Duration FIVE_MINUTES = Duration.ofMinutes(5);
+  public static final Duration ONE_HOUR = Duration.ofMinutes(60);
+
+  public static final Duration DEFAULT = FIVE_MINUTES;
+  public static final Duration DEFAULT_LONG = ONE_HOUR;
+
   /**
+   * <pre>
    * These magic numbers were defined as explained at #370.
-   * <br/>
-   * "I read it is a common approach to DNS Servers to cache names for more time than specified
-   * on the TTL
-   * In general people expects the server name address to be updated in some hours, then if DPS
-   * caches found
-   * hostnames for at least 5 minutes and the don't found for 1 hour, it might speed up a lot."
+   *
+   * I read it is a common approach to DNS Servers to cache names for more time than specified
+   * on the TTL.
+   * In general, people expects the server name address to be updated in some hours,
+   * then if DPS cache found hostnames for at least {@link #DEFAULT},
+   * and not found for {@link #DEFAULT_LONG}, it might speed things up a lot.
+   * </pre>
    */
-  public static final Duration DEFAULT_SUCCESS_TTL = Duration.ofMinutes(5);
-  public static final Duration DEFAULT_NXDOMAIN_TTL = Duration.ofMinutes(60);
+  public static final Duration DEFAULT_SUCCESS_TTL = FIVE_MINUTES;
+  public static final Duration DEFAULT_NXDOMAIN_TTL = ONE_HOUR;
 
   /**
    * The effective response for the client.
    */
   @NonNull
-  private Message message;
+  Message message;
 
   /**
    * The calculated TTL which will be used by DPS to cache entries,
@@ -41,10 +49,10 @@ public class Response {
    * see {@link #DEFAULT_SUCCESS_TTL} for more explanations.
    */
   @NonNull
-  private Duration dpsTtl;
+  Duration dpsTtl;
 
   @NonNull
-  private LocalDateTime createdAt;
+  LocalDateTime createdAt;
 
   public static Response of(Message message, Duration dpsTtl) {
     return Response
@@ -91,5 +99,9 @@ public class Response {
   public int countAnswers() {
     return Messages.getAnswers(this.message)
         .size();
+  }
+
+  public Duration getMessageTTL() {
+    return Messages.getFirstAnswerTTLDuration(this);
   }
 }

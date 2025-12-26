@@ -362,7 +362,7 @@ public class Config {
     Integer ttl;
 
     @NonNull
-    Config.Entry.Type type;
+    Type type;
 
     public String requireTextIp() {
       Validate.isTrue(this.type.isAddressSolving() && this.ip != null, "IP is required");
@@ -371,6 +371,17 @@ public class Config {
 
     public String getIpAsText() {
       return mapOrNull(this.ip, IP::toText);
+    }
+
+    public boolean isCname() {
+      return this.type.isCname();
+    }
+
+    public IP getIp(IP.Version version) {
+      if (version == null || this.ip.versionIs(version)) {
+        return this.ip;
+      }
+      return null;
     }
 
     public static class EntryBuilder {
@@ -396,10 +407,6 @@ public class Config {
        * See {@link org.xbill.DNS.Type}
        */
       final int type;
-
-      public boolean isNot(Type... types) {
-        return ConfigEntryTypes.isNot(this.type, types);
-      }
 
       public static Type of(Integer code) {
         for (final var t : values()) {
@@ -433,11 +440,15 @@ public class Config {
       }
 
       public boolean isAddressSolving() {
-        return ConfigEntryTypes.is(this, Config.Entry.Type.A, Config.Entry.Type.AAAA);
+        return ConfigEntryTypes.isAddressSolving(this);
       }
 
       public boolean isHttps() {
         return this == HTTPS;
+      }
+
+      public boolean isCname() {
+        return this == CNAME;
       }
     }
   }

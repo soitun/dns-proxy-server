@@ -1,7 +1,5 @@
 package com.mageddo.dnsproxyserver.solver.remote;
 
-import com.mageddo.dnsproxyserver.solver.Resolver;
-
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -11,9 +9,9 @@ import lombok.Value;
 public class ResolverStats {
 
   @NonNull
-  private Resolver resolver;
+  Resolver resolver;
 
-  private CircuitStatus circuitStatus;
+  CircuitStatus circuitStatus;
 
   public boolean isValidToUse() {
     return !CircuitStatus.OPEN.equals(this.circuitStatus);
