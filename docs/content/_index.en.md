@@ -5,22 +5,31 @@
 
 DPS is a lightweight end user (Developers, Server Administrators) DNS server tool
 which make it easy to develop in systems where one hostname can solve to different IPs based
-on the configured environment, so you can:
+on the configured environment.
 
+* Solve hostnames to [docker containers][11]
 * Solve hostnames from local configuration database
-* Solve hostnames from [docker containers][11]
-* Solve hostnames from a list of configured remote DNS servers(as a proxy) if no answer of two above
-* Solve hostnames using wildcards
-* Graphic interface to Create/List/Update/Delete **A/CNAME** records
+* Recursive solving from a list of configured remote DNS servers
+* Solve hostnames using wildcards/regex
+* Graphic interface to Create/List/Update/Delete **A/AAAA/CNAME** records
 * Solve host machine IP using `host.docker` hostname
 
+Checkout the [full list of features][4] with examples.
 
-Checkout the [full list of features][4] with examples
+**Comparison Table**
+
+* [✅ Authoritative][1]
+* [✅ Recursive][2]
+* ✅ Secondary mode
+* [✅ Caching][4]
+* [✅ IPv6][7]
+* [✅ Wildcard][8]
+* [✅ DNS over HTTPS][10]
+* [✅ RFC-1035 Compliant][1]
 
 ![](https://i.imgur.com/aR9dl0O.png)
 
-### Basic running it
-
+### Basic Running it
 You can run DPS as native binary downloading the latest [binaries releases][2]
 or via docker looking at [Dockerhub images][3]. See [complete running it][5] documentation for running on
 Mac, Windows, Docker, etc.
@@ -114,4 +123,4 @@ Or via QR code
 [8]: http://mageddo.github.io/dns-proxy-server/latest/en/1-getting-started/versioning
 [9]: http://mageddo.github.io/dns-proxy-server/latest/en/5-tutorials/
 [10]: http://mageddo.github.io/dns-proxy-server/latest/en/4-developing/
-[11]: https://mageddo.github.io/dns-proxy-server/latest/en/2-features/docker-solving/
+[11]: https://mageddo.github.io/dns-proxy-server/latest/en/2-features/solver-docker/
