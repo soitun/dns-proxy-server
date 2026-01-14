@@ -15,12 +15,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.xbill.DNS.Flags;
 
 import testing.templates.HostnameTemplates;
 import testing.templates.MessageTemplates;
 import testing.templates.docker.EntryTemplates;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -73,8 +73,7 @@ class SolverDockerTest {
     final var resText = res.toString();
     assertTrue(
         resText.contains(
-            entry.getIp()
-                .toText()
+            entry.firstAsText()
         ),
         resText
     );
@@ -107,9 +106,7 @@ class SolverDockerTest {
     assertTrue(Responses.isRecursionAvailable(res));
     assertTrue(Responses.isAuthoritative(res));
     final var resText = res.toString();
-    assertTrue(resText.contains(entry.getIp()
-        .toText()), resText
-    );
+    assertTrue(resText.contains(entry.firstAsText()), resText);
     verify(this.containerSolvingService).findBestMatch(this.hostnameQueryCaptor.capture());
 
     final var v = this.hostnameQueryCaptor.getValue();
@@ -136,10 +133,10 @@ class SolverDockerTest {
 
     // assert
     assertNotNull(res);
-    assertTrue(Responses.hasFlag(res, Flags.RA));
+    assertEquals("", Messages.detailedPrint(res.getMessage()));
+    assertTrue(Responses.isRecursionAvailable(res));
     assertTrue(Responses.isSuccess(res));
     assertEquals(Type.AAAA, Messages.findQuestionType(res.getMessage()));
-    assertEquals("", Messages.detailedPrint(res.getMessage()));
   }
 
   @Test
@@ -164,6 +161,35 @@ class SolverDockerTest {
     assertNull(res);
   }
 
+  @Test
+  void mustSolveMultipleFoundIps() {
+    // arrange
+    final var query = MessageTemplates.acmeAQuery();
+    final var entry = EntryTemplates.multipleIps();
+    final var hostname = HostnameQuery.ofWildcard(HostnameTemplates.ACME_HOSTNAME);
 
+    doReturn(true)
+        .when(this.dockerDAO)
+        .isConnected()
+    ;
+    doReturn(entry)
+        .when(this.containerSolvingService)
+        .findBestMatch(eq(hostname));
 
+    // act
+    final var res = this.solver.handle(query);
+
+    // assert
+    assertNotNull(res);
+
+    final var resText = res.toString();
+    assertThat(resText).contains("""
+        ;; ANSWERS:
+        acme.com.		30	IN	A	10.10.0.1
+        acme.com.		30	IN	A	192.168.0.10
+        """.trim()
+    );
+    assertTrue(Responses.isSuccess(res));
+    verify(this.containerSolvingService).findBestMatch(hostname);
+  }
 }

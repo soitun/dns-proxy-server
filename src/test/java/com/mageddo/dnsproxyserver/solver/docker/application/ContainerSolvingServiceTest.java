@@ -254,7 +254,7 @@ class ContainerSolvingServiceTest {
     // assert
     assertNotNull(ip);
     assertTrue(ip.isHostnameMatched());
-    assertNull(ip.getIp());
+    assertTrue(ip.hasNotIP());
 
   }
 }

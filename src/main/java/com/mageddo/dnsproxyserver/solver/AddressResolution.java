@@ -1,12 +1,15 @@
 package com.mageddo.dnsproxyserver.solver;
 
 import java.time.Duration;
+import java.util.List;
 
+import com.mageddo.commons.Collections;
 import com.mageddo.commons.lang.Objects;
 import com.mageddo.dnsproxyserver.config.Config;
 import com.mageddo.net.IP;
 
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 
 import static java.util.Objects.requireNonNullElse;
@@ -17,13 +20,10 @@ public class AddressResolution {
 
   boolean hostnameMatched;
 
-  IP ip;
+  @Singular
+  List<IP> ips;
 
   Duration ttl;
-
-  public String getIpText() {
-    return this.ip != null ? this.ip.toText() : null;
-  }
 
   public Duration getTTL(Duration def) {
     return requireNonNullElse(this.ttl, def);
@@ -38,19 +38,17 @@ public class AddressResolution {
   }
 
   public boolean hasNotIP() {
-    return this.ip == null;
+    return !this.hasIp();
   }
 
   public boolean hasIp() {
-    return this.ip != null;
+    return Collections.isNotEmpty(this.ips);
   }
 
-  public String getIp(Config.Entry.Type type) {
+  @SuppressWarnings("unchecked")
+  public List<String> getIps(Config.Entry.Type type) {
     final var version = type.toVersion();
-    if (this.hasNotIP() || version == null || this.ip.versionIs(version)) {
-      return this.getIpText();
-    }
-    return null;
+    return IpMapper.toText(this.ips, version);
   }
 
   public static AddressResolution matched(IP ip) {
@@ -62,6 +60,12 @@ public class AddressResolution {
   }
 
   public static AddressResolution matched(IP ip, Duration ttl) {
+    if (ip == null) {
+      return builder()
+          .hostnameMatched(true)
+          .ttl(ttl)
+          .build();
+    }
     return builder()
         .hostnameMatched(true)
         .ip(ip)
@@ -75,4 +79,7 @@ public class AddressResolution {
         .build();
   }
 
+  public String firstAsText() {
+    return IpMapper.toText(Collections.first(this.ips));
+  }
 }

@@ -57,7 +57,7 @@ public class QueryResponseHandler {
     return HostnameEvaluator.eval(
         askedHost,
         version,
-        hostnameQuery -> map(query, finder, hostnameQuery, type)
+        hostnameQuery -> this.map(query, finder, hostnameQuery, type)
     );
   }
 
@@ -89,7 +89,7 @@ public class QueryResponseHandler {
     final var ttl = res.getTTL(this.defaultTTL);
     final var msg = Messages.authoritativeAnswer(
         query,
-        res.getIp(type),
+        res.getIps(type),
         type,
         ttl.toSeconds()
     );
